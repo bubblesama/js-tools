@@ -12,7 +12,15 @@
 
 <script>
 $(document).ready(function(){
-	$("#content").html("loading");
+	$("#content").html("loading");	
+	
+	var displayedContent = "<table id='content' >";
+	for (var i=0;i<food.content.length;i++){
+		var item = food.content[i];
+		displayedContent += "<tr><td>"+item.type+"</td><td>"+item.name+"</td></tr>";
+	}
+	displayedContent += "</table>";
+	$("#content").html(displayedContent);
 });
 </script>
 </body>
