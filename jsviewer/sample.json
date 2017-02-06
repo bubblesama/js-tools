@@ -1,0 +1,30 @@
+{
+	"settings":{
+		columns: [
+		],
+	},
+	"content":[
+		{
+			"id": 1,
+			"name":"apple",
+			"type": "ingredient",
+			"unit":"none/gram/kg",
+		},
+		{
+			"id": auto,
+			"name":"flour",
+			"type": "ingredient",
+			"unit":"gr",
+		},
+		{
+			"id": auto,
+			"name": "apple pie",
+			"type":"recipe",
+			
+		
+		}
+	
+	
+	]
+
+}
