@@ -2,6 +2,7 @@
 <head>
 	<title>jsviewer</title>
 	<script src="lib/jquery-3.1.1.min.js"></script>
+	<script src="lib/handlebars-v4.0.5.js"></script>
 	<script src="sample_food.js"></script>
 </head>
 <body>
@@ -9,11 +10,19 @@
 
 <div id="content">none</div>
 
+<ul id="itemList"></ul>
+
+
+
+<script id="itemTemplate" type="text/x-handlebars-template" >
+	<li>{{name}}</li>
+</script>
 
 <script>
 $(document).ready(function(){
 	$("#content").html("loading");	
 	
+	/*
 	var displayedContent = "<table id='content' >";
 	for (var i=0;i<food.content.length;i++){
 		var item = food.content[i];
@@ -21,6 +30,13 @@ $(document).ready(function(){
 	}
 	displayedContent += "</table>";
 	$("#content").html(displayedContent);
+	*/
+
+	var itemTemplateSource   = $("#itemTemplate").html();
+	var itemTemplate = Handlebars.compile(itemTemplateSource);
+	var itemHtml = itemTemplate(food.content[0]);
+	$("#itemList").html(itemHtml);
+	
 });
 </script>
 </body>
