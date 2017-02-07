@@ -15,29 +15,19 @@
 
 
 <script id="itemTemplate" type="text/x-handlebars-template" >
-	<li>{{name}}</li>
-	
+	{{#each content}}
+	<li>{{this.name}}</li>
+	{{/each}}
 </script>
 
 <script>
 $(document).ready(function(){
-	$("#content").html("loading");	
-	
-	/*
-	var displayedContent = "<table id='content' >";
-	for (var i=0;i<food.content.length;i++){
-		var item = food.content[i];
-		displayedContent += "<tr><td>"+item.type+"</td><td>"+item.name+"</td></tr>";
-	}
-	displayedContent += "</table>";
-	$("#content").html(displayedContent);
-	*/
-
-	var itemTemplateSource   = $("#itemTemplate").html();
+	$("#content").html("loading");
+	var itemTemplateSource = $("#itemTemplate").html();
 	var itemTemplate = Handlebars.compile(itemTemplateSource);
-	var itemHtml = itemTemplate(food.content[0]);
+	var itemHtml = itemTemplate(food);
 	$("#itemList").html(itemHtml);
-	
+
 });
 </script>
 </body>
