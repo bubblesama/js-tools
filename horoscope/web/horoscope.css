@@ -1,0 +1,128 @@
+body{
+	background-color: black;
+	color: black;
+	font-family: Verdana, Arial;
+	font-size: 18px;
+}
+
+#main{
+	width: 1000px;
+	margin-left: auto;
+	margin-right: auto;
+	background-color: white; 
+	min-height: 160px;
+}
+
+h3{
+	background-color: rgb(255, 192, 0);
+	padding: 10px;
+	margin: 0px;
+}
+
+a{
+	text-decoration: none;
+	outline: none;
+	color: black;
+}
+
+#homeLink img{
+	width: 20px;
+}
+
+#homeLink img:hover{
+	background-color: rgb(255, 222, 0);	
+}
+
+a.quickLink{
+	background-color: rgb(255, 192, 0);
+	width: 50px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+a.quickLink:hover, a.quickLink:focus{
+	background-color: rgb(255, 222, 0);
+}
+
+a.chosenSign{
+	background-color: white;
+}
+
+a.chosenSign:hover, a.chosenSign:focus{
+	background-color: rgb(200, 200, 200);
+}
+
+a#quizzLink{
+	border: 2px solid black;
+	color: black;
+	padding: 2px;
+}
+
+a#quizzLink:hover, a#quizzLink:focus{
+	color: #00b0ff;
+}
+
+div {
+	width: 200px;
+	text-align: center;
+
+}
+
+#quickLinks{
+	background-color: rgb(255, 192, 0);
+	width: auto;
+	vertical-align: middle;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#predictions{
+	margin-top: 10px;
+}
+
+#legal{
+	font-size: 10px;
+	width: auto;
+	margin-left: 4px;
+	margin-right: 4px;
+	vertical-align: text-bottom;
+	border-top: 1px solid #ccc;
+}
+
+#content{
+	padding-left: 10px;
+	padding-top: 20px;
+	padding-bottom: 30px;
+	min-height: 200px;
+	width: auto;
+}
+
+div .prediction{
+	color: black;
+	padding-left: 20px;
+	text-align: left;
+	margin: 0px;
+	margin-bottom: 30px;
+	width: 960px;
+}
+
+div .prediction a{
+	color: black;
+}
+
+
+div .prediction a:hover, div .prediction a:focus{
+	color: #00b0ff;;
+}
+
+
+div .prediction.false a{
+	color: #AAAAAA;
+	text-decoration: line-through;
+}
+
+#warning {
+	text-align: center;
+	color: #d04648;
+	width: auto;
+}
