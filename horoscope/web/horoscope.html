@@ -1,14 +1,14 @@
 <html>
 <head>
-	<title>horoscope</title>
+	<title>Horoquizz</title>
 	<link rel="stylesheet" type="text/css" href="web/horoscope.css" />
 	<script src="web/horoscope.js"></script>
 	<script src="web/lib/jquery-3.1.0.min.js"></script>
 </head>
 <body onLoad="startup();">
 	<div id="main">
-		<h3>Horoscope quizz (<span id="currentDate">no date</span>)</h3>
-		<div id="quickLinks"><a id="homeLink" class=quickLink" href="#"><img src="web/home.png"></a><span id="signsLinks"></span><a id="statsLink">stats</a></div>
+		<h3>Horoquizz (<span id="currentDate">no date</span>)</h3>
+		<div id="quickLinks"><a id="homeLink" class="iconLink" href="#"><img src="web/home.png"></a><span id="signsLinks"></span><a id="statsLink"  class="iconLink"><img src="web/stats.png"></a></div>
 		<div id="content">
 			<div id="warning" style="display: none;"></div>
 			<div id="predictions" style="display: none;">
@@ -16,7 +16,7 @@
 				<div class="prediction" id="prediction_01">none</div>
 				<div class="prediction" id="prediction_02">none</div>
 			</div>
-			<p><a id="quizzLink" href="#" style="display: none;"> take the quizz!</a></p>
+			<p><a id="quizzLink" href="#" style="display: none;"> Testez votre signe ici</a></p>
 			<!--<div id="currentSignInfo" style="display: none;"> guessing for <span id="currentSign">no sign</span></div>-->
 			<!--<div id="currentDateInfo"> on <span id="currentDate">no date</span></div>-->
 			<!--<input type="button" id="goPrediction" name="getPredictionButton" value="get prediction"/>-->
