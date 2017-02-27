@@ -11,7 +11,7 @@ var app = express();
 var rootPath = 'horoscope';
 //NOTE 
 //var horoscopeFolderPath = "/projects/horoscope/data/";
-var horoscopeFolderPath = "D:/projects/node/horoscope/data/";
+var horoscopeFolderPath = "D:/projects/js-tools/horoscope/data/";
 var staticHttp200Header = {"Content-Type": "text/html; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"};
 var signs = ["aquarius","leo","libra","scorpius","taurus","virgo","gemini","cancer","capricorn","aries","pisces","sagittarius"];
 
