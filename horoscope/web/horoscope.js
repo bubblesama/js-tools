@@ -7,6 +7,21 @@ var currentSign = "none";
 var currentDate = "none";
 var currentQuizz = "none";
 
+var i18n = { 
+	"aquarius": "Verseau",
+	"leo": "Lion",
+	"libra": "Balance",
+	"scorpius": "Scorpion",
+	"taurus": "Taureau",
+	"virgo": "Vierge",
+	"gemini": "Gémeaux",
+	"cancer": "Cancer",
+	"capricorn": "Capricorne",
+	"aries": "Bélier",
+	"pisces": "Poisson",
+	"sagittarius": "Sagittaire"
+};
+
 function startup(){
 	var shouldGetDate = _updateFromHash();
 	$("#mainContent").html("calling server for signs...");
@@ -23,7 +38,7 @@ function startup(){
 				//$("#quickLinks").append("signs ")
 				for (var i = 0; i < signs.length; i++) {
 					if ($("#sign_"+signs[i])){
-						$("#signsLinks").append("<a class='quickLink' href='#/date/"+currentDate+"/sign/"+signs[i]+"' id='sign_"+signs[i]+"' >"+signs[i]+"</a>");
+						$("#signsLinks").append("<a class='quickLink' href='#/date/"+currentDate+"/sign/"+signs[i]+"' id='sign_"+signs[i]+"' >"+i18n.signs[i]+"</a>");
 						if (signs[i] == currentSign){
 							$("#sign_"+currentSign).addClass("chosenSign");
 						}
