@@ -44,7 +44,6 @@ function startup(){
 						}
 					}
 				}
-				$("#mainContent").html("signs loaded");
 			}
 		);
 		$("#homeLink").click(function(){_refreshPage(currentDate,false);});
@@ -122,7 +121,7 @@ function _refreshPage(date, isStats, sign, quizzId){
 						$("#warning").html(statOutput);
 						$("#warning").show();	
 					}
-				);				
+				);
 			}
 		}
 	}else{
