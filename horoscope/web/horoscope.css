@@ -90,6 +90,10 @@ div {
 	border-top: 1px solid #ccc;
 }
 
+#legal a:hover{
+	color: #00b0ff;
+}
+
 #content{
 	padding-left: 10px;
 	padding-top: 20px;
