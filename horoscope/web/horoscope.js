@@ -134,9 +134,19 @@ function _chooseDate(date){
 	_setDate(date);
 }
 
-function _setDate(date){
-	currentDate = date;
-	$("#currentDate").html(currentDate);
+var monthNames = ["janvier", "février", "mars","avril", "mai", "juin", "juillet","août", "septembre", "octobre","novembre", "décembre"];
+
+function _setDate(rawDate){
+	//TODO formatage de la date
+	if (rawDate.length==8){
+		var rawYear = rawDate.substring(0,4);
+		var rawMonth = rawDate.substring(4,6);
+		var rawDay = rawDate.substring(6,8);
+		// console.log("_setDate: rawYear="+rawYear+" rawMonth="+rawMonth+" rawDay="+rawDay);
+		var date = new Date(rawYear,rawMonth,rawDay);
+		$("#currentDate").html(""+date.getDay()+" "+monthNames[date.getMonth()-1]+" "+date.getFullYear());
+	}
+	currentDate = rawDate;
 	$("#statsLink").attr("href", "#/date/"+currentDate+"/stats/");
 }
 
