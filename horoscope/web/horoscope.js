@@ -22,7 +22,7 @@ var i18n = {
 	"sagittarius": "Sagittaire",
 	
 	"messages": {
-		"welcome": "Sélectionnez votre signe et devinez ce que votre horoscope vous réserve"
+		"welcome": "Sélectionnez votre signe et devinez ce que vous réserve votre horoscope."
 	}
 	
 };
@@ -85,12 +85,16 @@ function _updateFromHash(){
 				}
 			}
 		}
+	}else{
+		$("#infos").html(i18n["messages"]["welcome"]);
+		$("#infos").show();
 	}
 	return shouldGetDate;
 }
 
 function _refreshPage(date, isStats, sign, quizzId){
 	// nettoyage des infos
+	$("#infos").hide();
 	$("#warning").hide();
 	$("#quickLinks a").removeClass("chosenSign");
 	$("#predictions div").removeClass("false");
@@ -107,6 +111,9 @@ function _refreshPage(date, isStats, sign, quizzId){
 				_createQuizz();
 			}
 		}else{
+			// pas de signe: infos sur le choix des signes
+			$("#infos").html(i18n["messages"]["welcome"]);
+			$("#infos").show();
 			$("#currentSignInfo").hide();
 			currentSign = "none";
 			_clearQuizz();
@@ -130,7 +137,9 @@ function _refreshPage(date, isStats, sign, quizzId){
 			}
 		}
 	}else{
-		
+		// pas de signe: infos sur le choix des signes
+		$("#infos").html(i18n["messages"]["welcome"]);
+		$("#infos").show();
 	}
 }
 
@@ -147,7 +156,7 @@ function _setDate(rawDate){
 		var rawYear = rawDate.substring(0,4);
 		var rawMonth = rawDate.substring(4,6);
 		var rawDay = rawDate.substring(6,8);
-		console.log("_setDate: rawYear="+rawYear+" rawMonth="+rawMonth+" rawDay="+rawDay);
+		//console.log("_setDate: rawYear="+rawYear+" rawMonth="+rawMonth+" rawDay="+rawDay);
 		var date = new Date(rawYear,rawMonth,rawDay);
 		$("#currentDate").html(date.getDate()+" "+monthNames[date.getMonth()-1]+" "+date.getFullYear());
 	}
