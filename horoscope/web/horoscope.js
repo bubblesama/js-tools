@@ -19,7 +19,12 @@ var i18n = {
 	"capricorn": "Capricorne",
 	"aries": "Bélier",
 	"pisces": "Poisson",
-	"sagittarius": "Sagittaire"
+	"sagittarius": "Sagittaire",
+	
+	"messages": {
+		"welcome": "Sélectionnez votre signe et devinez ce que votre horoscope vous réserve"
+	}
+	
 };
 
 function startup(){
@@ -142,9 +147,9 @@ function _setDate(rawDate){
 		var rawYear = rawDate.substring(0,4);
 		var rawMonth = rawDate.substring(4,6);
 		var rawDay = rawDate.substring(6,8);
-		// console.log("_setDate: rawYear="+rawYear+" rawMonth="+rawMonth+" rawDay="+rawDay);
+		console.log("_setDate: rawYear="+rawYear+" rawMonth="+rawMonth+" rawDay="+rawDay);
 		var date = new Date(rawYear,rawMonth,rawDay);
-		$("#currentDate").html(""+date.getDay()+" "+monthNames[date.getMonth()-1]+" "+date.getFullYear());
+		$("#currentDate").html(date.getDate()+" "+monthNames[date.getMonth()-1]+" "+date.getFullYear());
 	}
 	currentDate = rawDate;
 	$("#statsLink").attr("href", "#/date/"+currentDate+"/stats/");
