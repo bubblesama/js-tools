@@ -17,9 +17,6 @@ var signs = ["aquarius","leo","libra","scorpius","taurus","virgo","gemini","canc
 
 var horoscopeStatus = {};
 
-// stockage des retours asynchrones de recuperation des horoscope du quizz
-var quizzStatus = [];
-
 
 var date = "20160908";
 var serverAddress = "192.168.1.16:27017";
@@ -40,8 +37,8 @@ app.get(
 			function(error, data) {
 				if (error){
 					//throw error;
-					res.writeHead(403, {"Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
-					res.end("forbidden");
+					res.writeHead(500, {"Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
+					res.end("unavailable");
 				}
 				res.writeHead(200, {"Content-Type": "application/javascript; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
 				res.end(data);
@@ -194,6 +191,9 @@ app.get(
 										date,
 										null,
 										function(error,horoscopes,context){
+											
+											//TODO controle de l'existance de l'horoscope pour la date
+											
 											for (var i=0;i<quizz.signs.length;i++){
 												result.predictions[i] = horoscopes[quizz.signs[i]];
 											}
@@ -294,8 +294,8 @@ app.get(
 			function(error, data) {
 				if (error){
 					//throw error;
-					res.writeHead(403, {"Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
-					res.end("forbidden");
+					res.writeHead(500, {"Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
+					res.end("unavailable");
 				}
 				var horoscope = JSON.parse(data);
 				if (horoscope[req.params.sign]){

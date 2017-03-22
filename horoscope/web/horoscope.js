@@ -26,6 +26,10 @@ var i18n = {
 	}
 	
 };
+var forbiddenDates = {};
+
+
+
 
 function startup(){
 	var shouldGetDate = _updateFromHash();
@@ -100,7 +104,7 @@ function _refreshPage(date, isStats, sign, quizzId){
 	$("#predictions div").removeClass("false");
 	//console.log("_refreshPage IN date="+date+ " sign="+sign+" quizzId="+quizzId);
 	if (date){
-		_chooseDate(date);
+		_setDate(date);
 		if (sign){
 			_setSign(sign);
 			if (quizzId){
@@ -141,11 +145,6 @@ function _refreshPage(date, isStats, sign, quizzId){
 		$("#infos").html(i18n["messages"]["welcome"]);
 		$("#infos").show();
 	}
-}
-
-function _chooseDate(date){
-	//console.log("_chooseDate IN date="+date);
-	_setDate(date);
 }
 
 var monthNames = ["janvier", "février", "mars","avril", "mai", "juin", "juillet","août", "septembre", "octobre","novembre", "décembre"];
