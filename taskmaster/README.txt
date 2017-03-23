@@ -1,3 +1,4 @@
 Gestionnaire de tâches
-dependance
+dependances
 npm install sqlite3 --save
+npm install express
