@@ -26,13 +26,6 @@ console.log("init db OK");
 
 db.close();
 
-
-
-
-
-
-
-
 //mapping express
 var app = express();
 
@@ -40,20 +33,23 @@ app.get(
 	'/',
 	function(req,res){
 		res.writeHead(200, {"Content-Type": "application/javascript; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
-		res.end("taskmaster");
+		fs.readFile('template.hbs', 'utf8', function(error, fileContent) {
+			if (error){
+				res.end("fs error");
+			}else{
+				var template = Handlebars.compile(fileContent);
+				var data = {"content":"Je suis Contenu le contenu"};
+				res.end(""+template(data));
+			}
+		});
 	}
 );
-
-
-
 
 //lancement du serveur
 var server=http.createServer(app);
 server.listen(8088,"0.0.0.0");
 
-
-
-
+/*
 var source = "<p>Hello, my name is {{name}}. I am from {{hometown}}. I have " +
              "{{kids.length}} kids:</p>" +
              "<ul>{{#kids}}<li>{{name}} is {{age}}</li>{{/kids}}</ul>";
@@ -63,6 +59,6 @@ var data = { "name": "Alan", "hometown": "Somewhere, TX",
              "kids": [{"name": "Jimmy", "age": "12"}, {"name": "Sally", "age": "4"}]};
 var result = template(data);
 console.log(result);
-
+*/
 
 //COUCHE BDD
