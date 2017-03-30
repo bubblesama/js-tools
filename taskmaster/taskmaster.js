@@ -32,7 +32,7 @@ var app = express();
 app.get(
 	'/',
 	function(req,res){
-		res.writeHead(200, {"Content-Type": "application/javascript; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
+		res.writeHead(200, {"Content-Type": "text/html; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
 		fs.readFile('template.hbs', 'utf8', function(error, fileContent) {
 			if (error){
 				res.end("fs error");
