@@ -4,7 +4,7 @@ var http = require('http');
 var express = require('express');
 var sqlite3 = require('sqlite3').verbose();
 var Handlebars = require('handlebars');
-
+var BodyParser = require('body-parser');
 
 //init BDD
 var dbFile = "tasks.db";
@@ -21,44 +21,76 @@ db.serialize(function() {
     db.run("CREATE TABLE tasks (name TEXT)");
   }
 });
+db.close();
+
 
 console.log("init db OK");
-
-db.close();
 
 //mapping express
 var app = express();
 
+
 app.get(
 	'/',
-	function(req,res){
-		res.writeHead(200, {"Content-Type": "text/html; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
-		fs.readFile('template.hbs', 'utf8', function(error, fileContent) {
-			if (error){
-				res.end("fs error");
-			}else{
-				var template = Handlebars.compile(fileContent);
-				var data = {"content":"Je suis Contenu le contenu"};
-				res.end(""+template(data));
+	writeTasksAndForm
+);
+
+
+//body-parser for POST
+var urlEncodedParser = BodyParser.urlencoded({extended: false});
+app.post(
+	'/',
+	urlEncodedParser,
+	function (req, res) {
+		console.log("POST IN: req.body.name="+req.body.name);
+		//TODO insert BDD
+		db = new sqlite3.Database(dbFile);
+		db.run(
+			"INSERT INTO tasks VALUES ("+req.body.name+")",
+			[],
+			function(error){
+				db.close();
+				console.log("POST INSERT done");
+				writeTasksAndForm(req,res);
+				if (error == null){
+				}
 			}
-		});
+		);
+
 	}
 );
+
+function writeTasksAndForm(req,res){
+	res.writeHead(200, {"Content-Type": "text/html; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
+	fs.readFile('template.hbs', 'utf8', function(error, fileContent) {
+		if (error){
+			res.end("fs error");
+		}else{
+			//recuperation des infos BDD
+			var allTasksResult = {"tasks":[]};
+			db = new sqlite3.Database(dbFile);
+			db.all(	"SELECT name FROM tasks", 
+					function(err, rows) {
+						console.log("writeTasksAndForm some rows! rows="+rows);
+						rows.forEach(function(row) {
+							console.log("writeTasksAndForm one row");
+							allTasksResult.tasks.add({"name":raw.name});
+						});
+						var template = Handlebars.compile(fileContent);
+						var data = {"content":"Je suis Contenu le contenu"};
+						db.close();
+						res.end(""+template(data));
+					}
+			);
+		}
+	});
+};
+
+
+
 
 //lancement du serveur
 var server=http.createServer(app);
 server.listen(8088,"0.0.0.0");
-
-/*
-var source = "<p>Hello, my name is {{name}}. I am from {{hometown}}. I have " +
-             "{{kids.length}} kids:</p>" +
-             "<ul>{{#kids}}<li>{{name}} is {{age}}</li>{{/kids}}</ul>";
-var template = Handlebars.compile(source);
- 
-var data = { "name": "Alan", "hometown": "Somewhere, TX",
-             "kids": [{"name": "Jimmy", "age": "12"}, {"name": "Sally", "age": "4"}]};
-var result = template(data);
-console.log(result);
-*/
 
 //COUCHE BDD
