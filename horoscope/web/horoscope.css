@@ -29,8 +29,6 @@ a{
 	width: 20px;
 }
 
-
-
 a.quickLink{
 	background-color: rgb(255, 192, 0);
 	width: 50px;
@@ -63,9 +61,8 @@ a#quizzLink:hover, a#quizzLink:focus{
 }
 
 div {
-	width: 200px;
+	width: 300px;
 	text-align: center;
-
 }
 
 #quickLinks{
@@ -115,11 +112,9 @@ div .prediction a{
 	color: black;
 }
 
-
 div .prediction a:hover, div .prediction a:focus{
 	color: #00b0ff;;
 }
-
 
 div .prediction.false a{
 	color: #AAAAAA;
@@ -136,3 +131,26 @@ div .prediction.false a{
 	width: auto;
 }
 
+#welcome{
+	width: auto;
+	padding: 0 20px;
+}
+
+#welcome a:hover{
+	color: #00b0ff;
+}
+
+#welcome p{
+	text-align: left;
+	width: auto;
+}
+
+#welcome{
+	width: auto;
+	padding: 0 20px;
+}
+
+#welcome h2{
+	font-size: 18px;
+	text-align: left;
+}

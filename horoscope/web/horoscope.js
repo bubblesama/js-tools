@@ -90,14 +90,18 @@ function _updateFromHash(){
 			}
 		}
 	}else{
+		/*
 		$("#infos").html(i18n["messages"]["welcome"]);
 		$("#infos").show();
+		*/
+		$("#welcome").show();
 	}
 	return shouldGetDate;
 }
 
 function _refreshPage(date, isStats, sign, quizzId){
 	// nettoyage des infos
+	$("#welcome").hide();
 	$("#infos").hide();
 	$("#warning").hide();
 	$("#quickLinks a").removeClass("chosenSign");
@@ -115,9 +119,6 @@ function _refreshPage(date, isStats, sign, quizzId){
 				_createQuizz();
 			}
 		}else{
-			// pas de signe: infos sur le choix des signes
-			$("#infos").html(i18n["messages"]["welcome"]);
-			$("#infos").show();
 			$("#currentSignInfo").hide();
 			currentSign = "none";
 			_clearQuizz();
@@ -138,12 +139,14 @@ function _refreshPage(date, isStats, sign, quizzId){
 						$("#warning").show();	
 					}
 				);
+			}else{
+				// pas de signe, pas de stats: infos sur le choix des signes
+				$("#welcome").show();
 			}
 		}
 	}else{
 		// pas de signe: infos sur le choix des signes
-		$("#infos").html(i18n["messages"]["welcome"]);
-		$("#infos").show();
+		$("#welcome").show();
 	}
 }
 
@@ -187,10 +190,6 @@ function _setQuizzId(quizzId){
 	currentQuizz = quizzId;
 	$("#quizzId").html(quizzId);
 	$("#quizzLink").attr("href","#/date/"+currentDate+"/sign/"+currentSign+"/quizz/"+quizzId);
-	/*
-	$("#quizzLink").off();
-	$("#quizzLink").click({quizzId: quizzId}, function(event){_getQuizzPredictions(event.data.quizzId)});
-	*/
 	$("#quizzLink").show();
 }
 
