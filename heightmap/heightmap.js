@@ -16,15 +16,11 @@ var yJ = -20;
 var xK = 0;
 var yK = -10;
 
-
-var normScreenI = Math.sqrt(xI*xI+yI*yI);
-var normScreenJ = Math.sqrt(xJ*xJ+yJ*yJ);
+var sqNormScreenI = xI*xI+yI*yI;
+var sqNormScreenJ = xJ*xJ+yJ*yJ;
 
 var oddFillColor = "lightblue";
 var evenFillColor = "red";
-
-
-
 
 //matrix of k index for heightmap: k of M(i,j,k)= kIndex[i][j]
 
@@ -34,7 +30,7 @@ var kIndex = [
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 	[0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0],
 	[0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0],
-	[0, 0, 0, 0, 0, 5, 5, 4, 8, 0, 0, 0],
+	[0, 0, 0, 0, 0, 5, 5, 4, 0, 0, 0, 0],
 	[0, 0, 0, 0, 0, 5, 3, 0, 5, 0, 0, 0],
 	[0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -46,7 +42,15 @@ var kIndex = [
 var maxI = kIndex.length;
 var maxJ = kIndex[0].length;
 
+var xMiddle = -1;
+var yMiddle = -1;
 
+function calculateMiddle(){
+	xMiddle = Math.floor((maxI*xI+maxJ*xJ-x0)/2);
+	yMiddle = Math.floor((maxI*yI+maxJ*yJ-y0)/2);
+	document.getElementById("middleX").innerHTML = xMiddle;
+	document.getElementById("middleY").innerHTML = yMiddle;
+}
 
 var canvas = document.getElementById("mainCanvas");
 var context = canvas.getContext("2d");
@@ -54,9 +58,8 @@ var context = canvas.getContext("2d");
 window.addEventListener('mouseclick', getMousePos, false);
 
 function launchCanvas(){
-
 	context.fillStyle = "lightblue";
-	context.fillRect(10,10,790,590);
+	context.fillRect(0,0,800,600);
 	context.strokeStyle = "black"; 
 	context.lineWidth = 1; 
 	//heightmap
@@ -81,21 +84,21 @@ function launchCanvas(){
 	}
 };
 
-
 canvas.addEventListener(
-	'click',
+	'mousemove',
 	function(evt) {
         var mousePos = getMousePos(canvas, evt);
 		document.getElementById("mouseX").innerHTML = Math.floor(mousePos.x);
 		document.getElementById("mouseY").innerHTML = Math.floor(mousePos.y);
 		var xM = Math.floor(mousePos.x-x0);
 		var yM = Math.floor(mousePos.y-y0);
-		var iM = Math.floor(((xI*xM)+(yI*yM)) /(normScreenI*normScreenI));
-		var jM = Math.floor(((xJ*xM)+(yJ*yM)) /(normScreenJ*normScreenJ));
-		console.log("click: xM="+xM+" yM="+yM+" iM="+iM);
+		var iM = Math.floor(((xI*xM)+(yI*yM)) /sqNormScreenI);
+		var jM = Math.floor(((xJ*xM)+(yJ*yM)) /sqNormScreenJ);
+		//console.log("click: xM="+xM+" yM="+yM+" iM="+iM);
 		document.getElementById("mouseI").innerHTML = iM;
 		document.getElementById("mouseJ").innerHTML = jM;
 		
+		/*
 		if (iM >=0 && iM<maxI && jM >= 0 && jM < maxJ){
 			kIndex[iM+0][jM+0]--;
 			kIndex[iM+1][jM+0]--;
@@ -103,7 +106,7 @@ canvas.addEventListener(
 			kIndex[iM+1][jM+1]--;
 			launchCanvas();
 		}
-		
+		*/
 		
 		
 	}
@@ -114,4 +117,39 @@ function getMousePos(canvas, evt){
 	var x = (evt.clientX - rect.left) / (rect.right - rect.left) * canvas.width;
 	var y = (evt.clientY - rect.top) / (rect.bottom - rect.top) * canvas.height;
 	return {"x": x, "y":y}
+};
+
+function rotate(){
+	var theta = 0.1;
+	var newI = rotation(xI,yI,theta);
+	var newJ = rotation(xJ,yJ,theta);
+	var new0 = rotation(x0-xMiddle,y0-yMiddle,theta);
+	xI = newI.x;
+	yI = newI.y;
+	xJ = newJ.x;
+	yJ = newJ.y;
+	x0 = new0.x + xMiddle;
+	y0 = new0.y + yMiddle;
+	
+	calculateMiddle();
+	
+	launchCanvas();
+}
+
+//https://fr.wikipedia.org/wiki/Matrice_de_rotation#Les_matrices_de_base
+//A'.x = A.x * cos(θ) - A.y * sin(θ)
+//A'.y = A.x * sin(θ) + A.y * cos(θ)
+function rotation(x,y,theta){
+	var newX = Math.floor(x* Math.cos(theta) - y * Math.sin(theta));
+	var newY = Math.floor(x* Math.sin(theta) + y * Math.cos(theta));
+	return {"x": newX, "y": newY};
+}
+
+
+function autorotate(delay){
+	if (xMiddle <0){
+		calculateMiddle();
+	}
+	rotate();
+	setTimeout(function(){ autorotate() }, 50);
 };

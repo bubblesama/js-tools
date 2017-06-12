@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 <head><title>heightmap</title></head>
-<body onload="launchCanvas();">
+<body onload="autorotate();">
 
 
 <h1>heightmap</h1>
@@ -18,6 +18,16 @@ click i: <span id="mouseI">NA</span>
 </p>
 <p>
 click j: <span id="mouseJ">NA</span>
+</p>
+
+<p>
+middle x:<span id="middleX">NA</span> y:<span id="middleY">NA</span>
+</p>
+
+<h3>actions<h3>
+
+<p>
+	<button value="rotate" onclick="rotate();" >rotate</button>
 </p>
 
 <script type="text/javascript" src="heightmap.js"></script>
