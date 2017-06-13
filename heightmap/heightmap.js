@@ -22,19 +22,27 @@ var sqNormScreenJ = xJ*xJ+yJ*yJ;
 var oddFillColor = "lightblue";
 var evenFillColor = "red";
 
+//conf
+//grid color (true or false)
+var isColorLess = true;
+//grid visible (true or false)
+var isGridVisible = true;
+//auto rotating (true or false)
+var isAutoRotating = false;
+
 //matrix of k index for heightmap: k of M(i,j,k)= kIndex[i][j]
 
 var kIndex = [
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	[0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0],
-	[0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0],
-	[0, 0, 0, 0, 0, 5, 5, 4, 0, 0, 0, 0],
-	[0, 0, 0, 0, 0, 5, 3, 0, 5, 0, 0, 0],
-	[0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
-	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[0, 1, 3, 1, 0, 1, 1, 0, 0, 0, 0, 0],
+	[0, 0, 1, 0, 1, 2, 2, 1, 0, 0, 0, 0],
+	[0, 0, 0, 1, 2, 4, 4, 2, 1, 0, 0, 0],
+	[0, 0, 1, 2, 4,-2,-2, 4, 2, 1, 0, 0],
+	[0, 0, 1, 2, 4,-2,-2, 4, 2, 1, 0, 0],
+	[0, 0, 0, 1, 2, 4, 4, 2, 1, 0, 0, 0],
+	[0, 0, 0, 0, 1, 2, 2, 1, 0, 0, 0, 0],
+	[0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 ];
@@ -42,15 +50,17 @@ var kIndex = [
 var maxI = kIndex.length;
 var maxJ = kIndex[0].length;
 
-var xMiddle = -1;
-var yMiddle = -1;
+var xMiddle = 400;
+var yMiddle = 300;
 
+/*
 function calculateMiddle(){
 	xMiddle = Math.floor((maxI*xI+maxJ*xJ-x0)/2);
 	yMiddle = Math.floor((maxI*yI+maxJ*yJ-y0)/2);
 	document.getElementById("middleX").innerHTML = xMiddle;
 	document.getElementById("middleY").innerHTML = yMiddle;
 }
+*/
 
 var canvas = document.getElementById("mainCanvas");
 var context = canvas.getContext("2d");
@@ -65,11 +75,21 @@ function launchCanvas(){
 	//heightmap
 	for (var i=0;i<maxI-1;i++){
 		for (var j=maxJ-1;j>=0;j--){
+			
 			//color
 			var colorR = ((i+j)%2)== 0?'250':'0';
 			var colorGVal = 100;
 			var colorG = ''+colorGVal;
 			var colorB = ((i+j)%2)== 0?'0':'250';
+			//tag for "origin square"
+			if ((i==0 && j==0)|| isColorLess ){
+			
+				var colorR = 100;
+				var colorG = 100;
+				var colorB = 100;
+			}
+			
+			
 			//trace
 			context.fillStyle = 'rgb('+colorR+', '+colorG+', '+colorB+')';
 			context.beginPath();
@@ -79,7 +99,10 @@ function launchCanvas(){
 			context.lineTo(x0+(i+0)*xI+(j+1)*xJ+kIndex[i+0][j+1]*xK,y0+(i+0)*yI+(j+1)*yJ+kIndex[i+0][j+1]*yK);   
 			context.closePath();
 			context.fill();
-			context.stroke();
+			if (isGridVisible){
+				context.stroke();
+			}
+			
 		}
 	}
 };
@@ -120,10 +143,10 @@ function getMousePos(canvas, evt){
 };
 
 function rotate(){
-	var theta = 0.1;
-	var newI = rotation(xI,yI,theta);
-	var newJ = rotation(xJ,yJ,theta);
-	var new0 = rotation(x0-xMiddle,y0-yMiddle,theta);
+	var theta = 0.2;
+	var newI = rotation(xI,yI,-theta);
+	var newJ = rotation(xJ,yJ,-theta);
+	var new0 = rotation(x0-xMiddle,y0-yMiddle,-theta);
 	xI = newI.x;
 	yI = newI.y;
 	xJ = newJ.x;
@@ -131,7 +154,7 @@ function rotate(){
 	x0 = new0.x + xMiddle;
 	y0 = new0.y + yMiddle;
 	
-	calculateMiddle();
+	//calculateMiddle();
 	
 	launchCanvas();
 }
@@ -146,10 +169,18 @@ function rotation(x,y,theta){
 }
 
 
-function autorotate(delay){
+function autorotate(){
+	/*
 	if (xMiddle <0){
 		calculateMiddle();
 	}
-	rotate();
-	setTimeout(function(){ autorotate() }, 50);
+	*/
+	
+	if (isAutoRotating){
+		rotate();
+		setTimeout(function(){ autorotate() }, 100);
+	}else{
+		launchCanvas();
+	}
+	
 };
