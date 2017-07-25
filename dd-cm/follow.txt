@@ -1,11 +1,5 @@
 suivi de DD Cloudy Moutain en HTML
 
-
-log
-2017-07-23
-création de la page avec le canvas
-injection d'un sprite
-
 liste des taches
 - POCs
  - intégrer une feuille de sprites
