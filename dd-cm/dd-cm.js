@@ -1,16 +1,69 @@
-
-
-
 var canvas = document.getElementById("canvas");
 var context = canvas.getContext("2d");
 
+const worldHeightByTile = 11;
+const worldWidthByTile = 19;
+const worldTileHeight = 8;
+const worldTileWidth = 8;
+const worldZoom = 4;
+
+var worldSpritesCoordinatesByName = {
+	"EMPTY": [7,0],
+	"RIVER_UP_DOWN": [4,2],
+	"RIVER_UP_RIGHT": [0,2],
+	"RIVER_RIGHT_DOWN": [1,2],
+	"RIVER_DOWN_LEFT": [2,2],
+	"RIVER_LEFT_UP": [3,2],
+	"MOUTAIN_BLACK": [0,0],
+	"MOUTAIN_GREY": [7,0],
+	"MOUTAIN_BLUE": [7,0],
+	"MOUTAIN_RED": [7,0],
+	"MOUTAIN_PURPLE": [7,0],
+	"MOUTAIN_BLANK": [7,0],
+	"MOUTAIN_BIG": [7,0],
+	"WALL_DOOR_UP_DOWN": [7,0],
+	"WALL_DOOR_LEFT_RIGHT": [7,0],
+	"WALL_UP_DOWN": [7,0],
+	"WALL_LEFT_RIGHT": [7,0],
+	"FOREST": [7,0],
+	"HOUSE": [7,0]
+};
+
+var worldTileByLetter = {
+	"r": "RIVER_UP_DOWN",
+	"s": "RIVER_UP_RIGHT",
+	"t": "RIVER_RIGHT_DOWN",
+	"u": "RIVER_DOWN_LEFT",
+	"v": "RIVER_LEFT_UP",
+	"l": "MOUTAIN_BLANK",
+	"m": "MOUTAIN_BLACK",
+	"n": "MOUTAIN_GREY",
+	"p": "MOUTAIN_RED",
+	"q": "MOUTAIN_PURPLE",
+	"w": "WALL_DOOR_UP_DOWN",
+	"x": "WALL_DOOR_LEFT_RIGHT",
+	"y": "WALL_UP_DOWN",
+	"z": "WALL_LEFT_RIGHT",
+	"f": "FOREST",
+	"h": "HOUSE"
+};
+
+var mapFileName = "";
+
 function start(){
 	console.log("start - IN");
-	context.fillStyle = "rgb(38,127,0)";
-	context.fillRect(0,0,800,600);
+	context.fillStyle = "rgb(117,204,128)";
+	context.imageSmoothingEnabled = false;
+	context.fillRect(0,0,618,490);
+	var worldSprites = new Image();
+	worldSprites.src = "dd-world.png";
+
 	
-	//new Color(117, 204, 128);
-	
-	
+	for (var i=0;i<worldWidthByTile;i++){
+		for (var j=0;j<worldHeightByTile;j++){
+			context.drawImage(worldSprites,8,16,worldTileWidth,worldTileHeight,5+i*worldTileWidth*worldZoom,74+j*worldTileHeight*worldZoom,worldZoom*worldTileWidth,worldTileHeight*worldZoom);
+		}
+	}
 	
 };
+
