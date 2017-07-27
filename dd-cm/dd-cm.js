@@ -38,6 +38,7 @@ var worldTileByLetter = {
 	"l": "MOUTAIN_BLANK",
 	"m": "MOUTAIN_BLACK",
 	"n": "MOUTAIN_GREY",
+	"o": "MOUTAIN_BLUE",
 	"p": "MOUTAIN_RED",
 	"q": "MOUTAIN_PURPLE",
 	"w": "WALL_DOOR_UP_DOWN",
@@ -45,7 +46,8 @@ var worldTileByLetter = {
 	"y": "WALL_UP_DOWN",
 	"z": "WALL_LEFT_RIGHT",
 	"f": "FOREST",
-	"h": "HOUSE"
+	"h": "HOUSE",
+	" ": "EMPTY"
 };
 
 var mapFileName = "";
@@ -61,7 +63,23 @@ function start(){
 	
 	for (var i=0;i<worldWidthByTile;i++){
 		for (var j=0;j<worldHeightByTile;j++){
-			context.drawImage(worldSprites,8,16,worldTileWidth,worldTileHeight,5+i*worldTileWidth*worldZoom,74+j*worldTileHeight*worldZoom,worldZoom*worldTileWidth,worldTileHeight*worldZoom);
+			var character = worldMapData.tiles.charAt(j*19+i);
+			console.log("start: char=\""+character+"\"");
+			var worldTileName = worldTileByLetter[""+character];
+			console.log("start: char=\""+character+"\" worldTileName="+worldTileName);
+			var spriteToShowCoordinates = worldSpritesCoordinatesByName[""+worldTileName];
+			console.log("start: char=\""+character+"\" worldTileName="+worldTileName+" spriteToShowCoordinates="+spriteToShowCoordinates[0]+","+spriteToShowCoordinates[1]);
+			context.drawImage(
+				worldSprites,
+				spriteToShowCoordinates[0]*worldTileWidth,
+				spriteToShowCoordinates[1]*worldTileHeight,
+				worldTileWidth,
+				worldTileHeight,
+				5+i*worldTileWidth*worldZoom,
+				74+j*worldTileHeight*worldZoom,
+				worldZoom*worldTileWidth,
+				worldTileHeight*worldZoom
+			);
 		}
 	}
 	
