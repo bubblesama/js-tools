@@ -51,37 +51,48 @@ var worldTileByLetter = {
 };
 
 var mapFileName = "";
+var worldSprites; = new Image();
+
+var game = {};
+game.draw = function(){
+	console.log("game.draw IN");
+	for (var i=0;i<worldWidthByTile;i++){
+		for (var j=0;j<worldHeightByTile;j++){
+			var character = worldMapData.tiles.charAt(j*19+i);
+			//console.log("start: char=\""+character+"\"");
+			var worldTileName = worldTileByLetter[""+character];
+			//console.log("start: char=\""+character+"\" worldTileName="+worldTileName);
+			var spriteToShowCoordinates = worldSpritesCoordinatesByName[""+worldTileName];
+			//console.log("start: char=\""+character+"\" worldTileName="+worldTileName+" spriteToShowCoordinates="+spriteToShowCoordinates[0]+","+spriteToShowCoordinates[1]);
+			context.drawImage(
+				worldSprites,
+				spriteToShowCoordinates[0]*worldTileWidth,
+				spriteToShowCoordinates[1]*worldTileHeight,
+				worldTileWidth,
+				worldTileHeight,
+				5+i*worldTileWidth*worldZoom,
+				74+j*worldTileHeight*worldZoom,
+				worldZoom*worldTileWidth,
+				worldTileHeight*worldZoom
+			);
+		}
+	}
+}
 
 function start(){
-	//console.log("start - IN");
+	//graphical context
 	context.fillStyle = "rgb(117,204,128)";
 	context.imageSmoothingEnabled = false;
 	context.fillRect(0,0,618,490);
-	var worldSprites = new Image();
+	worldSprites; = new Image();
 	worldSprites.src = "dd-world.png";
 	worldSprites.onload = function(){
-		for (var i=0;i<worldWidthByTile;i++){
-			for (var j=0;j<worldHeightByTile;j++){
-				var character = worldMapData.tiles.charAt(j*19+i);
-				//console.log("start: char=\""+character+"\"");
-				var worldTileName = worldTileByLetter[""+character];
-				//console.log("start: char=\""+character+"\" worldTileName="+worldTileName);
-				var spriteToShowCoordinates = worldSpritesCoordinatesByName[""+worldTileName];
-				//console.log("start: char=\""+character+"\" worldTileName="+worldTileName+" spriteToShowCoordinates="+spriteToShowCoordinates[0]+","+spriteToShowCoordinates[1]);
-				context.drawImage(
-					worldSprites,
-					spriteToShowCoordinates[0]*worldTileWidth,
-					spriteToShowCoordinates[1]*worldTileHeight,
-					worldTileWidth,
-					worldTileHeight,
-					5+i*worldTileWidth*worldZoom,
-					74+j*worldTileHeight*worldZoom,
-					worldZoom*worldTileWidth,
-					worldTileHeight*worldZoom
-				);
-			}
-		}
+		game.draw();
 	};
 
 };
+
+
+
+
 

@@ -2,13 +2,15 @@ suivi de DD Cloudy Moutain en HTML
 
 liste des taches
 - POCs
- - intégrer une feuille de sprites
+ - x intégrer une feuille de sprites
  - intégrer des appels de touches
- - intégrer des fichiers de données
+ - x intégrer des fichiers de données
+ - boucle de jeu (update,draw,repeat)
 - mecaniques
  - map
-  - génération d'une carte à partir des donnees
+  - x génération d'une carte à partir des donnees
   - déplacement sur la map
+  - affichage partiel de la map (montagnes voilees)
   - entree dans un donjon
  - donjon
   - génération de donjons aléatoires
