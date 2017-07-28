@@ -51,7 +51,7 @@ var worldTileByLetter = {
 };
 
 var mapFileName = "";
-var worldSprites; = new Image();
+var worldSprites;
 
 var game = {};
 game.draw = function(){
@@ -84,12 +84,12 @@ function start(){
 	context.fillStyle = "rgb(117,204,128)";
 	context.imageSmoothingEnabled = false;
 	context.fillRect(0,0,618,490);
-	worldSprites; = new Image();
+	worldSprites = new Image();
 	worldSprites.src = "dd-world.png";
+
 	worldSprites.onload = function(){
 		game.draw();
 	};
-
 };
 
 
