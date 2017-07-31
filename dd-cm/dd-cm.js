@@ -7,6 +7,27 @@ const worldTileHeight = 8;
 const worldTileWidth = 8;
 const worldZoom = 4;
 
+
+//******************* CLASSES **********************************************************
+
+
+class WorldTile {
+
+	constructor(type,i,j){
+		this.i = i;
+		this.j = j;
+		this.type = type;
+	}
+
+
+};
+
+
+
+
+//******************* fin CLASSES *******************************************************
+
+
 var worldSpritesCoordinatesByName = {
 	"EMPTY": [7,0],
 	"RIVER_UP_DOWN": [4,2],
@@ -50,8 +71,11 @@ var worldTileByLetter = {
 	" ": "EMPTY"
 };
 
-var mapFileName = "";
+
+//global variables
+var worldMap;
 var worldSprites;
+
 
 var game = {};
 game.ticker = 0;
@@ -59,7 +83,7 @@ game.lastFpsCountDate = Date.now();
 game.fps = 0;
 
 game.draw = function(){
-	console.log("game.draw IN");
+	//console.log("game.draw IN");
 	for (var i=0;i<worldWidthByTile;i++){
 		for (var j=0;j<worldHeightByTile;j++){
 			var character = worldMapData.tiles.charAt(j*19+i);
@@ -94,11 +118,26 @@ game.update = function(){
 	}
 };
 
+//************************************ INIT ***********************************
 function start(){
 	//graphical context
 	context.fillStyle = "rgb(117,204,128)";
 	context.imageSmoothingEnabled = false;
 	context.fillRect(0,0,618,490);
+	//parsing world map
+	worldMap = new Array(worldMapData.width);
+	for (var i=0;i<worldMapData.width;i++){
+		worldMap[i]= new Array(worldMapData.height);
+		for (var j=0;j<worldMapData.height;j++){
+			worldMap[i][j] = 
+				new WorldTile(
+					worldTileByLetter[""+(worldMapData.tiles.charAt(j*worldMapData.width+i))],
+					i,
+					j
+			);
+		}
+	}
+	//ressources loading
 	worldSprites = new Image();
 	worldSprites.src = "dd-world.png";
 	worldSprites.onload = function(){
@@ -113,4 +152,11 @@ function mainLoop() {
 	game.draw();
 	requestAnimationFrame(mainLoop);
 }
+
+
+
+
+
+
+
 
