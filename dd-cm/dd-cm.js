@@ -54,6 +54,10 @@ var mapFileName = "";
 var worldSprites;
 
 var game = {};
+game.ticker = 0;
+game.lastFpsCountDate = Date.now();
+game.fps = 0;
+
 game.draw = function(){
 	console.log("game.draw IN");
 	for (var i=0;i<worldWidthByTile;i++){
@@ -75,9 +79,20 @@ game.draw = function(){
 				worldZoom*worldTileWidth,
 				worldTileHeight*worldZoom
 			);
+			context.fillText("FPS: "+this.fps,10,90);
 		}
 	}
 }
+
+game.update = function(){
+	if (Date.now()-this.lastFpsCountDate > 1000){
+		this.lastFpsCountDate = Date.now();
+		this.fps = this.ticker;
+		this.ticker = 0;
+	}else{
+		this.ticker++;
+	}
+};
 
 function start(){
 	//graphical context
@@ -86,13 +101,16 @@ function start(){
 	context.fillRect(0,0,618,490);
 	worldSprites = new Image();
 	worldSprites.src = "dd-world.png";
-
 	worldSprites.onload = function(){
-		game.draw();
+		requestAnimationFrame(mainLoop)
 	};
 };
 
 
 
-
+function mainLoop() {
+	game.update();
+	game.draw();
+	requestAnimationFrame(mainLoop);
+}
 
