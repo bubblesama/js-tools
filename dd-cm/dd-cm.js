@@ -1,11 +1,6 @@
 var canvas = document.getElementById("canvas");
 var context = canvas.getContext("2d");
 
-const worldTileHeight = 8;
-const worldTileWidth = 8;
-const worldZoom = 4;
-
-
 //******************* CLASSES **********************************************************
 
 
@@ -52,16 +47,6 @@ var worldSpritesCoordinatesByName = {
 	"HOUSE": [2,1]
 };
 
-var player = {
-	lives: 3,
-	world: {
-		i: worldMapData.start.i,
-		j: worldMapData.start.j
-	}
-};
-
-
-
 var worldTileByLetter = {
 	"r": "RIVER_UP_DOWN",
 	"s": "RIVER_UP_RIGHT",
@@ -83,6 +68,25 @@ var worldTileByLetter = {
 	" ": "EMPTY"
 };
 
+var graphical = {
+	world: {
+		tile: {
+			height: 8,
+			width: 8
+		},
+		zoom: 4
+	}
+};
+
+var model = {
+	player:  {
+		lives: 3,
+		world: {
+			i: worldMapData.start.i,
+			j: worldMapData.start.j
+		}
+	}
+};
 
 //global variables
 var worldMap;
@@ -102,30 +106,30 @@ game.draw = function(){
 			var spriteToShowCoordinates = worldMap[i][j].getTileToShowCoordinates();
 			context.drawImage(
 				worldSprites,
-				spriteToShowCoordinates[0]*worldTileWidth,
-				spriteToShowCoordinates[1]*worldTileHeight,
-				worldTileWidth,
-				worldTileHeight,
-				5+i*worldTileWidth*worldZoom,
-				74+j*worldTileHeight*worldZoom,
-				worldZoom*worldTileWidth,
-				worldTileHeight*worldZoom
+				spriteToShowCoordinates[0]*graphical.world.tile.width,
+				spriteToShowCoordinates[1]*graphical.world.tile.height,
+				graphical.world.tile.width,
+				graphical.world.tile.height,
+				5+i*graphical.world.tile.width*graphical.world.zoom,
+				74+j*graphical.world.tile.height*graphical.world.zoom,
+				graphical.world.tile.width*graphical.world.zoom,
+				graphical.world.tile.height*graphical.world.zoom
 			);
 			
 		}
 	}
 	//player
-	for (var i=0;i<player.lives;i++){
+	for (var i=0;i<model.player.lives;i++){
 		context.drawImage(
 			worldSprites,
-			9*worldTileWidth,
-			i*worldTileHeight,
-			worldTileWidth,
-			worldTileHeight,
-			5+player.world.i*worldTileWidth*worldZoom,
-			74+player.world.j*worldTileHeight*worldZoom,
-			worldZoom*worldTileWidth,
-			worldTileHeight*worldZoom
+			9*graphical.world.tile.width,
+			i*graphical.world.tile.height,
+			graphical.world.tile.width,
+			graphical.world.tile.height,
+			5+model.player.world.i*graphical.world.tile.width*graphical.world.zoom,
+			74+model.player.world.j*graphical.world.tile.height*graphical.world.zoom,
+			graphical.world.tile.width*graphical.world.zoom,
+			graphical.world.tile.height*graphical.world.zoom
 		);
 	}
 	
