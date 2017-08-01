@@ -1,6 +1,7 @@
 var worldMapData= {
 	width: 19,
 	height: 11,
+	start: {i:0, j:5},
 	tiles :
 " nllltv  y         "+
 " lnltvlo w  nq  f  "+

@@ -52,6 +52,16 @@ var worldSpritesCoordinatesByName = {
 	"HOUSE": [2,1]
 };
 
+var player = {
+	lives: 3,
+	world: {
+		i: worldMapData.start.i,
+		j: worldMapData.start.j
+	}
+};
+
+
+
 var worldTileByLetter = {
 	"r": "RIVER_UP_DOWN",
 	"s": "RIVER_UP_RIGHT",
@@ -86,6 +96,7 @@ game.fps = 0;
 
 game.draw = function(){
 	//console.log("game.draw IN");
+	//map
 	for (var i=0;i<worldMapData.width;i++){
 		for (var j=0;j<worldMapData.height;j++){
 			var spriteToShowCoordinates = worldMap[i][j].getTileToShowCoordinates();
@@ -100,9 +111,25 @@ game.draw = function(){
 				worldZoom*worldTileWidth,
 				worldTileHeight*worldZoom
 			);
-			context.fillText("FPS: "+this.fps,10,90);
+			
 		}
 	}
+	//player
+	for (var i=0;i<player.lives;i++){
+		context.drawImage(
+			worldSprites,
+			9*worldTileWidth,
+			i*worldTileHeight,
+			worldTileWidth,
+			worldTileHeight,
+			5+player.world.i*worldTileWidth*worldZoom,
+			74+player.world.j*worldTileHeight*worldZoom,
+			worldZoom*worldTileWidth,
+			worldTileHeight*worldZoom
+		);
+	}
+	
+	context.fillText("FPS: "+this.fps,10,90);
 }
 
 game.update = function(){
