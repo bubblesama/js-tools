@@ -74,7 +74,14 @@ var graphical = {
 			height: 8,
 			width: 8
 		},
-		zoom: 4
+		zoom: 4,
+		playerBlink: {
+			shown : true,
+			last: Date.now(),
+			delay: 500
+			
+		}
+		
 	}
 };
 
@@ -119,24 +126,27 @@ game.draw = function(){
 		}
 	}
 	//player
-	for (var i=0;i<model.player.lives;i++){
-		context.drawImage(
-			worldSprites,
-			9*graphical.world.tile.width,
-			i*graphical.world.tile.height,
-			graphical.world.tile.width,
-			graphical.world.tile.height,
-			5+model.player.world.i*graphical.world.tile.width*graphical.world.zoom,
-			74+model.player.world.j*graphical.world.tile.height*graphical.world.zoom,
-			graphical.world.tile.width*graphical.world.zoom,
-			graphical.world.tile.height*graphical.world.zoom
-		);
+	if (graphical.world.playerBlink.shown){
+		for (var i=0;i<model.player.lives;i++){
+			context.drawImage(
+				worldSprites,
+				9*graphical.world.tile.width,
+				i*graphical.world.tile.height,
+				graphical.world.tile.width,
+				graphical.world.tile.height,
+				5+model.player.world.i*graphical.world.tile.width*graphical.world.zoom,
+				74+model.player.world.j*graphical.world.tile.height*graphical.world.zoom,
+				graphical.world.tile.width*graphical.world.zoom,
+				graphical.world.tile.height*graphical.world.zoom
+			);
+		}
 	}
-	
 	context.fillText("FPS: "+this.fps,10,90);
 }
 
 game.update = function(){
+	
+	// fps
 	if (Date.now()-this.lastFpsCountDate > 1000){
 		this.lastFpsCountDate = Date.now();
 		this.fps = this.ticker;
@@ -144,6 +154,12 @@ game.update = function(){
 	}else{
 		this.ticker++;
 	}
+	// graphical
+		if (Date.now()-graphical.world.playerBlink.last > graphical.world.playerBlink.delay){
+			graphical.world.playerBlink.shown = !graphical.world.playerBlink.shown;
+			graphical.world.playerBlink.last = Date.now();
+		}
+
 };
 
 //************************************ INIT ***********************************
