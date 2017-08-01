@@ -1,8 +1,6 @@
 var canvas = document.getElementById("canvas");
 var context = canvas.getContext("2d");
 
-const worldHeightByTile = 11;
-const worldWidthByTile = 19;
 const worldTileHeight = 8;
 const worldTileWidth = 8;
 const worldZoom = 4;
@@ -17,13 +15,17 @@ class WorldTile {
 		this.i = i;
 		this.j = j;
 		this.type = type;
+		this.discovered = false;
 	}
 
-
+	getTileToShowCoordinates(){
+		if (!this.discovered && (this.type == "MOUTAIN_GREY" || this.type == "MOUTAIN_RED" || this.type == "MOUTAIN_BLUE" ||this.type == "MOUTAIN_PURPLE")){
+			return worldSpritesCoordinatesByName["MOUTAIN_BLACK"];
+		}else{
+			return worldSpritesCoordinatesByName[this.type];
+		}
+	}
 };
-
-
-
 
 //******************* fin CLASSES *******************************************************
 
@@ -84,14 +86,9 @@ game.fps = 0;
 
 game.draw = function(){
 	//console.log("game.draw IN");
-	for (var i=0;i<worldWidthByTile;i++){
-		for (var j=0;j<worldHeightByTile;j++){
-			var character = worldMapData.tiles.charAt(j*19+i);
-			//console.log("start: char=\""+character+"\"");
-			var worldTileName = worldTileByLetter[""+character];
-			//console.log("start: char=\""+character+"\" worldTileName="+worldTileName);
-			var spriteToShowCoordinates = worldSpritesCoordinatesByName[""+worldTileName];
-			//console.log("start: char=\""+character+"\" worldTileName="+worldTileName+" spriteToShowCoordinates="+spriteToShowCoordinates[0]+","+spriteToShowCoordinates[1]);
+	for (var i=0;i<worldMapData.width;i++){
+		for (var j=0;j<worldMapData.height;j++){
+			var spriteToShowCoordinates = worldMap[i][j].getTileToShowCoordinates();
 			context.drawImage(
 				worldSprites,
 				spriteToShowCoordinates[0]*worldTileWidth,
