@@ -1,6 +1,33 @@
 var canvas = document.getElementById("canvas");
 var context = canvas.getContext("2d");
 
+//******* init control *******
+var keyMap ={};
+
+document.addEventListener('keydown', (event) => {
+	keyMap[event.key] = true;
+  /*
+  if (keyName === 'Control') {
+    // not alert when only Control key is pressed.
+    return;
+  }
+
+  if (event.ctrlKey) {
+    // Even though event.key is not 'Control' (i.e. 'a' is pressed),
+    // event.ctrlKey may be true if Ctrl key is pressed at the time.
+    alert(`Combination of ctrlKey + ${keyName}`);
+  } else {
+    alert(`Key pressed ${keyName}`);
+  }
+  
+  */
+}, false);
+
+document.addEventListener('keyup', (event) => {
+	keyMap[event.key] = false;
+}, false);
+
+
 //******************* CLASSES **********************************************************
 
 
@@ -23,7 +50,6 @@ class WorldTile {
 };
 
 //******************* fin CLASSES *******************************************************
-
 
 var worldSpritesCoordinatesByName = {
 	"EMPTY": [7,0],
@@ -86,19 +112,58 @@ var graphical = {
 };
 
 var model = {
+	refresh : {
+		delay: 100,
+		last: Date.now()
+	},
 	player:  {
 		lives: 3,
 		world: {
 			i: worldMapData.start.i,
 			j: worldMapData.start.j
+		},
+		inventory:{
+			arrow: 4,
+			boat: 0,
+			axe: 0,
+			key: 0,
+			crown: 0
+		},
+		isPossessing: function(itemName){
+			return (this.inventory[""+itemName] != null && this.inventory[""+itemName] > 0);
+		},
+		moveIfPossible(deltaI, deltaJ){
+			if (
+				(this.world.i+deltaI >= 0) && 
+				(this.world.j+deltaJ >= 0) &&
+				(this.world.i+deltaI < worldMapData.width) &&
+				(this.world.j+deltaJ < worldMapData.height) 
+			){
+				this.world.i = this.world.i+deltaI;
+				this.world.j = this.world.j+deltaJ;
+			}
 		}
-	}
+	},
+	update: function(){
+		//console.log("model.update IN");
+		if (keyMap.d){
+			this.player.moveIfPossible(1,0);
+		}
+		if (keyMap.q){
+			this.player.moveIfPossible(-1,0);
+		}
+		if (keyMap.z){
+			this.player.moveIfPossible(0,-1);
+		}
+		if (keyMap.s){
+			this.player.moveIfPossible(0,1);
+		}
+	},
 };
 
 //global variables
 var worldMap;
 var worldSprites;
-
 
 var game = {};
 game.ticker = 0;
@@ -145,6 +210,11 @@ game.draw = function(){
 }
 
 game.update = function(){
+	//model
+	if (Date.now()-model.refresh.last > model.refresh.delay){
+		model.refresh.last = Date.now();
+		model.update();
+	}
 	
 	// fps
 	if (Date.now()-this.lastFpsCountDate > 1000){
@@ -155,10 +225,10 @@ game.update = function(){
 		this.ticker++;
 	}
 	// graphical
-		if (Date.now()-graphical.world.playerBlink.last > graphical.world.playerBlink.delay){
-			graphical.world.playerBlink.shown = !graphical.world.playerBlink.shown;
-			graphical.world.playerBlink.last = Date.now();
-		}
+	if (Date.now()-graphical.world.playerBlink.last > graphical.world.playerBlink.delay){
+		graphical.world.playerBlink.shown = !graphical.world.playerBlink.shown;
+		graphical.world.playerBlink.last = Date.now();
+	}
 
 };
 
