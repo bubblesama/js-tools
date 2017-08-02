@@ -141,7 +141,7 @@ var graphical = {
 		},
 		zoom: 4,
 		playerBlink: {
-			shown : true,
+			shown : true, 
 			last: Date.now(),
 			delay: 500
 		},
@@ -171,9 +171,9 @@ var model = {
 		},
 		inventory:{
 			arrow: 4,
-			boat: 1,
-			axe: 1,
-			key: 1,
+			boat: 0,
+			axe: 0,
+			key: 0,
 			crown: 0
 		},
 		isPossessing: function(itemName){
@@ -188,12 +188,10 @@ var model = {
 				(newI< worldMapData.width) &&
 				(newJ < worldMapData.height) 
 			){
-				//check des elements passable
 				if (worldMap[newI][newJ].isPassable(this)){
 					this.world.i = this.world.i+deltaI;
 					this.world.j = this.world.j+deltaJ;
 					//discovery
-					//TODO
 					for (var i=-1;i<2;i++){
 						for (var j=-1;j<2;j++){
 							var scannedI = this.world.i+i;
@@ -215,7 +213,6 @@ var model = {
 		}
 	},
 	update: function(){
-		//console.log("model.update IN");
 		if (keyMap.d){
 			this.player.moveIfPossible(1,0);
 		}
@@ -253,7 +250,6 @@ game.lastFpsCountDate = Date.now();
 game.fps = 0;
 
 game.draw = function(){
-	//console.log("game.draw IN");
 	//map
 	for (var i=0;i<worldMapData.width;i++){
 		for (var j=0;j<worldMapData.height;j++){
@@ -295,7 +291,6 @@ game.draw = function(){
 		2*graphical.world.tile.width*graphical.world.zoom,
 		graphical.world.tile.height*graphical.world.zoom
 	);
-	
 	//player
 	if (graphical.world.playerBlink.shown){
 		//item if necessary
@@ -406,18 +401,10 @@ function start(){
 	};
 };
 
-
-
 function mainLoop() {
 	game.update();
 	game.draw();
 	requestAnimationFrame(mainLoop);
 }
-
-
-
-
-
-
 
 
