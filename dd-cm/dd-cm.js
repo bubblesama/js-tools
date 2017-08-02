@@ -106,6 +106,11 @@ var graphical = {
 			last: Date.now(),
 			delay: 500
 			
+		},
+		clouds :{
+			state: 0,
+			last: Date.now(),
+			delay: 1200
 		}
 		
 	}
@@ -190,7 +195,7 @@ game.draw = function(){
 			
 		}
 	}
-
+	//moutain and clouds
 	context.drawImage(
 		worldSprites,
 		5*graphical.world.tile.width,
@@ -202,9 +207,17 @@ game.draw = function(){
 		2*graphical.world.tile.width*graphical.world.zoom,
 		2*graphical.world.tile.height*graphical.world.zoom
 	);
-	
-	
-	
+	context.drawImage(
+		worldSprites,
+		7*graphical.world.tile.width,
+		(1+graphical.world.clouds.state)*graphical.world.tile.height,
+		2*graphical.world.tile.width,
+		graphical.world.tile.height,
+		5+worldMapData.bossTopLeft.i*graphical.world.tile.width*graphical.world.zoom,
+		74+(worldMapData.bossTopLeft.j)*graphical.world.tile.height*graphical.world.zoom,
+		2*graphical.world.tile.width*graphical.world.zoom,
+		graphical.world.tile.height*graphical.world.zoom
+	);
 	//player
 	if (graphical.world.playerBlink.shown){
 		for (var i=0;i<model.player.lives;i++){
@@ -243,6 +256,10 @@ game.update = function(){
 	if (Date.now()-graphical.world.playerBlink.last > graphical.world.playerBlink.delay){
 		graphical.world.playerBlink.shown = !graphical.world.playerBlink.shown;
 		graphical.world.playerBlink.last = Date.now();
+	}
+	if (Date.now()-graphical.world.clouds.last > graphical.world.clouds.delay){
+		graphical.world.clouds.state = (graphical.world.clouds.state +1) %3
+		graphical.world.clouds.last = Date.now();
 	}
 
 };
