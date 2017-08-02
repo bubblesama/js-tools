@@ -47,6 +47,45 @@ class WorldTile {
 			return worldSpritesCoordinatesByName[this.type];
 		}
 	}
+
+	isPassable(player){
+		var result = false;
+		switch(this.type) {
+			case "EMPTY":
+			case "HOUSE":
+			case "MOUTAIN_GREY":
+			case "MOUTAIN_BLUE": 
+			case "MOUTAIN_RED": 
+			case "MOUTAIN_PURPLE":
+				result = true;
+				break;
+			case "RIVER_UP_DOWN":
+			case "RIVER_UP_DOWN": 
+			case "RIVER_UP_RIGHT":
+			case "RIVER_RIGHT_DOWN":
+			case "RIVER_DOWN_LEFT":
+			case "RIVER_LEFT_UP":
+				result =  player.isPossessing("boat");
+				break;
+			case "FOREST":
+				result =  player.isPossessing("axe");
+				break;
+			case "WALL_DOOR_UP_DOWN":
+			case "WALL_DOOR_LEFT_RIGHT":
+				result =  player.isPossessing("key");
+				break;
+			case "MOUTAIN_BLACK": 
+			case "MOUTAIN_BLANK":
+			case "WALL_UP_DOWN":
+			case "WALL_LEFT_RIGHT":
+				result = false;
+				break;
+			default:
+				result = true;
+		}
+		return result;
+	}
+
 };
 
 //******************* fin CLASSES *******************************************************
@@ -138,14 +177,21 @@ var model = {
 			return (this.inventory[""+itemName] != null && this.inventory[""+itemName] > 0);
 		},
 		moveIfPossible(deltaI, deltaJ){
+			var newI = this.world.i+deltaI;
+			var newJ = this.world.j+deltaJ;
 			if (
-				(this.world.i+deltaI >= 0) && 
-				(this.world.j+deltaJ >= 0) &&
-				(this.world.i+deltaI < worldMapData.width) &&
-				(this.world.j+deltaJ < worldMapData.height) 
+				(newI >= 0) && 
+				(newJ >= 0) &&
+				(newI< worldMapData.width) &&
+				(newJ < worldMapData.height) 
 			){
-				this.world.i = this.world.i+deltaI;
-				this.world.j = this.world.j+deltaJ;
+				//check des elements passable
+				if (worldMap[newI][newJ].isPassable(this)){
+					this.world.i = this.world.i+deltaI;
+					this.world.j = this.world.j+deltaJ;
+				}else{
+					console.log("DBG player#moveIfPossible unpassable");
+				}
 			}
 		}
 	},
@@ -162,6 +208,19 @@ var model = {
 		}
 		if (keyMap.s){
 			this.player.moveIfPossible(0,1);
+		}
+		
+		if (keyMap.a){
+			this.player.moveIfPossible(-1,-1);
+		}
+		if (keyMap.e){
+			this.player.moveIfPossible(1,-1);
+		}
+		if (keyMap.c){
+			this.player.moveIfPossible(1,1);
+		}
+		if (keyMap.w){
+			this.player.moveIfPossible(-1,1);
 		}
 	},
 };
