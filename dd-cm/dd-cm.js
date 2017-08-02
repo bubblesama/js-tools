@@ -190,6 +190,21 @@ game.draw = function(){
 			
 		}
 	}
+
+	context.drawImage(
+		worldSprites,
+		5*graphical.world.tile.width,
+		1*graphical.world.tile.height,
+		2*graphical.world.tile.width,
+		2*graphical.world.tile.height,
+		5+worldMapData.bossTopLeft.i*graphical.world.tile.width*graphical.world.zoom,
+		74+worldMapData.bossTopLeft.j*graphical.world.tile.height*graphical.world.zoom,
+		2*graphical.world.tile.width*graphical.world.zoom,
+		2*graphical.world.tile.height*graphical.world.zoom
+	);
+	
+	
+	
 	//player
 	if (graphical.world.playerBlink.shown){
 		for (var i=0;i<model.player.lives;i++){
