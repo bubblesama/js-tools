@@ -144,14 +144,17 @@ var graphical = {
 			shown : true,
 			last: Date.now(),
 			delay: 500
-			
 		},
 		clouds :{
 			state: 0,
 			last: Date.now(),
 			delay: 1200
+		},
+		items:{
+			boat: {i:5,j:3},
+			axe: {i:4,j:3},
+			key: {i:6,j:3}
 		}
-		
 	}
 };
 
@@ -160,7 +163,7 @@ var model = {
 		delay: 100,
 		last: Date.now()
 	},
-	player:  {
+	player: {
 		lives: 3,
 		world: {
 			i: worldMapData.start.i,
@@ -168,9 +171,9 @@ var model = {
 		},
 		inventory:{
 			arrow: 4,
-			boat: 0,
-			axe: 0,
-			key: 0,
+			boat: 1,
+			axe: 1,
+			key: 1,
 			crown: 0
 		},
 		isPossessing: function(itemName){
@@ -189,6 +192,22 @@ var model = {
 				if (worldMap[newI][newJ].isPassable(this)){
 					this.world.i = this.world.i+deltaI;
 					this.world.j = this.world.j+deltaJ;
+					//discovery
+					//TODO
+					for (var i=-1;i<2;i++){
+						for (var j=-1;j<2;j++){
+							var scannedI = this.world.i+i;
+							var scannedJ = this.world.j+j;
+							if (
+								(scannedI >= 0) && 
+								(scannedJ >= 0) &&
+								(scannedI< worldMapData.width) &&
+								(scannedJ < worldMapData.height) 
+							){
+								worldMap[scannedI][scannedJ].discovered = true;
+							}
+						}
+					}
 				}else{
 					console.log("DBG player#moveIfPossible unpassable");
 				}
@@ -206,10 +225,9 @@ var model = {
 		if (keyMap.z){
 			this.player.moveIfPossible(0,-1);
 		}
-		if (keyMap.s){
+		if (keyMap.x){
 			this.player.moveIfPossible(0,1);
 		}
-		
 		if (keyMap.a){
 			this.player.moveIfPossible(-1,-1);
 		}
@@ -277,8 +295,46 @@ game.draw = function(){
 		2*graphical.world.tile.width*graphical.world.zoom,
 		graphical.world.tile.height*graphical.world.zoom
 	);
+	
 	//player
 	if (graphical.world.playerBlink.shown){
+		//item if necessary
+		var shouldDrawItem = false;
+		var item = "";
+		switch (worldMap[model.player.world.i][model.player.world.j].type){
+			case "FOREST":
+				shouldDrawItem = true;
+				item = "axe";
+				break;
+			case "RIVER_UP_DOWN":
+			case "RIVER_UP_DOWN": 
+			case "RIVER_UP_RIGHT":
+			case "RIVER_RIGHT_DOWN":
+			case "RIVER_DOWN_LEFT":
+			case "RIVER_LEFT_UP":
+				shouldDrawItem = true;
+				item = "boat";
+				break;
+			case "WALL_DOOR_UP_DOWN":
+			case "WALL_DOOR_LEFT_RIGHT":
+				shouldDrawItem = true;
+				item = "key";
+				break;
+		}
+		if (shouldDrawItem){
+			context.drawImage(
+				worldSprites,
+				graphical.world.items[""+item].i*graphical.world.tile.width,
+				graphical.world.items[""+item].j*graphical.world.tile.height,
+				graphical.world.tile.width,
+				graphical.world.tile.height,
+				5+model.player.world.i*graphical.world.tile.width*graphical.world.zoom,
+				74+model.player.world.j*graphical.world.tile.height*graphical.world.zoom,
+				graphical.world.tile.width*graphical.world.zoom,
+				graphical.world.tile.height*graphical.world.zoom
+			);
+		}
+		// player with lives
 		for (var i=0;i<model.player.lives;i++){
 			context.drawImage(
 				worldSprites,

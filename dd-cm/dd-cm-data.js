@@ -4,10 +4,10 @@ var worldMapData= {
 	start: {i:0, j:5},
 	bossTopLeft: {i:16,j:4},
 	tiles :
-" nllltv  y         "+
-" lnltvlo w  nq  f  "+
+" nllltv  y       ff"+
+" lnltvlo w  nq  fff"+
 "  lnrlfl y llfffff "+
-"  ltv pllqpll      "+
+"  ltv pllqpll  fff "+
 "  lrnlronffoll     "+
 "h lr lsulf lnnl    "+
 "   l llrff  llln   "+
