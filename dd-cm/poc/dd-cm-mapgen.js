@@ -85,7 +85,7 @@ var graphical = {
 function generateMaze(){
 
 
-	for (test=9;test<20;test++){
+	for (test=10;test<11;test++){
 		var width = test;
 		var height = test;
 		
