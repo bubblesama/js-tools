@@ -84,13 +84,13 @@ var graphical = {
 
 function generateMaze(){
 
-
+	var tries = 0;
 	for (test=10;test<11;test++){
 		var width = test;
 		var height = test;
 		
 		var valid = false;
-		var tries = 0;
+		tries = 0;
 		var firstTry = Date.now();
 		
 		while ((tries == 0 || !valid) && (tries < 10000)){
@@ -160,11 +160,12 @@ function generateMaze(){
 			);
 		}
 	}
+	context.fillText("Tries: "+tries,300,300);
 
 }
 
 
-//get from the net
+//got it from the net, do the job
 function shuffle(array) {
 	//console.log("shuffle DEBUG in: array.length="+array.length);
 	var currentIndex = array.length, temporaryValue, randomIndex;
