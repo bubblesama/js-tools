@@ -2,6 +2,9 @@ var maze = {
 	bits: {
 		width: 3,
 		height: 3,
+		
+		
+		
 		list: {
 			top: {
 				i: 1,
@@ -68,4 +71,5 @@ var neighbours = [
 		j: 1,
 		check: "top"
 	}
-]; 
+];
+
