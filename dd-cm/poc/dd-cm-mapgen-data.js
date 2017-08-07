@@ -2,22 +2,37 @@ var maze = {
 	bits: {
 		width: 3,
 		height: 3,
-		
-		
-		
+		tiles :{
+			width: 9,
+			height: 9
+		},
 		list: {
 			top: {
 				i: 1,
-				available: {
+				availables: {
 					right: ["right","down","top"],
 					down: ["right","left","down"],
 					top: ["down"],
 					left: ["left","down","top"]
-				}
+				},
+				patterns: [
+					{
+						map: 	"111101111"+
+								"111000111"+
+								"111000111"+
+								"100000011"+
+								"000000011"+
+								"100000011"+
+								"111000111"+
+								"111000111"+
+								"111101111"
+					}
+				
+				]
 			},
 			down: {
 				i: 3,
-				available: {
+				availables: {
 					right: ["right","down","top"],
 					down: ["top"],
 					top: ["left","right","top"],
@@ -26,7 +41,7 @@ var maze = {
 			},
 			left: {
 				i: 2,
-				available: {
+				availables: {
 					right: ["right","down","top"],
 					down: ["right","left","down"],
 					top: ["right","left","top"],
@@ -35,7 +50,7 @@ var maze = {
 			},
 			right: {
 				i: 0,
-				available: {
+				availables: {
 					right: ["left"],
 					down: ["right","left","down"],
 					top: ["right","left","top"],
@@ -49,7 +64,9 @@ var maze = {
 		}
 	}
 };
-
+/*
+	setup for a tile's neighbour: delta i and j from the tile, and side to check on the tile to match the neighbour
+*/
 var neighbours = [
 	{
 		i: -1,

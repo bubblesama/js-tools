@@ -43,7 +43,7 @@ function generateMaze(){
 							var  sieved = [];
 							for (var p in potentials){
 								var potential = potentials[p];
-								if (maze.bits.list[neighbourTile].available[sideOfNeighbourToCheck].indexOf(potential) > -1){
+								if (maze.bits.list[neighbourTile].availables[sideOfNeighbourToCheck].indexOf(potential) > -1){
 									//console.log("DBG generateMaze: "+i+","+j+" checkI="+checkI+" checkJ="+checkJ+" is "+neighbourTile+" and should check availility for "+sideOfNeighbourToCheck+" so "+potential+" is not available");
 									sieved.push(potential);
 								}else{
