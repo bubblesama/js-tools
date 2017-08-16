@@ -59,7 +59,7 @@ var maze = {
 					down: ["right","left","down"],
 					top: ["right","left","top"],
 					left: ["right"]
-				}
+				},
 				patterns: [
 					{
 						map: 	"111111111"+
