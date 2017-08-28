@@ -3,7 +3,7 @@ var maze = {
 		width: 3,
 		height: 3,
 		tiles :{
-			width: 9,
+			width: 9, //number of tiles in a bit
 			height: 9
 		},
 		list: {
@@ -46,7 +46,7 @@ var maze = {
 								"100000011"+
 								"000000000"+
 								"100000011"+
-								"111000111"+
+								"110000011"+
 								"111000111"+
 								"111111111"
 					}
@@ -102,11 +102,15 @@ var maze = {
 		}
 	},
 	tiles: {
-		empty: {
-			i: 0
-		},
-		full: {
-			i: 1
+		width: 9,
+		height: 13,
+		types: {
+			empty: {
+				i: 0
+			},
+			full: {
+				i: 1
+			}
 		}
 	}
 };
