@@ -89,7 +89,7 @@ function generateMaze(){
 		for (var j=0;j<fullHeight;j++){
 			context.drawImage(
 				mazeSprites,
-				fullMaze[i][j]==0?0:maze.tiles.width,
+				fullMaze[i][j]*maze.tiles.width,
 				0,
 				maze.tiles.width,
 				maze.tiles.height,
