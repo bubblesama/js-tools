@@ -103,15 +103,7 @@ var maze = {
 	},
 	tiles: {
 		width: 9,
-		height: 13,
-		types: {
-			empty: {
-				i: 0
-			},
-			full: {
-				i: 1
-			}
-		}
+		height: 13
 	}
 };
 /*
