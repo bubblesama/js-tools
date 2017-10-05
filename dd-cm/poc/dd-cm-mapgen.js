@@ -136,9 +136,47 @@ function shuffle(array) {
 	return array;
 }
 
+
+// maze manipulations, bits flipping and rotation
+
+
+
+function rotateMinus90(squareMatrixString, matrixSize){
+	var result = "";
+	for (var j=0;j<matrixSize;j++){
+		for (var i=0;i<matrixSize;i++){
+			var sourceI = matrixSize-1-j;
+			var sourceJ = i;
+			var sourceVal = squareMatrixString.charAt(sourceJ*matrixSize+sourceI);
+			result += sourceVal
+		}
+	}
+	return result;
+};
+
+function test_rotateMinus90(){
+	var matrixSize = 9;
+	var matrixString =  "111101111"+
+						"111011111"+
+						"110111111"+
+						"100111111"+
+						"111111111"+
+						"111111111"+
+						"111111111"+
+						"111111111"+
+						"111111111";
+	var newMatrix = rotateMinus90(matrixString,matrixSize);
+	console.log("test_rotatePlus90");
+	for (var j=0;j<matrixSize;j++){
+		console.log(newMatrix.substring(j*matrixSize,(j+1)*matrixSize));
+	}
+
+}
+
 var tileSprites;
 var mazeSprites;
 function start(){
+	test_rotateMinus90();
 	//ressources loading
 	tileSprites = new Image();
 	tileSprites.src = "open.png";
@@ -150,3 +188,8 @@ function start(){
 		}
 	};
 };
+
+
+
+
+
