@@ -6,23 +6,6 @@ var graphical = {
 	zoom: 2
 };
 
-
-// pattern list for bits, generated from generateRotatedPatterns
-var availablePatternsMap = {
-	left: [],
-	right: [],
-	top: [],
-	down: []
-};
-
-// pattern type rotation for pattern generation
-var rotationChange = {
-	left: "down",
-	right: "top",
-	top: "left",
-	down: "right"
-};
-
 function generateMaze(){
 	var size = 6;
 	var tries = 0;
@@ -156,6 +139,22 @@ function shuffle(array) {
 
 
 // BEGIN - maze manipulations, bits flipping and rotation
+
+// pattern list for bits, generated from generateRotatedPatterns
+var availablePatternsMap = {
+	left: [],
+	right: [],
+	top: [],
+	down: []
+};
+
+// pattern type rotation for pattern generation
+var rotationChange = {
+	left: "down",
+	right: "top",
+	top: "left",
+	down: "right"
+};
 
 function generateRotatedPatterns(){
 	maze.bits.patterns.forEach(function(pattern) {
