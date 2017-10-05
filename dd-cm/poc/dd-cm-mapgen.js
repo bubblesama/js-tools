@@ -6,6 +6,23 @@ var graphical = {
 	zoom: 2
 };
 
+
+// pattern list for bits, generated from generateRotatedPatterns
+var availablePatternsMap = {
+	left: [],
+	right: [],
+	top: [],
+	down: []
+};
+
+// pattern type rotation for pattern generation
+var rotationChange = {
+	left: "down",
+	right: "top",
+	top: "left",
+	down: "right"
+};
+
 function generateMaze(){
 	var size = 6;
 	var tries = 0;
@@ -73,13 +90,14 @@ function generateMaze(){
 	}
 	for (var i=0;i<width;i++){
 		for (var j=0;j<height;j++){
-			//choose patterns: currently choose the only one
-			var bit = maze.bits.list[""+result[i][j]];
-			var pattern = bit.patterns[0];
+			//choose pattern map: currently choose the only one
+			var patternMap = availablePatternsMap[""+result[i][j]][0];
+			//var bit = maze.bits.list[""+result[i][j]];
+			//var pattern = bit.patterns[0];
 			//console.log("generateMaze pattern OK for i="+i+" and j="+j);
 			for (var m=0;m<maze.bits.tiles.width;m++){
 				for (var n=0;n<maze.bits.tiles.height;n++){
-					fullMaze[i*maze.bits.tiles.width+m][j*maze.bits.tiles.height+n]=pattern.map[m+n*maze.bits.tiles.width];
+					fullMaze[i*maze.bits.tiles.width+m][j*maze.bits.tiles.height+n]=patternMap[m+n*maze.bits.tiles.width];
 				}
 			}
 		}
@@ -137,9 +155,21 @@ function shuffle(array) {
 }
 
 
-// maze manipulations, bits flipping and rotation
+// BEGIN - maze manipulations, bits flipping and rotation
 
+function generateRotatedPatterns(){
+	maze.bits.patterns.forEach(function(pattern) {
+		availablePatternsMap[""+pattern.type].push(pattern.map);
+		var currentPatternMap = pattern.map;
+		var currentType	 = pattern.type;
+		for (var k=0; k<3;k++){
+			currentPatternMap = rotateMinus90(currentPatternMap,maze.bits.tiles.width);
+			currentType = rotationChange[""+currentType];
+			availablePatternsMap[""+currentType].push(currentPatternMap);
+		}
+	});
 
+};
 
 function rotateMinus90(squareMatrixString, matrixSize){
 	var result = "";
@@ -148,7 +178,7 @@ function rotateMinus90(squareMatrixString, matrixSize){
 			var sourceI = matrixSize-1-j;
 			var sourceJ = i;
 			var sourceVal = squareMatrixString.charAt(sourceJ*matrixSize+sourceI);
-			result += sourceVal
+			result += sourceVal;
 		}
 	}
 	return result;
@@ -173,9 +203,13 @@ function test_rotateMinus90(){
 
 }
 
+
+// END - maze manipulations, bits flipping and rotation
+
 var tileSprites;
 var mazeSprites;
 function start(){
+	generateRotatedPatterns();
 	test_rotateMinus90();
 	//ressources loading
 	tileSprites = new Image();
