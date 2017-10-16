@@ -74,7 +74,7 @@ function generateMaze(){
 	for (var i=0;i<width;i++){
 		for (var j=0;j<height;j++){
 			//choose pattern map: currently choose the only one
-			var patternMap = availablePatternsMap[""+result[i][j]][0];
+			var patternMap = availablePatternsMap[""+result[i][j]][Math.floor(Math.random() * availablePatternsMap[""+result[i][j]].length)];
 			//var bit = maze.bits.list[""+result[i][j]];
 			//var pattern = bit.patterns[0];
 			//console.log("generateMaze pattern OK for i="+i+" and j="+j);
