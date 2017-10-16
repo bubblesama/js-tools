@@ -218,7 +218,7 @@ function start(){
 	tileSprites.src = "open.png";
 	tileSprites.onload = function(){
 		mazeSprites = new Image();
-		mazeSprites.src = "maze.png";
+		mazeSprites.src = "dungeon.png";
 		mazeSprites.onload = function(){
 			generateMaze();
 		}
