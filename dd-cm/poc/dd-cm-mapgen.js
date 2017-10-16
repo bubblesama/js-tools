@@ -170,6 +170,8 @@ function generateRotatedPatterns(){
 
 };
 
+var rotationMapping = [0,1,5,2,3,4];
+
 function rotateMinus90(squareMatrixString, matrixSize){
 	var result = "";
 	for (var j=0;j<matrixSize;j++){
@@ -177,7 +179,8 @@ function rotateMinus90(squareMatrixString, matrixSize){
 			var sourceI = matrixSize-1-j;
 			var sourceJ = i;
 			var sourceVal = squareMatrixString.charAt(sourceJ*matrixSize+sourceI);
-			result += sourceVal;
+			var resultVal = rotationMapping[sourceVal];
+			result += resultVal;
 		}
 	}
 	return result;
@@ -209,7 +212,7 @@ var tileSprites;
 var mazeSprites;
 function start(){
 	generateRotatedPatterns();
-	test_rotateMinus90();
+	//test_rotateMinus90();
 	//ressources loading
 	tileSprites = new Image();
 	tileSprites.src = "open.png";
