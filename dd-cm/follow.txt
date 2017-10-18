@@ -14,7 +14,7 @@ liste des taches
   - x decouverte de la map
   - entree dans un donjon
  - donjon
-  - génération de donjons aléatoires
+  - x génération de donjons aléatoires
   - remplissage des donjons
   - heros
    - sprite des heros
