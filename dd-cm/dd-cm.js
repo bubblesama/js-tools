@@ -42,9 +42,9 @@ class WorldTile {
 
 	getTileToShowCoordinates(){
 		if (!this.discovered && (this.type == "MOUTAIN_GREY" || this.type == "MOUTAIN_RED" || this.type == "MOUTAIN_BLUE" ||this.type == "MOUTAIN_PURPLE")){
-			return worldSpritesCoordinatesByName["MOUTAIN_BLACK"];
+			return WorldTile.worldSpritesCoordinatesByName()["MOUTAIN_BLACK"];
 		}else{
-			return worldSpritesCoordinatesByName[this.type];
+			return WorldTile.worldSpritesCoordinatesByName()[this.type];
 		}
 	}
 
@@ -85,32 +85,36 @@ class WorldTile {
 		}
 		return result;
 	}
-
+	
+	static worldSpritesCoordinatesByName() {
+		return {
+			"EMPTY": [7,0],
+			"RIVER_UP_DOWN": [4,2],
+			"RIVER_UP_RIGHT": [0,2],
+			"RIVER_RIGHT_DOWN": [1,2],
+			"RIVER_DOWN_LEFT": [2,2],
+			"RIVER_LEFT_UP": [3,2],
+			"MOUTAIN_BLACK": [0,0],
+			"MOUTAIN_GREY": [2,0],
+			"MOUTAIN_BLUE": [3,0],
+			"MOUTAIN_RED": [4,0],
+			"MOUTAIN_PURPLE": [5,0],
+			"MOUTAIN_BLANK": [1,0],
+			"MOUTAIN_BIG": [5,1],
+			"WALL_DOOR_UP_DOWN": [0,3],
+			"WALL_DOOR_LEFT_RIGHT": [1,3],
+			"WALL_UP_DOWN": [3,3],
+			"WALL_LEFT_RIGHT": [2,3],
+			"FOREST": [0,1],
+			"HOUSE": [2,1]
+		}
+	}
+	
 };
 
 //******************* fin CLASSES *******************************************************
 
-var worldSpritesCoordinatesByName = {
-	"EMPTY": [7,0],
-	"RIVER_UP_DOWN": [4,2],
-	"RIVER_UP_RIGHT": [0,2],
-	"RIVER_RIGHT_DOWN": [1,2],
-	"RIVER_DOWN_LEFT": [2,2],
-	"RIVER_LEFT_UP": [3,2],
-	"MOUTAIN_BLACK": [0,0],
-	"MOUTAIN_GREY": [2,0],
-	"MOUTAIN_BLUE": [3,0],
-	"MOUTAIN_RED": [4,0],
-	"MOUTAIN_PURPLE": [5,0],
-	"MOUTAIN_BLANK": [1,0],
-	"MOUTAIN_BIG": [5,1],
-	"WALL_DOOR_UP_DOWN": [0,3],
-	"WALL_DOOR_LEFT_RIGHT": [1,3],
-	"WALL_UP_DOWN": [3,3],
-	"WALL_LEFT_RIGHT": [2,3],
-	"FOREST": [0,1],
-	"HOUSE": [2,1]
-};
+
 
 var worldTileByLetter = {
 	"r": "RIVER_UP_DOWN",

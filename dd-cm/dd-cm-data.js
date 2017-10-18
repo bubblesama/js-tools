@@ -154,7 +154,7 @@ var mazeGeneratorConfiguration = {
 			j: 1,
 			check: "top"
 		}
-	];
+	]
 };
 
 
