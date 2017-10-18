@@ -48,6 +48,37 @@ class WorldTile {
 		}
 	}
 
+	isDungeon(){
+		var result = false;
+		switch(this.type) {
+			case "MOUTAIN_GREY":
+			case "MOUTAIN_BLUE": 
+			case "MOUTAIN_RED": 
+			case "MOUTAIN_PURPLE":
+				result = true;
+				break;
+			case "EMPTY":
+			case "HOUSE":
+			case "RIVER_UP_DOWN":
+			case "RIVER_UP_DOWN": 
+			case "RIVER_UP_RIGHT":
+			case "RIVER_RIGHT_DOWN":
+			case "RIVER_DOWN_LEFT":
+			case "RIVER_LEFT_UP":
+			case "FOREST":
+			case "WALL_DOOR_UP_DOWN":
+			case "WALL_DOOR_LEFT_RIGHT":
+			case "MOUTAIN_BLACK": 
+			case "MOUTAIN_BLANK":
+			case "WALL_UP_DOWN":
+			case "WALL_LEFT_RIGHT":
+				break;
+			default:
+				result = false;
+		}
+		return result;
+	}
+	
 	isPassable(player){
 		var result = false;
 		switch(this.type) {
@@ -171,7 +202,48 @@ var model = {
 		lives: 3,
 		world: {
 			i: worldMapData.start.i,
-			j: worldMapData.start.j
+			j: worldMapData.start.j,
+			moveIfPossible(deltaI, deltaJ){
+				var newI = this.i+deltaI;
+				var newJ = this.j+deltaJ;
+				if (
+					(newI >= 0) && 
+					(newJ >= 0) &&
+					(newI< worldMapData.width) &&
+					(newJ < worldMapData.height) 
+				){
+					if (worldMap[newI][newJ].isPassable(this)){
+						// move done: consequences
+						this.i = this.i+deltaI;
+						this.j = this.j+deltaJ;
+						//discovery
+						for (var i=-1;i<2;i++){
+							for (var j=-1;j<2;j++){
+								var scannedI = this.i+i;
+								var scannedJ = this.j+j;
+								if (
+									(scannedI >= 0) && 
+									(scannedJ >= 0) &&
+									(scannedI< worldMapData.width) &&
+									(scannedJ < worldMapData.height) 
+								){
+									worldMap[scannedI][scannedJ].discovered = true;
+								}
+							}
+						}
+						// entering a dungeon
+						if (worldMap[newI][newJ].isDungeon()){
+							console.log("DBG player#moveIfPossible it is a dungeon!");
+
+						}
+					}else{
+						// move not done: warning TODO
+						console.log("DBG player#moveIfPossible unpassable");
+					}
+				}else{
+					// move not done: warning TODO
+				}
+			}
 		},
 		inventory:{
 			arrow: 4,
@@ -183,63 +255,32 @@ var model = {
 		isPossessing: function(itemName){
 			return (this.inventory[""+itemName] != null && this.inventory[""+itemName] > 0);
 		},
-		moveIfPossible(deltaI, deltaJ){
-			var newI = this.world.i+deltaI;
-			var newJ = this.world.j+deltaJ;
-			if (
-				(newI >= 0) && 
-				(newJ >= 0) &&
-				(newI< worldMapData.width) &&
-				(newJ < worldMapData.height) 
-			){
-				if (worldMap[newI][newJ].isPassable(this)){
-					this.world.i = this.world.i+deltaI;
-					this.world.j = this.world.j+deltaJ;
-					//discovery
-					for (var i=-1;i<2;i++){
-						for (var j=-1;j<2;j++){
-							var scannedI = this.world.i+i;
-							var scannedJ = this.world.j+j;
-							if (
-								(scannedI >= 0) && 
-								(scannedJ >= 0) &&
-								(scannedI< worldMapData.width) &&
-								(scannedJ < worldMapData.height) 
-							){
-								worldMap[scannedI][scannedJ].discovered = true;
-							}
-						}
-					}
-				}else{
-					console.log("DBG player#moveIfPossible unpassable");
-				}
-			}
-		}
+		
 	},
 	update: function(){
 		if (keyMap.d){
-			this.player.moveIfPossible(1,0);
+			this.player.world.moveIfPossible(1,0);
 		}
 		if (keyMap.q){
-			this.player.moveIfPossible(-1,0);
+			this.player.world.moveIfPossible(-1,0);
 		}
 		if (keyMap.z){
-			this.player.moveIfPossible(0,-1);
+			this.player.world.moveIfPossible(0,-1);
 		}
 		if (keyMap.x){
-			this.player.moveIfPossible(0,1);
+			this.player.world.moveIfPossible(0,1);
 		}
 		if (keyMap.a){
-			this.player.moveIfPossible(-1,-1);
+			this.player.world.moveIfPossible(-1,-1);
 		}
 		if (keyMap.e){
-			this.player.moveIfPossible(1,-1);
+			this.player.world.moveIfPossible(1,-1);
 		}
 		if (keyMap.c){
-			this.player.moveIfPossible(1,1);
+			this.player.world.moveIfPossible(1,1);
 		}
 		if (keyMap.w){
-			this.player.moveIfPossible(-1,1);
+			this.player.world.moveIfPossible(-1,1);
 		}
 	},
 };
