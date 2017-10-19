@@ -241,6 +241,10 @@ var model = {
 							}
 						}
 					}
+					// entering a dungeon
+					if (worldMap[newI][newJ].isDungeon()){
+						console.log("DBG player#moveIfPossible entering a dungeon");
+					}
 				}else{
 					console.log("DBG player#moveIfPossible unpassable");
 				}
