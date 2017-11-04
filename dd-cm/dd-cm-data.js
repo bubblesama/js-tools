@@ -18,6 +18,8 @@ var worldMapData= {
 };
 
 var mazeGeneratorConfiguration = {
+	
+	size: 6,
 	bits: {
 		tiles :{
 			width: 9, //number of tiles in a bit
@@ -131,6 +133,10 @@ var mazeGeneratorConfiguration = {
 				i: 4
 			}
 		}
+	},
+	tiles: {
+		width: 9,
+		height: 13
 	},
 	//setup for a tile's neighbour: delta i and j from the tile, and side to check on the tile to match the neighbour (ex: the third available neighbour if on +1 for i and +0 for j and should be checked on the left side: opened-opened or closed-closed
 	neighbours: [

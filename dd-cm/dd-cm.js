@@ -190,6 +190,9 @@ var graphical = {
 			axe: {i:4,j:3},
 			key: {i:6,j:3}
 		}
+	},
+	dungeon: {
+		zoom: 2
 	}
 };
 
@@ -246,16 +249,17 @@ var model = {
 						console.log("DBG player#moveIfPossible entering a dungeon");
 						game.state = STATES.dungeon;
 						var newMaze = generateMaze();
-						
-						
-						
-						
+						model.dungeon.currentMaze = newMaze;
 					}
 				}else{
 					console.log("DBG player#moveIfPossible unpassable");
 				}
 			}
 		}
+	},
+	
+	dungeon: {
+		currentMaze: null
 	},
 	
 	update: function(){
@@ -289,6 +293,7 @@ var model = {
 //global variables
 var worldMap;
 var worldSprites;
+var dungeonSprites;
 
 var game = {};
 game.ticker = 0;
@@ -400,7 +405,24 @@ game.draw = function(){
 		context.fillRect(0,0,618,490);
 		context.fillStyle = "rgb(0,0,0)";
 		context.fillText("DUNGEON",10,90);
-		
+		//display for full maze
+		var fullWidth = mazeGeneratorConfiguration.size * mazeGeneratorConfiguration.bits.tiles.width;
+		var fullHeight = mazeGeneratorConfiguration.size * mazeGeneratorConfiguration.bits.tiles.height;
+		for (var i=0;i<fullWidth;i++){
+			for (var j=0;j<fullHeight;j++){
+				context.drawImage(
+					dungeonSprites,
+					model.dungeon.currentMaze[i][j]*mazeGeneratorConfiguration.tiles.width,
+					0,
+					mazeGeneratorConfiguration.tiles.width,
+					mazeGeneratorConfiguration.tiles.height,
+					i*mazeGeneratorConfiguration.tiles.width*graphical.dungeon.zoom,
+					j*mazeGeneratorConfiguration.tiles.height*graphical.dungeon.zoom,
+					mazeGeneratorConfiguration.tiles.width*graphical.dungeon.zoom,
+					mazeGeneratorConfiguration.tiles.height*graphical.dungeon.zoom
+				);
+			}
+		}
 	}
 }
 
@@ -454,7 +476,11 @@ function start(){
 	worldSprites = new Image();
 	worldSprites.src = "dd-world.png";
 	worldSprites.onload = function(){
-		requestAnimationFrame(mainLoop)
+		dungeonSprites = new Image();
+		dungeonSprites.src = "dd-dungeon.png";
+		dungeonSprites.onload = function(){
+			requestAnimationFrame(mainLoop)
+		}
 	};
 };
 
@@ -468,7 +494,7 @@ function mainLoop() {
 //********************************** MAZE GENERATOR **********************************************
 function generateMaze(){
 	generateRotatedPatterns();
-	var size = 6;
+	var size = mazeGeneratorConfiguration.size;
 	var tries = 0;
 	var width = size;
 	var height = size;
