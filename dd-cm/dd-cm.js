@@ -244,6 +244,7 @@ var model = {
 					// entering a dungeon
 					if (worldMap[newI][newJ].isDungeon()){
 						console.log("DBG player#moveIfPossible entering a dungeon");
+						game.state = STATES.dungeon;
 					}
 				}else{
 					console.log("DBG player#moveIfPossible unpassable");
@@ -251,6 +252,7 @@ var model = {
 			}
 		}
 	},
+	
 	update: function(){
 		if (keyMap.d){
 			this.player.moveIfPossible(1,0);
@@ -288,102 +290,113 @@ game.ticker = 0;
 game.lastFpsCountDate = Date.now();
 game.fps = 0;
 
+const STATES = {world: "STATE_WORLD",dungeon: "STATE_DUNGEON"};
+game.state = STATES.world;
+
 game.draw = function(){
-	//map
-	for (var i=0;i<worldMapData.width;i++){
-		for (var j=0;j<worldMapData.height;j++){
-			var spriteToShowCoordinates = worldMap[i][j].getTileToShowCoordinates();
-			context.drawImage(
-				worldSprites,
-				spriteToShowCoordinates[0]*graphical.world.tile.width,
-				spriteToShowCoordinates[1]*graphical.world.tile.height,
-				graphical.world.tile.width,
-				graphical.world.tile.height,
-				5+i*graphical.world.tile.width*graphical.world.zoom,
-				74+j*graphical.world.tile.height*graphical.world.zoom,
-				graphical.world.tile.width*graphical.world.zoom,
-				graphical.world.tile.height*graphical.world.zoom
-			);
-			
+	if (this.state == STATES.world){
+		//map
+		for (var i=0;i<worldMapData.width;i++){
+			for (var j=0;j<worldMapData.height;j++){
+				var spriteToShowCoordinates = worldMap[i][j].getTileToShowCoordinates();
+				context.drawImage(
+					worldSprites,
+					spriteToShowCoordinates[0]*graphical.world.tile.width,
+					spriteToShowCoordinates[1]*graphical.world.tile.height,
+					graphical.world.tile.width,
+					graphical.world.tile.height,
+					5+i*graphical.world.tile.width*graphical.world.zoom,
+					74+j*graphical.world.tile.height*graphical.world.zoom,
+					graphical.world.tile.width*graphical.world.zoom,
+					graphical.world.tile.height*graphical.world.zoom
+				);
+				
+			}
 		}
+		//moutain and clouds
+		context.drawImage(
+			worldSprites,
+			5*graphical.world.tile.width,
+			1*graphical.world.tile.height,
+			2*graphical.world.tile.width,
+			2*graphical.world.tile.height,
+			5+worldMapData.bossTopLeft.i*graphical.world.tile.width*graphical.world.zoom,
+			74+worldMapData.bossTopLeft.j*graphical.world.tile.height*graphical.world.zoom,
+			2*graphical.world.tile.width*graphical.world.zoom,
+			2*graphical.world.tile.height*graphical.world.zoom
+		);
+		context.drawImage(
+			worldSprites,
+			7*graphical.world.tile.width,
+			(1+graphical.world.clouds.state)*graphical.world.tile.height,
+			2*graphical.world.tile.width,
+			graphical.world.tile.height,
+			5+worldMapData.bossTopLeft.i*graphical.world.tile.width*graphical.world.zoom,
+			74+(worldMapData.bossTopLeft.j)*graphical.world.tile.height*graphical.world.zoom,
+			2*graphical.world.tile.width*graphical.world.zoom,
+			graphical.world.tile.height*graphical.world.zoom
+		);
+		//player
+		if (graphical.world.playerBlink.shown){
+			//item if necessary
+			var shouldDrawItem = false;
+			var item = "";
+			switch (worldMap[model.player.world.i][model.player.world.j].type){
+				case "FOREST":
+					shouldDrawItem = true;
+					item = "axe";
+					break;
+				case "RIVER_UP_DOWN":
+				case "RIVER_UP_DOWN": 
+				case "RIVER_UP_RIGHT":
+				case "RIVER_RIGHT_DOWN":
+				case "RIVER_DOWN_LEFT":
+				case "RIVER_LEFT_UP":
+					shouldDrawItem = true;
+					item = "boat";
+					break;
+				case "WALL_DOOR_UP_DOWN":
+				case "WALL_DOOR_LEFT_RIGHT":
+					shouldDrawItem = true;
+					item = "key";
+					break;
+			}
+			if (shouldDrawItem){
+				context.drawImage(
+					worldSprites,
+					graphical.world.items[""+item].i*graphical.world.tile.width,
+					graphical.world.items[""+item].j*graphical.world.tile.height,
+					graphical.world.tile.width,
+					graphical.world.tile.height,
+					5+model.player.world.i*graphical.world.tile.width*graphical.world.zoom,
+					74+model.player.world.j*graphical.world.tile.height*graphical.world.zoom,
+					graphical.world.tile.width*graphical.world.zoom,
+					graphical.world.tile.height*graphical.world.zoom
+				);
+			}
+			// player with lives
+			for (var i=0;i<model.player.lives;i++){
+				context.drawImage(
+					worldSprites,
+					9*graphical.world.tile.width,
+					i*graphical.world.tile.height,
+					graphical.world.tile.width,
+					graphical.world.tile.height,
+					5+model.player.world.i*graphical.world.tile.width*graphical.world.zoom,
+					74+model.player.world.j*graphical.world.tile.height*graphical.world.zoom,
+					graphical.world.tile.width*graphical.world.zoom,
+					graphical.world.tile.height*graphical.world.zoom
+				);
+			}
+		}
+		context.fillText("FPS: "+this.fps,10,90);
+	}else if (this.state == STATES.dungeon){
+		context.fillStyle = "rgb(117,204,128)";
+		context.fillRect(0,0,618,490);
+		context.fillStyle = "rgb(0,0,0)";
+		context.fillText("DUNGEON",10,90);
+		
 	}
-	//moutain and clouds
-	context.drawImage(
-		worldSprites,
-		5*graphical.world.tile.width,
-		1*graphical.world.tile.height,
-		2*graphical.world.tile.width,
-		2*graphical.world.tile.height,
-		5+worldMapData.bossTopLeft.i*graphical.world.tile.width*graphical.world.zoom,
-		74+worldMapData.bossTopLeft.j*graphical.world.tile.height*graphical.world.zoom,
-		2*graphical.world.tile.width*graphical.world.zoom,
-		2*graphical.world.tile.height*graphical.world.zoom
-	);
-	context.drawImage(
-		worldSprites,
-		7*graphical.world.tile.width,
-		(1+graphical.world.clouds.state)*graphical.world.tile.height,
-		2*graphical.world.tile.width,
-		graphical.world.tile.height,
-		5+worldMapData.bossTopLeft.i*graphical.world.tile.width*graphical.world.zoom,
-		74+(worldMapData.bossTopLeft.j)*graphical.world.tile.height*graphical.world.zoom,
-		2*graphical.world.tile.width*graphical.world.zoom,
-		graphical.world.tile.height*graphical.world.zoom
-	);
-	//player
-	if (graphical.world.playerBlink.shown){
-		//item if necessary
-		var shouldDrawItem = false;
-		var item = "";
-		switch (worldMap[model.player.world.i][model.player.world.j].type){
-			case "FOREST":
-				shouldDrawItem = true;
-				item = "axe";
-				break;
-			case "RIVER_UP_DOWN":
-			case "RIVER_UP_DOWN": 
-			case "RIVER_UP_RIGHT":
-			case "RIVER_RIGHT_DOWN":
-			case "RIVER_DOWN_LEFT":
-			case "RIVER_LEFT_UP":
-				shouldDrawItem = true;
-				item = "boat";
-				break;
-			case "WALL_DOOR_UP_DOWN":
-			case "WALL_DOOR_LEFT_RIGHT":
-				shouldDrawItem = true;
-				item = "key";
-				break;
-		}
-		if (shouldDrawItem){
-			context.drawImage(
-				worldSprites,
-				graphical.world.items[""+item].i*graphical.world.tile.width,
-				graphical.world.items[""+item].j*graphical.world.tile.height,
-				graphical.world.tile.width,
-				graphical.world.tile.height,
-				5+model.player.world.i*graphical.world.tile.width*graphical.world.zoom,
-				74+model.player.world.j*graphical.world.tile.height*graphical.world.zoom,
-				graphical.world.tile.width*graphical.world.zoom,
-				graphical.world.tile.height*graphical.world.zoom
-			);
-		}
-		// player with lives
-		for (var i=0;i<model.player.lives;i++){
-			context.drawImage(
-				worldSprites,
-				9*graphical.world.tile.width,
-				i*graphical.world.tile.height,
-				graphical.world.tile.width,
-				graphical.world.tile.height,
-				5+model.player.world.i*graphical.world.tile.width*graphical.world.zoom,
-				74+model.player.world.j*graphical.world.tile.height*graphical.world.zoom,
-				graphical.world.tile.width*graphical.world.zoom,
-				graphical.world.tile.height*graphical.world.zoom
-			);
-		}
-	}
-	context.fillText("FPS: "+this.fps,10,90);
 }
 
 game.update = function(){
