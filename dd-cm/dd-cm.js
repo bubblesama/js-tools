@@ -192,7 +192,7 @@ var graphical = {
 		}
 	},
 	dungeon: {
-		zoom: 2
+		zoom: 4
 	}
 };
 
@@ -408,16 +408,16 @@ game.draw = function(){
 		//display for full maze
 		var fullWidth = mazeGeneratorConfiguration.size * mazeGeneratorConfiguration.bits.tiles.width;
 		var fullHeight = mazeGeneratorConfiguration.size * mazeGeneratorConfiguration.bits.tiles.height;
-		for (var i=0;i<fullWidth;i++){
-			for (var j=0;j<fullHeight;j++){
+		for (var i=0;i<17;i++){
+			for (var j=0;j<9;j++){
 				context.drawImage(
 					dungeonSprites,
 					model.dungeon.currentMaze[i][j]*mazeGeneratorConfiguration.tiles.width,
 					0,
 					mazeGeneratorConfiguration.tiles.width,
 					mazeGeneratorConfiguration.tiles.height,
-					i*mazeGeneratorConfiguration.tiles.width*graphical.dungeon.zoom,
-					j*mazeGeneratorConfiguration.tiles.height*graphical.dungeon.zoom,
+					3+i*mazeGeneratorConfiguration.tiles.width*graphical.dungeon.zoom,
+					10+j*mazeGeneratorConfiguration.tiles.height*graphical.dungeon.zoom,
 					mazeGeneratorConfiguration.tiles.width*graphical.dungeon.zoom,
 					mazeGeneratorConfiguration.tiles.height*graphical.dungeon.zoom
 				);
