@@ -504,11 +504,11 @@ function generateMaze(){
 		valid = true;
 		tries = tries+1;
 		//init result, the big blocks maze
-		var result = new Array(width);
+		var bitsMaze = new Array(width);
 		for (var i=0;i<width;i++){
-			result[i]=new Array(height);
+			bitsMaze[i]=new Array(height);
 			for (var j=0;j<height;j++){
-				result[i][j] = "todo";
+				bitsMaze[i][j] = "todo";
 			}
 		}
 		for (var j=0;j<height;j++){
@@ -517,7 +517,7 @@ function generateMaze(){
 				for (var k=0;k<mazeGeneratorConfiguration.neighbours.length;k++){
 					var checkI = (i+mazeGeneratorConfiguration.neighbours[k].i+width)%width;
 					var checkJ = (j+mazeGeneratorConfiguration.neighbours[k].j+height)%height;
-					var neighbourTile = result[checkI][checkJ];
+					var neighbourTile = bitsMaze[checkI][checkJ];
 					var sideOfNeighbourToCheck = mazeGeneratorConfiguration.neighbours[k].check;
 					if (neighbourTile != "todo"){
 						//console.log("DBG generateMaze: "+i+","+j+" checkI="+checkI+" checkJ="+checkJ+" is "+neighbourTile+" and should check availility for "+sideOfNeighbourToCheck);
@@ -537,8 +537,8 @@ function generateMaze(){
 					}
 				}
 				if (potentials.length > 0){
-					result[i][j] = shuffle(potentials)[0];
-					//console.log("DBG generateMaze: tile for "+i+","+j+" ="+result[i][j]);
+					bitsMaze[i][j] = shuffle(potentials)[0];
+					//console.log("DBG generateMaze: tile for "+i+","+j+" ="+bitsMaze[i][j]);
 				}else{
 					valid = false;
 					//console.log("ERROR generateMaze: no potential tile for "+i+","+j);
@@ -561,8 +561,8 @@ function generateMaze(){
 	for (var i=0;i<width;i++){
 		for (var j=0;j<height;j++){
 			//choose pattern map: currently choose the only one
-			var patternMap = availablePatternsMap[""+result[i][j]][Math.floor(Math.random() * availablePatternsMap[""+result[i][j]].length)];
-			//var bit = maze.bits.list[""+result[i][j]];
+			var patternMap = availablePatternsMap[""+bitsMaze[i][j]][Math.floor(Math.random() * availablePatternsMap[""+bitsMaze[i][j]].length)];
+			//var bit = maze.bits.list[""+bitsMaze[i][j]];
 			//var pattern = bit.patterns[0];
 			//console.log("generateMaze pattern OK for i="+i+" and j="+j);
 			for (var m=0;m<mazeGeneratorConfiguration.bits.tiles.width;m++){
