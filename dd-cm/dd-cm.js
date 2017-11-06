@@ -192,7 +192,11 @@ var graphical = {
 		}
 	},
 	dungeon: {
-		zoom: 4
+		zoom: 4,
+		tiles: {
+			width: 9,
+			height: 13
+		}
 	}
 };
 
@@ -206,6 +210,10 @@ var model = {
 		world: {
 			i: worldMapData.start.i,
 			j: worldMapData.start.j
+		},
+		dungeon: {
+			i: -1,
+			j: -1
 		},
 		inventory:{
 			arrow: 4,
@@ -250,6 +258,8 @@ var model = {
 						game.state = STATES.dungeon;
 						var newMaze = generateMaze();
 						model.dungeon.currentMaze = newMaze;
+						model.player.dungeon.i = newMaze.start.i;
+						model.player.dungeon.j = newMaze.start.j;
 					}
 				}else{
 					console.log("DBG player#moveIfPossible unpassable");
@@ -263,29 +273,58 @@ var model = {
 	},
 	
 	update: function(){
-		if (keyMap.d){
-			this.player.moveIfPossible(1,0);
-		}
-		if (keyMap.q){
-			this.player.moveIfPossible(-1,0);
-		}
-		if (keyMap.z){
-			this.player.moveIfPossible(0,-1);
-		}
-		if (keyMap.x){
-			this.player.moveIfPossible(0,1);
-		}
-		if (keyMap.a){
-			this.player.moveIfPossible(-1,-1);
-		}
-		if (keyMap.e){
-			this.player.moveIfPossible(1,-1);
-		}
-		if (keyMap.c){
-			this.player.moveIfPossible(1,1);
-		}
-		if (keyMap.w){
-			this.player.moveIfPossible(-1,1);
+		if (game.state == STATES.world){
+			if (keyMap.d){
+				this.player.moveIfPossible(1,0);
+			}
+			if (keyMap.q){
+				this.player.moveIfPossible(-1,0);
+			}
+			if (keyMap.z){
+				this.player.moveIfPossible(0,-1);
+			}
+			if (keyMap.x){
+				this.player.moveIfPossible(0,1);
+			}
+			if (keyMap.a){
+				this.player.moveIfPossible(-1,-1);
+			}
+			if (keyMap.e){
+				this.player.moveIfPossible(1,-1);
+			}
+			if (keyMap.c){
+				this.player.moveIfPossible(1,1);
+			}
+			if (keyMap.w){
+				this.player.moveIfPossible(-1,1);
+			}
+		}else if (game.state == STATES.dungeon){
+			if (keyMap.d){
+				this.player.dungeon.i = this.player.dungeon.i+1;
+			}
+			/* TODO
+			if (keyMap.q){
+				this.player.moveIfPossible(-1,0);
+			}
+			if (keyMap.z){
+				this.player.moveIfPossible(0,-1);
+			}
+			if (keyMap.x){
+				this.player.moveIfPossible(0,1);
+			}
+			if (keyMap.a){
+				this.player.moveIfPossible(-1,-1);
+			}
+			if (keyMap.e){
+				this.player.moveIfPossible(1,-1);
+			}
+			if (keyMap.c){
+				this.player.moveIfPossible(1,1);
+			}
+			if (keyMap.w){
+				this.player.moveIfPossible(-1,1);
+			}
+			*/
 		}
 	},
 };
@@ -412,14 +451,14 @@ game.draw = function(){
 			for (var j=0;j<9;j++){
 				context.drawImage(
 					dungeonSprites,
-					model.dungeon.currentMaze[i][j]*mazeGeneratorConfiguration.tiles.width,
+					model.dungeon.currentMaze.map[(i+fullWidth+model.player.dungeon.i-8)%fullWidth][(j+fullHeight+model.player.dungeon.j-4)%fullHeight]*graphical.dungeon.tiles.width,
 					0,
-					mazeGeneratorConfiguration.tiles.width,
-					mazeGeneratorConfiguration.tiles.height,
-					3+i*mazeGeneratorConfiguration.tiles.width*graphical.dungeon.zoom,
-					10+j*mazeGeneratorConfiguration.tiles.height*graphical.dungeon.zoom,
-					mazeGeneratorConfiguration.tiles.width*graphical.dungeon.zoom,
-					mazeGeneratorConfiguration.tiles.height*graphical.dungeon.zoom
+					graphical.dungeon.tiles.width,
+					graphical.dungeon.tiles.height,
+					3+i*graphical.dungeon.tiles.width*graphical.dungeon.zoom,
+					10+j*graphical.dungeon.tiles.height*graphical.dungeon.zoom,
+					graphical.dungeon.tiles.width*graphical.dungeon.zoom,
+					graphical.dungeon.tiles.height*graphical.dungeon.zoom
 				);
 			}
 		}
@@ -500,7 +539,9 @@ function generateMaze(){
 	var height = size;
 	var valid = false;
 	var firstTry = Date.now();
+	var bitsMaze;
 	while ((tries == 0 || !valid) && (tries < 100)){
+		// generate the blocks maze
 		valid = true;
 		tries = tries+1;
 		//init result, the big blocks maze
@@ -573,7 +614,11 @@ function generateMaze(){
 		}
 	}
 	context.fillText("Tries: "+tries,300,300);
-	return fullMaze;
+	var result = {
+		map: fullMaze,
+		start: {i: 4, j: 4}
+	};
+	return result;
 }
 
 //got it from the net, do the job
