@@ -225,7 +225,7 @@ var model = {
 		isPossessing: function(itemName){
 			return (this.inventory[""+itemName] != null && this.inventory[""+itemName] > 0);
 		},
-		moveIfPossible(deltaI, deltaJ){
+		moveOnWorldIfPossible(deltaI, deltaJ){
 			var newI = this.world.i+deltaI;
 			var newJ = this.world.j+deltaJ;
 			if (
@@ -264,7 +264,11 @@ var model = {
 				}else{
 					console.log("DBG player#moveIfPossible unpassable");
 				}
-			}
+			}  
+		},
+		moveOnDungeonIfPossible(deltaI, deltaJ){
+			this.dungeon.i = this.dungeon.i+deltaI;
+			this.dungeon.j = this.dungeon.j+deltaJ;
 		}
 	},
 	
@@ -275,56 +279,54 @@ var model = {
 	update: function(){
 		if (game.state == STATES.world){
 			if (keyMap.d){
-				this.player.moveIfPossible(1,0);
+				this.player.moveOnWorldIfPossible(1,0);
 			}
 			if (keyMap.q){
-				this.player.moveIfPossible(-1,0);
+				this.player.moveOnWorldIfPossible(-1,0);
 			}
 			if (keyMap.z){
-				this.player.moveIfPossible(0,-1);
+				this.player.moveOnWorldIfPossible(0,-1);
 			}
 			if (keyMap.x){
-				this.player.moveIfPossible(0,1);
+				this.player.moveOnWorldIfPossible(0,1);
 			}
 			if (keyMap.a){
-				this.player.moveIfPossible(-1,-1);
+				this.player.moveOnWorldIfPossible(-1,-1);
 			}
 			if (keyMap.e){
-				this.player.moveIfPossible(1,-1);
+				this.player.moveOnWorldIfPossible(1,-1);
 			}
 			if (keyMap.c){
-				this.player.moveIfPossible(1,1);
+				this.player.moveOnWorldIfPossible(1,1);
 			}
 			if (keyMap.w){
-				this.player.moveIfPossible(-1,1);
+				this.player.moveOnWorldIfPossible(-1,1);
 			}
 		}else if (game.state == STATES.dungeon){
 			if (keyMap.d){
-				this.player.dungeon.i = this.player.dungeon.i+1;
+				this.player.moveOnDungeonIfPossible(1,0);
 			}
-			/* TODO
 			if (keyMap.q){
-				this.player.moveIfPossible(-1,0);
+				this.player.moveOnDungeonIfPossible(-1,0);
 			}
 			if (keyMap.z){
-				this.player.moveIfPossible(0,-1);
+				this.player.moveOnDungeonIfPossible(0,-1);
 			}
 			if (keyMap.x){
-				this.player.moveIfPossible(0,1);
+				this.player.moveOnDungeonIfPossible(0,1);
 			}
 			if (keyMap.a){
-				this.player.moveIfPossible(-1,-1);
+				this.player.moveOnDungeonIfPossible(-1,-1);
 			}
 			if (keyMap.e){
-				this.player.moveIfPossible(1,-1);
+				this.player.moveOnDungeonIfPossible(1,-1);
 			}
 			if (keyMap.c){
-				this.player.moveIfPossible(1,1);
+				this.player.moveOnDungeonIfPossible(1,1);
 			}
 			if (keyMap.w){
-				this.player.moveIfPossible(-1,1);
+				this.player.moveOnDungeonIfPossible(-1,1);
 			}
-			*/
 		}
 	},
 };
