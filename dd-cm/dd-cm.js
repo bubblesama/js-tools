@@ -213,7 +213,8 @@ var model = {
 		},
 		dungeon: {
 			i: -1,
-			j: -1
+			j: -1,
+			faceRight: true
 		},
 		inventory:{
 			arrow: 4,
@@ -267,8 +268,13 @@ var model = {
 			}  
 		},
 		moveOnDungeonIfPossible(deltaI, deltaJ){
-			this.dungeon.i = this.dungeon.i+deltaI;
-			this.dungeon.j = this.dungeon.j+deltaJ;
+			var fullMazeSize = mazeGeneratorConfiguration.size*mazeGeneratorConfiguration.bits.tiles.width;
+			var newI = (this.dungeon.i+deltaI+fullMazeSize)%fullMazeSize;
+			var newJ = (this.dungeon.j+deltaJ+fullMazeSize)%fullMazeSize;
+			if (model.dungeon.currentMaze.map[newI][newJ] == 0){
+				this.dungeon.i = newI;
+				this.dungeon.j = newJ;
+			}
 		}
 	},
 	
@@ -312,20 +318,8 @@ var model = {
 			if (keyMap.z){
 				this.player.moveOnDungeonIfPossible(0,-1);
 			}
-			if (keyMap.x){
+			if (keyMap.s){
 				this.player.moveOnDungeonIfPossible(0,1);
-			}
-			if (keyMap.a){
-				this.player.moveOnDungeonIfPossible(-1,-1);
-			}
-			if (keyMap.e){
-				this.player.moveOnDungeonIfPossible(1,-1);
-			}
-			if (keyMap.c){
-				this.player.moveOnDungeonIfPossible(1,1);
-			}
-			if (keyMap.w){
-				this.player.moveOnDungeonIfPossible(-1,1);
 			}
 		}
 	},
