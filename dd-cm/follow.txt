@@ -12,7 +12,7 @@ liste des taches
   - x déplacement sur la map
   - x affichage partiel de la map (montagnes voilees)
   - x decouverte de la map
-  - entree dans un donjon
+  - x entree dans un donjon
  - donjon
   - x génération de donjons aléatoires
   - remplissage des donjons

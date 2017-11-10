@@ -464,6 +464,19 @@ game.draw = function(){
 				);
 			}
 		}
+		// display player
+		context.drawImage(
+			dungeonSprites,
+			0*graphical.dungeon.tiles.width,
+			1*graphical.dungeon.tiles.height,
+			graphical.dungeon.tiles.width,
+			graphical.dungeon.tiles.height,
+			3+8*graphical.dungeon.tiles.width*graphical.dungeon.zoom,
+			10+4*graphical.dungeon.tiles.height*graphical.dungeon.zoom,
+			graphical.dungeon.tiles.width*graphical.dungeon.zoom,
+			graphical.dungeon.tiles.height*graphical.dungeon.zoom
+		);
+
 	}
 }
 
