@@ -202,7 +202,7 @@ var graphical = {
 
 var model = {
 	refresh : {
-		delay: 100,
+		delay: 50,
 		last: Date.now()
 	},
 	player: {
@@ -214,7 +214,10 @@ var model = {
 		dungeon: {
 			i: -1,
 			j: -1,
-			faceRight: false
+			faceRight: false,
+			isMoving: false,
+			currentStep: 0,
+			maxSteps: 4
 		},
 		inventory:{
 			arrow: 4,
@@ -272,12 +275,22 @@ var model = {
 			var newI = (this.dungeon.i+deltaI+fullMazeSize)%fullMazeSize;
 			var newJ = (this.dungeon.j+deltaJ+fullMazeSize)%fullMazeSize;
 			if (model.dungeon.currentMaze.map[newI][newJ] == 0){
+				this.dungeon.isMoving = true;
 				this.dungeon.i = newI;
 				this.dungeon.j = newJ;
 				if (deltaI > 0){
 					this.dungeon.faceRight = true;
 				}else if (deltaI < 0){
 					this.dungeon.faceRight = false;
+				}
+			}
+		},
+		updateInDungeon(){
+			if (this.dungeon.isMoving){
+				this.dungeon.currentStep++;
+				if (this.dungeon.currentStep >= this.dungeon.maxSteps){
+					this.dungeon.currentStep = 0;
+					this.dungeon.isMoving = false;
 				}
 			}
 		}
@@ -328,17 +341,22 @@ var model = {
 				this.player.moveOnWorldIfPossible(0,1);
 			}
 		}else if (game.state == STATES.dungeon){
-			if (keyMap.d){
-				this.player.moveOnDungeonIfPossible(1,0);
-			}
-			if (keyMap.q){
-				this.player.moveOnDungeonIfPossible(-1,0);
-			}
-			if (keyMap.z){
-				this.player.moveOnDungeonIfPossible(0,-1);
-			}
-			if (keyMap.s){
-				this.player.moveOnDungeonIfPossible(0,1);
+			//try to move if not moving
+			if (!this.player.dungeon.isMoving){
+				if (keyMap.d){
+					this.player.moveOnDungeonIfPossible(1,0);
+				}
+				if (keyMap.q){
+					this.player.moveOnDungeonIfPossible(-1,0);
+				}
+				if (keyMap.z){
+					this.player.moveOnDungeonIfPossible(0,-1);
+				}
+				if (keyMap.s){
+					this.player.moveOnDungeonIfPossible(0,1);
+				}
+			}else{
+				this.player.updateInDungeon();
 			}
 		}
 	},
@@ -478,7 +496,7 @@ game.draw = function(){
 			}
 		}
 		
-		var playerPicI = 0;
+		var playerPicI = model.player.dungeon.currentStep;
 		var playerPicJ = 1;
 		if (!model.player.dungeon.faceRight){playerPicJ++;}
 		// display player
