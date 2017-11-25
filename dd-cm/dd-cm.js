@@ -214,7 +214,7 @@ var model = {
 		dungeon: {
 			i: -1,
 			j: -1,
-			faceRight: true
+			faceRight: false
 		},
 		inventory:{
 			arrow: 4,
@@ -274,6 +274,11 @@ var model = {
 			if (model.dungeon.currentMaze.map[newI][newJ] == 0){
 				this.dungeon.i = newI;
 				this.dungeon.j = newJ;
+				if (deltaI > 0){
+					this.dungeon.faceRight = true;
+				}else if (deltaI < 0){
+					this.dungeon.faceRight = false;
+				}
 			}
 		}
 	},
@@ -472,11 +477,15 @@ game.draw = function(){
 				);
 			}
 		}
+		
+		var playerPicI = 0;
+		var playerPicJ = 1;
+		if (!model.player.dungeon.faceRight){playerPicJ++;}
 		// display player
 		context.drawImage(
 			dungeonSprites,
-			0*graphical.dungeon.tiles.width,
-			1*graphical.dungeon.tiles.height,
+			playerPicI*graphical.dungeon.tiles.width,
+			playerPicJ*graphical.dungeon.tiles.height,
 			graphical.dungeon.tiles.width,
 			graphical.dungeon.tiles.height,
 			3+8*graphical.dungeon.tiles.width*graphical.dungeon.zoom,
