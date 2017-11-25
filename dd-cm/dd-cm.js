@@ -284,6 +284,7 @@ var model = {
 	
 	update: function(){
 		if (game.state == STATES.world){
+			/*
 			if (keyMap.d){
 				this.player.moveOnWorldIfPossible(1,0);
 			}
@@ -307,6 +308,19 @@ var model = {
 			}
 			if (keyMap.w){
 				this.player.moveOnWorldIfPossible(-1,1);
+			}
+			*/
+			if (keyMap.d){
+				this.player.moveOnWorldIfPossible(1,0);
+			}
+			if (keyMap.q){
+				this.player.moveOnWorldIfPossible(-1,0);
+			}
+			if (keyMap.z){
+				this.player.moveOnWorldIfPossible(0,-1);
+			}
+			if (keyMap.s){
+				this.player.moveOnWorldIfPossible(0,1);
 			}
 		}else if (game.state == STATES.dungeon){
 			if (keyMap.d){
