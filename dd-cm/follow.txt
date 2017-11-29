@@ -17,7 +17,7 @@ liste des taches
   - x génération de donjons aléatoires
   - remplissage des donjons
   - heros
-   - sprite des heros
+   - x sprite des heros
    - déplacement des heros
    - lancement de fleches
   - monstres
