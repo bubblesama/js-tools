@@ -202,7 +202,7 @@ var graphical = {
 
 var model = {
 	refresh : {
-		delay: 100,
+		delay: 50,
 		last: Date.now()
 	},
 	player: {
@@ -214,7 +214,10 @@ var model = {
 		dungeon: {
 			i: -1,
 			j: -1,
-			faceRight: false
+			faceRight: false,
+			maxStep: 4,
+			currentStep: 0,
+			isMoving: false
 		},
 		inventory:{
 			arrow: 4,
@@ -279,6 +282,7 @@ var model = {
 				}else if (deltaI < 0){
 					this.dungeon.faceRight = false;
 				}
+				this.dungeon.isMoving = true;
 			}
 		}
 	},
@@ -328,17 +332,25 @@ var model = {
 				this.player.moveOnWorldIfPossible(0,1);
 			}
 		}else if (game.state == STATES.dungeon){
-			if (keyMap.d){
-				this.player.moveOnDungeonIfPossible(1,0);
-			}
-			if (keyMap.q){
-				this.player.moveOnDungeonIfPossible(-1,0);
-			}
-			if (keyMap.z){
-				this.player.moveOnDungeonIfPossible(0,-1);
-			}
-			if (keyMap.s){
-				this.player.moveOnDungeonIfPossible(0,1);
+			if (this.player.dungeon.isMoving){
+				this.player.dungeon.currentStep++;
+				if (this.player.dungeon.currentStep >= this.player.dungeon.maxStep){
+					this.player.dungeon.currentStep = 0;
+					this.player.dungeon.isMoving = false;
+				}
+			}else{
+				if (keyMap.d){
+					this.player.moveOnDungeonIfPossible(1,0);
+				}
+				if (keyMap.q){
+					this.player.moveOnDungeonIfPossible(-1,0);
+				}
+				if (keyMap.z){
+					this.player.moveOnDungeonIfPossible(0,-1);
+				}
+				if (keyMap.s){
+					this.player.moveOnDungeonIfPossible(0,1);
+				}
 			}
 		}
 	},
@@ -477,8 +489,8 @@ game.draw = function(){
 				);
 			}
 		}
-		
 		var playerPicI = 0;
+		playerPicI += model.player.dungeon.currentStep;
 		var playerPicJ = 1;
 		if (!model.player.dungeon.faceRight){playerPicJ++;}
 		// display player
