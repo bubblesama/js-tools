@@ -178,7 +178,7 @@ var graphical = {
 		playerBlink: {
 			shown : true, 
 			last: Date.now(),
-			delay: 500
+			delay: 300
 		},
 		clouds :{
 			state: 0,
@@ -189,6 +189,10 @@ var graphical = {
 			boat: {i:5,j:3},
 			axe: {i:4,j:3},
 			key: {i:6,j:3}
+		},
+		resetBlink: function(){
+			this.playerBlink.shown = true;
+			this.playerBlink.last = Date.now()
 		}
 	},
 	dungeon: {
@@ -241,6 +245,7 @@ var model = {
 				if (worldMap[newI][newJ].isPassable(this)){
 					this.world.i = this.world.i+deltaI;
 					this.world.j = this.world.j+deltaJ;
+					graphical.world.resetBlink();
 					//discovery
 					for (var i=-1;i<2;i++){
 						for (var j=-1;j<2;j++){
