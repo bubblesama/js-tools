@@ -221,6 +221,10 @@ var model = {
 			faceRight: false,
 			maxStep: 4,
 			currentStep: 0,
+			stepDi: 0,
+			stepDj: 0,
+			stepDx: 3,
+			stepDy: 4,
 			isMoving: false
 		},
 		inventory:{
@@ -280,14 +284,17 @@ var model = {
 			var newI = (this.dungeon.i+deltaI+fullMazeSize)%fullMazeSize;
 			var newJ = (this.dungeon.j+deltaJ+fullMazeSize)%fullMazeSize;
 			if (model.dungeon.currentMaze.map[newI][newJ] == 0){
-				this.dungeon.i = newI;
-				this.dungeon.j = newJ;
+				this.dungeon.stepDi = deltaI;
+				this.dungeon.stepDj = deltaJ;
+				//this.dungeon.i = newI;
+				//this.dungeon.j = newJ;
 				if (deltaI > 0){
 					this.dungeon.faceRight = true;
 				}else if (deltaI < 0){
 					this.dungeon.faceRight = false;
 				}
 				this.dungeon.isMoving = true;
+				this.stepInDungeon();
 			}
 		},
 		stepInDungeon(){
@@ -295,6 +302,8 @@ var model = {
 			if (this.dungeon.currentStep >= this.dungeon.maxStep){
 				this.dungeon.currentStep = 0;
 				this.dungeon.isMoving = false;
+				this.dungeon.i = this.dungeon.i+this.dungeon.stepDi;
+				this.dungeon.j = this.dungeon.j+this.dungeon.stepDj;
 			}
 		}
 	},
@@ -491,8 +500,8 @@ game.draw = function(){
 					0,
 					graphical.dungeon.tiles.width,
 					graphical.dungeon.tiles.height,
-					3+i*graphical.dungeon.tiles.width*graphical.dungeon.zoom,
-					10+j*graphical.dungeon.tiles.height*graphical.dungeon.zoom,
+					3+i*graphical.dungeon.tiles.width*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDx*model.player.dungeon.stepDi*graphical.dungeon.zoom,
+					10+j*graphical.dungeon.tiles.height*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDy*model.player.dungeon.stepDj*graphical.dungeon.zoom,
 					graphical.dungeon.tiles.width*graphical.dungeon.zoom,
 					graphical.dungeon.tiles.height*graphical.dungeon.zoom
 				);
