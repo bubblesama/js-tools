@@ -492,8 +492,8 @@ game.draw = function(){
 		//display for full maze
 		var fullWidth = mazeGeneratorConfiguration.size * mazeGeneratorConfiguration.bits.tiles.width;
 		var fullHeight = mazeGeneratorConfiguration.size * mazeGeneratorConfiguration.bits.tiles.height;
-		for (var i=0;i<17;i++){
-			for (var j=0;j<9;j++){
+		for (var i=-2;i<19;i++){
+			for (var j=-2;j<11;j++){
 				context.drawImage(
 					dungeonSprites,
 					model.dungeon.currentMaze.map[(i+fullWidth+model.player.dungeon.i-8)%fullWidth][(j+fullHeight+model.player.dungeon.j-4)%fullHeight]*graphical.dungeon.tiles.width,
