@@ -219,13 +219,15 @@ var model = {
 			i: -1,
 			j: -1,
 			faceRight: false,
-			maxStep: 4,
+			maxStep: 2,
 			currentStep: 0,
 			stepDi: 0,
 			stepDj: 0,
 			stepDx: 3,
 			stepDy: 4,
-			isMoving: false
+			isMoving: false,
+			walkPart: 0,
+			walkCycle: 4
 		},
 		inventory:{
 			arrow: 4,
@@ -305,6 +307,10 @@ var model = {
 				this.dungeon.i = this.dungeon.i+this.dungeon.stepDi;
 				this.dungeon.j = this.dungeon.j+this.dungeon.stepDj;
 			}
+			this.dungeon.walkPart++;
+			if (this.dungeon.walkPart >= this.dungeon.walkCycle){
+				this.dungeon.walkPart = 0;
+			}
 		}
 	},
 	
@@ -357,18 +363,26 @@ var model = {
 			if (this.player.dungeon.isMoving){
 				this.player.stepInDungeon();
 			}else{
+				var shouldStopStepAnimation = true;
 				if (keyMap.d){
 					this.player.startMovingOnDungeonIfPossible(1,0);
+					shouldStopStepAnimation = false;
 				}
 				if (keyMap.q){
 					this.player.startMovingOnDungeonIfPossible(-1,0);
+					shouldStopStepAnimation = false;
 				}
 				if (keyMap.z){
 					this.player.startMovingOnDungeonIfPossible(0,-1);
+					shouldStopStepAnimation = false;
 				}
 				if (keyMap.s){
 					this.player.startMovingOnDungeonIfPossible(0,1);
+					shouldStopStepAnimation = false;
 				}
+				if (shouldStopStepAnimation){
+					this.player.dungeon.walkPart = 0;
+				}	
 			}
 		}
 	},
@@ -508,7 +522,7 @@ game.draw = function(){
 			}
 		}
 		var playerPicI = 0;
-		playerPicI += model.player.dungeon.currentStep;
+		playerPicI += model.player.dungeon.walkPart;
 		var playerPicJ = 1;
 		if (!model.player.dungeon.faceRight){playerPicJ++;}
 		// display player
