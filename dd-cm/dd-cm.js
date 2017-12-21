@@ -206,7 +206,7 @@ var graphical = {
 
 var model = {
 	refresh : {
-		delay: 50,
+		delay: 100,
 		last: Date.now()
 	},
 	player: {
@@ -288,8 +288,7 @@ var model = {
 			if (model.dungeon.currentMaze.map[newI][newJ] == 0){
 				this.dungeon.stepDi = deltaI;
 				this.dungeon.stepDj = deltaJ;
-				//this.dungeon.i = newI;
-				//this.dungeon.j = newJ;
+
 				if (deltaI > 0){
 					this.dungeon.faceRight = true;
 				}else if (deltaI < 0){
