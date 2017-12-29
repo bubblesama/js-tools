@@ -178,7 +178,7 @@ var graphical = {
 		playerBlink: {
 			shown : true, 
 			last: Date.now(),
-			delay: 500
+			delay: 300
 		},
 		clouds :{
 			state: 0,
@@ -189,6 +189,10 @@ var graphical = {
 			boat: {i:5,j:3},
 			axe: {i:4,j:3},
 			key: {i:6,j:3}
+		},
+		resetBlink: function(){
+			this.playerBlink.shown = true;
+			this.playerBlink.last = Date.now()
 		}
 	},
 	dungeon: {
@@ -202,7 +206,7 @@ var graphical = {
 
 var model = {
 	refresh : {
-		delay: 50,
+		delay: 100,
 		last: Date.now()
 	},
 	player: {
@@ -215,9 +219,15 @@ var model = {
 			i: -1,
 			j: -1,
 			faceRight: false,
-			isMoving: false,
+			maxStep: 2,
 			currentStep: 0,
-			maxSteps: 4
+			stepDi: 0,
+			stepDj: 0,
+			stepDx: 3,
+			stepDy: 4,
+			isMoving: false,
+			walkPart: 0,
+			walkCycle: 4
 		},
 		inventory:{
 			arrow: 4,
@@ -241,6 +251,7 @@ var model = {
 				if (worldMap[newI][newJ].isPassable(this)){
 					this.world.i = this.world.i+deltaI;
 					this.world.j = this.world.j+deltaJ;
+					graphical.world.resetBlink();
 					//discovery
 					for (var i=-1;i<2;i++){
 						for (var j=-1;j<2;j++){
@@ -270,28 +281,34 @@ var model = {
 				}
 			}  
 		},
-		moveOnDungeonIfPossible(deltaI, deltaJ){
+		startMovingOnDungeonIfPossible(deltaI, deltaJ){
 			var fullMazeSize = mazeGeneratorConfiguration.size*mazeGeneratorConfiguration.bits.tiles.width;
 			var newI = (this.dungeon.i+deltaI+fullMazeSize)%fullMazeSize;
 			var newJ = (this.dungeon.j+deltaJ+fullMazeSize)%fullMazeSize;
 			if (model.dungeon.currentMaze.map[newI][newJ] == 0){
-				this.dungeon.isMoving = true;
-				this.dungeon.i = newI;
-				this.dungeon.j = newJ;
+				this.dungeon.stepDi = deltaI;
+				this.dungeon.stepDj = deltaJ;
+
 				if (deltaI > 0){
 					this.dungeon.faceRight = true;
 				}else if (deltaI < 0){
 					this.dungeon.faceRight = false;
 				}
+				this.dungeon.isMoving = true;
+				this.stepInDungeon();
 			}
 		},
-		updateInDungeon(){
-			if (this.dungeon.isMoving){
-				this.dungeon.currentStep++;
-				if (this.dungeon.currentStep >= this.dungeon.maxSteps){
-					this.dungeon.currentStep = 0;
-					this.dungeon.isMoving = false;
-				}
+		stepInDungeon(){
+			this.dungeon.currentStep++;
+			if (this.dungeon.currentStep >= this.dungeon.maxStep){
+				this.dungeon.currentStep = 0;
+				this.dungeon.isMoving = false;
+				this.dungeon.i = this.dungeon.i+this.dungeon.stepDi;
+				this.dungeon.j = this.dungeon.j+this.dungeon.stepDj;
+			}
+			this.dungeon.walkPart++;
+			if (this.dungeon.walkPart >= this.dungeon.walkCycle){
+				this.dungeon.walkPart = 0;
 			}
 		}
 	},
@@ -341,22 +358,30 @@ var model = {
 				this.player.moveOnWorldIfPossible(0,1);
 			}
 		}else if (game.state == STATES.dungeon){
-			//try to move if not moving
-			if (!this.player.dungeon.isMoving){
+			//update for player
+			if (this.player.dungeon.isMoving){
+				this.player.stepInDungeon();
+			}else{
+				var shouldStopStepAnimation = true;
 				if (keyMap.d){
-					this.player.moveOnDungeonIfPossible(1,0);
+					this.player.startMovingOnDungeonIfPossible(1,0);
+					shouldStopStepAnimation = false;
 				}
 				if (keyMap.q){
-					this.player.moveOnDungeonIfPossible(-1,0);
+					this.player.startMovingOnDungeonIfPossible(-1,0);
+					shouldStopStepAnimation = false;
 				}
 				if (keyMap.z){
-					this.player.moveOnDungeonIfPossible(0,-1);
+					this.player.startMovingOnDungeonIfPossible(0,-1);
+					shouldStopStepAnimation = false;
 				}
 				if (keyMap.s){
-					this.player.moveOnDungeonIfPossible(0,1);
+					this.player.startMovingOnDungeonIfPossible(0,1);
+					shouldStopStepAnimation = false;
 				}
-			}else{
-				this.player.updateInDungeon();
+				if (shouldStopStepAnimation){
+					this.player.dungeon.walkPart = 0;
+				}	
 			}
 		}
 	},
@@ -480,23 +505,23 @@ game.draw = function(){
 		//display for full maze
 		var fullWidth = mazeGeneratorConfiguration.size * mazeGeneratorConfiguration.bits.tiles.width;
 		var fullHeight = mazeGeneratorConfiguration.size * mazeGeneratorConfiguration.bits.tiles.height;
-		for (var i=0;i<17;i++){
-			for (var j=0;j<9;j++){
+		for (var i=-2;i<19;i++){
+			for (var j=-2;j<11;j++){
 				context.drawImage(
 					dungeonSprites,
 					model.dungeon.currentMaze.map[(i+fullWidth+model.player.dungeon.i-8)%fullWidth][(j+fullHeight+model.player.dungeon.j-4)%fullHeight]*graphical.dungeon.tiles.width,
 					0,
 					graphical.dungeon.tiles.width,
 					graphical.dungeon.tiles.height,
-					3+i*graphical.dungeon.tiles.width*graphical.dungeon.zoom,
-					10+j*graphical.dungeon.tiles.height*graphical.dungeon.zoom,
+					3+i*graphical.dungeon.tiles.width*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDx*model.player.dungeon.stepDi*graphical.dungeon.zoom,
+					10+j*graphical.dungeon.tiles.height*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDy*model.player.dungeon.stepDj*graphical.dungeon.zoom,
 					graphical.dungeon.tiles.width*graphical.dungeon.zoom,
 					graphical.dungeon.tiles.height*graphical.dungeon.zoom
 				);
 			}
 		}
-		
-		var playerPicI = model.player.dungeon.currentStep;
+		var playerPicI = 0;
+		playerPicI += model.player.dungeon.walkPart;
 		var playerPicJ = 1;
 		if (!model.player.dungeon.faceRight){playerPicJ++;}
 		// display player
