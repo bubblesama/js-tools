@@ -80,35 +80,43 @@ wsServer.on('request', function(request) {
   connection.on('message', function(message) {
     if (message.type === 'utf8') { // accept only text
     // first message sent by user is their name
-
-     if (userName === false) {
-        // remember user name
-        userName = htmlEntities(message.utf8Data);
-        // get random color and send it back to the user
-        userColor = colors.shift();
-        connection.sendUTF(
-            JSON.stringify({ type:'color', data: userColor }));
-        console.log((new Date()) + ' User is known as: ' + userName + ' with ' + userColor + ' color.');
-
-      } else { // log and broadcast the message
-        console.log((new Date()) + ' Received Message from ' + userName + ': ' + message.utf8Data);
-        
-        // we want to keep history of all sent messages
-        var obj = {
-          time: (new Date()).getTime(),
-          text: htmlEntities(message.utf8Data),
-          author: userName,
-          color: userColor
-        };
-        history.push(obj);
-        history = history.slice(-100);
-
-        // broadcast message to all connected clients
-        var json = JSON.stringify({ type:'message', data: obj });
-        for (var i=0; i < clients.length; i++) {
-          clients[i].sendUTF(json);
+     if (htmlEntities(message.utf8Data).startsWith("{")){
+		console.log("json message!");
+		var messageObject = JSON.parse((message.utf8Data));
+		console.log("json message type: "+messageObject.type);
+		
+		
+		
+	 }else{
+	      if (userName === false) {
+          // remember user name
+          userName = htmlEntities(message.utf8Data);
+          // get random color and send it back to the user
+          userColor = colors.shift();
+          connection.sendUTF(JSON.stringify({ type:'color', data: userColor }));
+          console.log((new Date()) + ' User is known as: ' + userName + ' with ' + userColor + ' color.');
+        } else { // log and broadcast the message
+          console.log((new Date()) + ' Received Message from ' + userName + ': ' + message.utf8Data);
+          
+          // we want to keep history of all sent messages
+          var obj = {
+            time: (new Date()).getTime(),
+            text: htmlEntities(message.utf8Data),
+            author: userName,
+            color: userColor
+          };
+          history.push(obj);
+          history = history.slice(-100);
+      
+          // broadcast message to all connected clients
+          var json = JSON.stringify({ type:'message', data: obj });
+          for (var i=0; i < clients.length; i++) {
+            clients[i].sendUTF(json);
+          }
         }
-      }
+	  
+	  }
+
     }
   });
 

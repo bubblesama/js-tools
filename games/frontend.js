@@ -66,9 +66,8 @@ $(function () {
     } else if (json.type === 'history') { // entire message history
       // insert every single message to the chat window
       for (var i=0; i < json.data.length; i++) {
-      addMessage(json.data[i].author, json.data[i].text,
-          json.data[i].color, new Date(json.data[i].time));
-      }
+        addMessage(json.data[i].author, json.data[i].text,json.data[i].color, new Date(json.data[i].time))
+	  }
     } else if (json.type === 'message') { // it's a single message
       // let the user write another message
       input.removeAttr('disabled'); 
@@ -90,6 +89,11 @@ $(function () {
       }
       // send the message as an ordinary text
       connection.send(msg);
+	  
+	  var jsonMessage = {"type":"hello","well":"done"};
+	  connection.send(JSON.stringify(jsonMessage));
+	  
+	  
       $(this).val('');
       // disable the input field to make the user wait until server
       // sends back response
