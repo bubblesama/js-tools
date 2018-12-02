@@ -12,5 +12,35 @@ var io = require('socket.io').listen(server);
 // Quand un client se connecte, on le note dans la console
 io.sockets.on('connection', function (socket) {
     console.log('Un client est connecté !');
+	socket.emit('message', { content: 'Vous êtes bien connecté !', importance: '1' });
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
 });
+
+
+
+var gameModel = {
+	'id': 1,
+	'players':  [
+		
+	
+	
+	],
+	'board': 
+	
+	
+	
+	
+	
+	
+};
+
 server.listen(4040);
