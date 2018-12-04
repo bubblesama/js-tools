@@ -29,18 +29,22 @@ io.sockets.on('connection', function (socket) {
 
 var gameModel = {
 	'id': 1,
-	'players':  [
-		
-	
-	
-	],
-	'board': 
-	
-	
-	
-	
-	
-	
+	'players':  {
+		'player1': {
+			
+			
+		},
+		'player2': {
+			
+			
+		}
+
+	},
+	'turn': 1,
+	'activePlayer': 'player1',
+	'board': {
+		'toto': 'tutu'
+	}
 };
 
 server.listen(4040);
