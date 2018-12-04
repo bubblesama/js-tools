@@ -13,32 +13,19 @@ var io = require('socket.io').listen(server);
 io.sockets.on('connection', function (socket) {
     console.log('Un client est connecté !');
 	socket.emit('message', { content: 'Vous êtes bien connecté !', importance: '1' });
-
-	
-	
-	
-	
-	
-	
-	
-	
+	socket.emit('game', game);
 	
 });
 
-
-
-var gameModel = {
-	'id': 1,
+var game = {
+	'id': 18,
 	'players':  {
 		'player1': {
-			
-			
+			'state': 'playing'
 		},
 		'player2': {
-			
-			
+			'state': 'waiting'
 		}
-
 	},
 	'turn': 1,
 	'activePlayer': 'player1',
@@ -46,5 +33,14 @@ var gameModel = {
 		'toto': 'tutu'
 	}
 };
+
+var actions = {
+	logGameId: function(){
+		console.log("logGameId: gameId="+game.id);
+	}
+};
+
+
+actions.logGameId();
 
 server.listen(4040);
