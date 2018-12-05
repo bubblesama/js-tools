@@ -7,9 +7,9 @@ var server = http.createServer(function(req, res) {
         res.end(content);
     });
 });
-// Chargement de socket.io
+// loading socket.io
 var io = require('socket.io').listen(server);
-// Quand un client se connecte, on le note dans la console
+// connection management by logging
 io.sockets.on('connection', function (socket) {
     console.log('Un client est connecté !');
 	socket.emit('message', { content: 'Vous êtes bien connecté !', importance: '1' });
@@ -20,27 +20,176 @@ io.sockets.on('connection', function (socket) {
 var game = {
 	'id': 18,
 	'players':  {
-		'player1': {
-			'state': 'playing'
-		},
-		'player2': {
-			'state': 'waiting'
-		}
+		'player1': {},
+		'player2': {}
 	},
 	'turn': 1,
 	'activePlayer': 'player1',
 	'board': {
-		'toto': 'tutu'
+		'dice': {
+			'value': 6,
+			'rolledThisTurn': false,
+			'usedThisTurn': false
+		}
+		
 	}
 };
 
+// helpers pour accès aux données du jeu
+var helpers = {
+	getHorse: function(game){
+		return function(playerName){
+			return function(horseId){
+				console.log("helpers#getHorse IN game.id="+game.id+" playerName="+playerName+" horseId="+horseId);
+				//console.log("helpers#getHorse game.players[playerName].horses.length="+game.players[playerName].horses.length);
+				var result = game.players[playerName].horses.filter(horse => horse.id == horseId)[0];
+				console.log("helpers#getHorse result.length="+result.length);
+				return result;
+			}
+		}
+	}
+};
+
+//available game actions
+//actions attendues du jeu
+// - lancement du jeu
+// - lancement de dé
+// - mouvement d'un cheval
+// - fin de tour
+// 
 var actions = {
+	//lancement du jeu
+	resetGame: function (game){
+		console.log("actions#resetGame IN");
+		for (var playerName in game.players){
+			console.log("actions#resetGame for player: "+playerName);
+			var player = game.players[playerName];
+			player.horses = [];
+			for (var i=0;i<4;i++){
+				player.horses.push({'playerName': playerName, 'id':i, 'step': 0});
+			}
+		}
+		//TODO fin de reset du board
+		
+		//test
+		console.log("actions#resetGame done");
+	},
+	//lancement de dé
+	launchDice: function (game){
+		return function (playerName){
+			//TODO random sur le lancer de dé
+			var roll = ++game.board.dice.value;
+			if (roll > 6){
+				roll = 1;
+			}
+			console.log("actions#launchDice \""+playerName+"\" rolled a "+roll+" for game="+game.id);
+			game.board.dice.value = roll;
+			game.board.dice.rolledThisTurn = true;
+			game.board.dice.usedThisTurn = false;
+		}
+	},
+	//mouvement d'un cheval
+	moveHorse: function (game){
+		return function(playerName){
+			return function(horseId){
+				var horse = helpers.getHorse(game)(playerName)(horseId);
+				console.log("actions#moveHorse horse: horse.playerName="+horse.playerName+" horse.id="+horse.id);
+				console.log("actions#moveHorse game.board.dice.value="+game.board.dice.value);
+				console.log("actions#moveHorse initial horse.step="+horse.step);
+				horse.step = game.board.dice.value+horse.step;
+				console.log("actions#moveHorse final horse.step="+horse.step);
+				//TODO log
+				//TODO consequences sur le plateau
+				game.board.dice.usedThisTurn = true;
+				//TODO consequence sur les autres chevaux ou la situation de fin
+				
+			}
+		}
+	},
+	endTurn: function(game){
+		return function(playerName){
+			game.board.rolledThisTurn = false;
+			game.board.usedThisTurn = false;
+		}
+	}
+	//
 	logGameId: function(){
-		console.log("logGameId: gameId="+game.id);
+		console.log("logGameId gameId="+game.id);
 	}
 };
 
+//controls to call before actions for consistency
+//format des retours: {'success':true/false, 'comment':'patati'}
+var controls = {
+	canResetGame: function(game){
+		var playersSize = 0;
+		for (var playerName in game.players){
+			playersSize++;
+		}
+		console.log("controls#canResetGame playersSize="+playersSize);
+		var result = {'success': false, 'comment': "none"};
+		if ((playersSize >1 && playersSize <5)){
+			result.success = true;
+		}else{
+			result.comment = "too "+((playersSize < 2)?"few":"many")+"players: "+playersSize+" instead of 2";
+			if (playersSize < 2){
+				result.comment = "too few players:"+playersSize+" instead of 2";
+			}else{
+				result.comment = "too many players:"+playersSize+" instead of 2";
+			}
+		}
+		return result;
+	},
+	//TODO contrôle du lancer de dé
+	canLaunchDice: function(game){
+		return function (playerName){
+			var result = {'success': false, 'comment': "none"};
+			if (game.activePlayer != playerName){
+				result.comment = playerName+" n'est pas le joueur actif!";
+			}else{
+				if (game.board.dice.rolledThisTurn){
+					result.comment = "le dé a déjà été jeté ce tour-ci";
+				}else{
+					result.success = true;
+				}
+			}
+			return result;
+		}
+	},
+	//TODO contrôle du mouvement d'un cheval
+	canMoveHorse: function(game){
+		return function (playerName){
+			return function (horseId){
+				var result = {'success': false, 'comment': "none"};
+				//TODO check existence joueur et cheval
+				//TODO check du bon joueur
+				// contrôle de l'état du tour
+				if (!game.dice.rolledThisTurn){
+					result.comment = "le dé n'a pas été jeté";
+				}else{
+					if (game.dice.usedThisTurn){
+						result.comment = "le mouvement a déjà été fait!";
+					}else{
+						result.success = true;
+					}
+				}
+
+			}
+		}
+	}
+	
+};
 
 actions.logGameId();
+if (controls.canResetGame(game).success){
+	actions['resetGame'](game);
+	actions.launchDice(game)("player1");
+	actions.moveHorse(game)("player1")(2);
+	console.log("TEST player1.horse(2).step="+helpers.getHorse(game)('player1')(2).step);
+}
 
-server.listen(4040);
+//var method = "doSomething";
+//var controlMethod = "can"+method.substring(0,1).toUpperCase()+method.substring(1);
+//console.log("TEST: method="+method+" controlMethod="+controlMethod);
+
+//server.listen(4040);
