@@ -159,8 +159,8 @@ function _setDate(rawDate){
 		var rawMonth = rawDate.substring(4,6);
 		var rawDay = rawDate.substring(6,8);
 		//console.log("_setDate: rawYear="+rawYear+" rawMonth="+rawMonth+" rawDay="+rawDay);
-		var date = new Date(rawYear,rawMonth,rawDay);
-		$("#currentDate").html(date.getDate()+" "+monthNames[date.getMonth()-1]+" "+date.getFullYear());
+		var date = new Date(rawYear,rawMonth-1,rawDay);
+		$("#currentDate").html(date.getDate()+" "+monthNames[date.getMonth()]+" "+date.getFullYear());
 	}
 	currentDate = rawDate;
 	$("#statsLink").attr("href", "#/date/"+currentDate+"/stats/");
