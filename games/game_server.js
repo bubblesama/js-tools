@@ -17,6 +17,22 @@ io.sockets.on('connection', function (socket) {
 	
 });
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//--------------- PARTIE METIER JEU DES PETITS CHEVAUX
+
 var game = {
 	'id': 18,
 	'players':  {
@@ -106,6 +122,7 @@ var actions = {
 			}
 		}
 	},
+	//fin de tour
 	endTurn: function(game){
 		return function(playerName){
 			game.board.rolledThisTurn = false;
@@ -180,6 +197,10 @@ var controls = {
 	
 };
 
+//--------------- FIN PARTIE METIER JEU DES PETITS CHEVAUX
+
+
+
 actions.logGameId();
 if (controls.canResetGame(game).success){
 	actions['resetGame'](game);
@@ -188,8 +209,15 @@ if (controls.canResetGame(game).success){
 	console.log("TEST player1.horse(2).step="+helpers.getHorse(game)('player1')(2).step);
 }
 
+
+
+
+
 //var method = "doSomething";
 //var controlMethod = "can"+method.substring(0,1).toUpperCase()+method.substring(1);
 //console.log("TEST: method="+method+" controlMethod="+controlMethod);
+
+
+
 
 //server.listen(4040);
