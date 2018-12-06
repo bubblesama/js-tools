@@ -11,28 +11,32 @@ var server = http.createServer(function(req, res) {
 var io = require('socket.io').listen(server);
 // connection management by logging
 io.sockets.on('connection', function (socket) {
-    console.log('Un client est connecté !');
+	console.log('Un client est connecté !');
 	socket.emit('message', { content: 'Vous êtes bien connecté !', importance: '1' });
 	socket.emit('game', game);
+	//TODO login infos et protocole
+	// requete de login avec clé et nom de joueur
+	// enregistrement et validation /refus d'accès
+	// association à une partie
+	//
+	//
+	//
 	
+	
+	// gestion de la requête de login
+	socket.on('login', function(from,acknowledgment){
+		//TODO secure secretNumberManager
+		var secretCode = ""+Math.floor(Math.random()*1000);
+		console.log("socket#login from="+from+" secretCode="+secretCode);
+		acknowledgment(true,secretCode);
+	});
+	
+
+	socket.on('disconnect',function(){
+	});
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //--------------- PARTIE METIER JEU DES PETITS CHEVAUX
-
 var game = {
 	'id': 18,
 	'players':  {
@@ -63,7 +67,16 @@ var helpers = {
 				return result;
 			}
 		}
+	},
+	getPlayersCount: function (game){
+		var playersCount = 0;
+		for (var playerName in game.players){
+			playersCount++;
+		}
+		return playersCount;
 	}
+	
+	
 };
 
 //available game actions
@@ -128,7 +141,7 @@ var actions = {
 			game.board.rolledThisTurn = false;
 			game.board.usedThisTurn = false;
 		}
-	}
+	},
 	//
 	logGameId: function(){
 		console.log("logGameId gameId="+game.id);
@@ -139,20 +152,17 @@ var actions = {
 //format des retours: {'success':true/false, 'comment':'patati'}
 var controls = {
 	canResetGame: function(game){
-		var playersSize = 0;
-		for (var playerName in game.players){
-			playersSize++;
-		}
-		console.log("controls#canResetGame playersSize="+playersSize);
+		var playersCount = helpers.getPlayersCount(game);
+		console.log("controls#canResetGame playersCount="+playersCount);
 		var result = {'success': false, 'comment': "none"};
-		if ((playersSize >1 && playersSize <5)){
+		if ((playersCount >1 && playersCount <5)){
 			result.success = true;
 		}else{
-			result.comment = "too "+((playersSize < 2)?"few":"many")+"players: "+playersSize+" instead of 2";
-			if (playersSize < 2){
-				result.comment = "too few players:"+playersSize+" instead of 2";
+			result.comment = "too "+((playersCount < 2)?"few":"many")+"players: "+playersCount+" instead of 2";
+			if (playersCount < 2){
+				result.comment = "too few players:"+playersCount+" instead of 2";
 			}else{
-				result.comment = "too many players:"+playersSize+" instead of 2";
+				result.comment = "too many players:"+playersCount+" instead of 2";
 			}
 		}
 		return result;
@@ -190,34 +200,33 @@ var controls = {
 						result.success = true;
 					}
 				}
-
 			}
 		}
 	}
-	
 };
+
+
+
+//SIMPLE TEST FONCTIONNEL
+//actions.logGameId();
+//if (controls.canResetGame(game).success){
+//	actions['resetGame'](game);
+//	actions.launchDice(game)("player1");
+//	actions.moveHorse(game)("player1")(2);
+//	console.log("TEST player1.horse(2).step="+helpers.getHorse(game)('player1')(2).step);
+//}
 
 //--------------- FIN PARTIE METIER JEU DES PETITS CHEVAUX
 
 
 
-actions.logGameId();
-if (controls.canResetGame(game).success){
-	actions['resetGame'](game);
-	actions.launchDice(game)("player1");
-	actions.moveHorse(game)("player1")(2);
-	console.log("TEST player1.horse(2).step="+helpers.getHorse(game)('player1')(2).step);
-}
 
-
-
-
+//--------------- GESTIONNAIRE GLOBAL DES PARTIES
+var games = {"horses_18":game};
 
 //var method = "doSomething";
 //var controlMethod = "can"+method.substring(0,1).toUpperCase()+method.substring(1);
 //console.log("TEST: method="+method+" controlMethod="+controlMethod);
-
-
-
-
-//server.listen(4040);
+console.log("lancement serveur");
+server.listen(4040);
+console.log("serveur en route");
