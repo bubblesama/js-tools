@@ -5,10 +5,12 @@
 		<title>horses</title>
 	</head>
 	<body>
+		<div>
+			<h3>server access</h3>
+			<p>status: <span id="user-connection">not connected</span></p>
 		<div id="user-board">
 			<h3>user board</h3>
-			<p>status: <span id="user-connection">not connected</span></p>
-			<p><label for="user-name">login: </label><input type="text" id="user-name" name="user-name" size="10" /></p>
+			<p><label for="user-name">login: </label><input type="text" id="user-name" name="user-name" size="10" value="mylogin" /></p>
 			<p>secret number: <span id="user-secret">no secret</span></p>
 			<p><input id="button-login" type="button" onclick="tryLogin();" value="login" /></p>
 		</div>
@@ -21,7 +23,7 @@
 			//gestion des messages
 			socket.on('message', function(message){
 				console.log("socket#message message="+ message.content);
-				document.getElementById("user-connection").value = "toto";
+				document.getElementById("user-connection").innerHTML = "connected";
 			});
 			socket.on('game', function(game){
 				console.log("game from server: "+ game.id);
@@ -38,9 +40,10 @@
 				socket.emit('login',playerName,function(success,secretCode){
 					console.log("socket#tryLogin server response: success="+success+" secretCode="+secretCode);
 					// TODO gestion succes
-					console.log("socket#tryLogin initial user-secret="+document.getElementById("user-secret").value);
-					document.getElementById("user-secret").value = secretCode;
-					document.refresh();
+					//console.log("socket#tryLogin initial user-secret="+document.getElementById("user-secret").innerHTML);
+					document.getElementById("user-secret").innerHTML = secretCode;
+					document.getElementById("user-name").disabled = true;
+					document.getElementById("button-login").style.diplay = 'none';
 					 // TODO gestion echec
 				});
 			};
