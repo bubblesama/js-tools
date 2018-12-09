@@ -140,7 +140,7 @@ processFile(
 		console.log("overlaps="+overlapCount);
 	}
 );
-*/
+
 //part2
 var size = 1000;
 console.log("init fabric with claim ids");
@@ -193,9 +193,9 @@ processFile(
 		});
 	}
 );
+*/
 
-
-
+//day 4
 
 
 /**************** UTILS *****************/
