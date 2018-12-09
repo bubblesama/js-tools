@@ -197,6 +197,90 @@ processFile(
 
 //day 4
 
+//[1518-03-06 00:03] Guard #2843 begins shift
+//[1518-03-06 00:18] falls asleep
+//[1518-03-06 00:24] wakes up
+
+//var guardActivityRegexp = /\[(\d{4})-(\d{2})-(\d{4}) (\d{2}):(\d{2})\] (falls asleep|wakes up|Guard #\d+ begins shift)/;
+var guardActivityRegexp = /(\d{2})\] (falls asleep|wakes up|Guard #\d+ begins shift)/;
+var guardIdRegexp = /Guard #(\d+) begins shift/;
+var guards = new Map();
+//state stack
+var currentGuardId = -1;
+var isSleeping = false;
+var startSleepMinute = -1
+var totalSleepForTheNight = 0;
+var lines = 0;
+console.log("parsing activities");
+processFile(
+	"day4-sorted.txt",
+	(line)=>{
+		lines++;
+		//console.log(line)
+		var guardActivityParsingResult = guardActivityRegexp.exec(line);
+		var currentMinute = Number.parseInt(guardActivityParsingResult[1],10);
+		var activity = guardActivityParsingResult[2];
+		//console.log("currentMinute="+currentMinute+" activity="+activity);
+		if (activity.startsWith("Guard")){
+			var guardId = +(guardIdRegexp.exec(activity)[1]);
+			//console.log("guardId="+guardId);
+			currentGuardId = guardId;
+			isSleeping = false;
+			if (!guards.has(currentGuardId)){
+				var nightSleep = new Array(60);
+				for (var i=0;i<60;i++){
+					nightSleep[i] = 0;
+				}
+				guards.set(currentGuardId,{"sleepTotal":0,"sleepSchedule":nightSleep});
+			}
+		}else if (activity.startsWith("falls")){	
+			startSleepMinute = currentMinute;
+			isSleeping = true;
+		}else if (activity.startsWith("wakes")){
+			//var sleepDuration = currentMinute - startSleepMinute;
+			guards.get(currentGuardId).sleepTotal += (currentMinute-startSleepMinute);
+			for (var k=startSleepMinute;k<currentMinute;k++){
+				guards.get(currentGuardId).sleepSchedule[k]++;
+			}
+			isSleeping = false;
+		}else{
+			console.log("WARNING! uncatched activity");
+		}
+	},
+	(line)=>{
+		console.log("activites parsed: "+lines+", starting sleeping analysis");
+		//finding the most sleepy guard
+		var mostSleepyGuard = -1;
+		var mostMinutesSlept = 0;
+		guards.forEach((sleepActivity,guardId)=>{
+			//console.log("guards.forEach guardId="+guardId);
+			if (mostMinutesSlept < sleepActivity.sleepTotal){
+				mostSleepyGuard = guardId;
+				mostMinutesSlept = sleepActivity.sleepTotal;
+				console.log("current biggest sleeper: "+guardId+" with total sleep of "+mostMinutesSlept);
+			}
+		});
+		console.log("biggest sleeper found: "+mostSleepyGuard+", searching for sleepiest minute");
+		var sleepiestGuardActivity = guards.get(mostSleepyGuard);
+		var sleepiestMinute = -1;
+		var mostSleptOverlap = 0;
+		for (var i=0;i<60;i++){
+			if (mostSleptOverlap < sleepiestGuardActivity.sleepSchedule[i]){
+				sleepiestMinute = i;
+				mostSleptOverlap = sleepiestGuardActivity.sleepSchedule[i];
+				console.log("current most sleep overlapt minute: "+sleepiestMinute+" with an overlap of "+mostSleptOverlap);
+			}
+		}
+		console.log("sleepiest minute of the sleepiest guard found: "+sleepiestMinute);
+		var result = mostSleepyGuard * sleepiestMinute;
+		console.log("ding: result="+result);
+		
+		
+	}
+);
+
+
+
 
 /**************** UTILS *****************/
 
