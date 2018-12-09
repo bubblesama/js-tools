@@ -94,7 +94,7 @@ for (var i in input){
 	//console.log("end tries="+tries);
 }
 
-*/
+
 
 //day 3
 
@@ -140,9 +140,65 @@ processFile(
 		console.log("overlaps="+overlapCount);
 	}
 );
+*/
+//part2
+var size = 1000;
+console.log("init fabric with claim ids");
+//create fabric
+var fabric = new Array(size);
+for (var i=0;i<size;i++){
+	fabric[i] = new Array(size);
+	for (var j=0;j<size;j++){
+		fabric[i][j] = {"overlaps": 0, "claims":[]};
+	}
+}
+console.log("analysing claims");
+//#1358 @ 218,557: 13x17
+var patchFileRegexp = /#(\d+) @ (\d+),(\d+): (\d+)x(\d+)/;
+var claims = new Array();
+processFile(
+	"day3-input.txt",
+	(line)=>{
+		//console.log("processFile patch: raw="+line);
+		var patchParsingResult = patchFileRegexp.exec(line);
+		var patchId = +patchParsingResult[1];
+		var patchX = +patchParsingResult[2];
+		var patchY = +patchParsingResult[3];
+		var patchW = +patchParsingResult[4];
+		var patchH = +patchParsingResult[5];
+		claims.push({"id": patchId, "x": patchX, "y": patchY, "w": patchW, "h": patchH});
+		//console.log("processFile patch: patchId="+patchId+" patchX="+patchX+" patchY="+patchY+" patchW="+patchW+" patchH="+patchH);
+		for (var i=patchX;i<(patchX+patchW);i++){
+			for (var j=patchY;j<(patchY+patchH);j++){
+				fabric[i][j].overlaps++;
+				fabric[i][j].claims.push(patchId);
+			}
+		}
+	},
+	(line)=>{
+		console.log("looking for solo claim");
+		claims.forEach((claim)=>{
+			var atLeastOneOverlap = false;
+			//console.log("claim: id="+claim.id);
+			for (var i=claim.x;i<(claim.x+claim.w);i++){
+				for (var j=claim.y;j<(claim.y+claim.h);j++){
+					if (fabric[i][j].overlaps > 1){
+						atLeastOneOverlap = true;
+					}
+				}
+			}
+			if (!atLeastOneOverlap){
+				console.log("ding! no overlap for #"+claim.id);
+			}
+		});
+	}
+);
 
 
-//**************** UTILS *****************
+
+
+
+/**************** UTILS *****************/
 
 function processFile(inputFile,lineReaderFunction,endFileFunction) {
     var fs = require('fs'),
@@ -161,7 +217,7 @@ function processFile(inputFile,lineReaderFunction,endFileFunction) {
         endFileFunction(line);
     });
 }
-// reading the file
+
 
 
 
