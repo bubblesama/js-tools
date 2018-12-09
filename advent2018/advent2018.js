@@ -327,7 +327,7 @@ while (retry){
 	
 }
 console.log("ding! full reaction complete, keeping only "+currentChain.length+" units");
-*/
+
 //part 2
 var units = new Array();
 console.log("finding units");
@@ -375,7 +375,10 @@ units.forEach((unit)=>{
 	}
 });
 console.log("ding! best purged polymer size: "+minSize);
+*/
+//day 6
 
+//part 1
 
 
 
