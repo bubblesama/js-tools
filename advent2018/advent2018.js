@@ -249,6 +249,8 @@ processFile(
 	},
 	(line)=>{
 		console.log("activites parsed: "+lines+", starting sleeping analysis");
+		//part 1
+		/*
 		//finding the most sleepy guard
 		var mostSleepyGuard = -1;
 		var mostMinutesSlept = 0;
@@ -260,7 +262,7 @@ processFile(
 				console.log("current biggest sleeper: "+guardId+" with total sleep of "+mostMinutesSlept);
 			}
 		});
-		console.log("biggest sleeper found: "+mostSleepyGuard+", searching for sleepiest minute");
+		//console.log("biggest sleeper found: "+mostSleepyGuard+", searching for sleepiest minute");
 		var sleepiestGuardActivity = guards.get(mostSleepyGuard);
 		var sleepiestMinute = -1;
 		var mostSleptOverlap = 0;
@@ -268,13 +270,28 @@ processFile(
 			if (mostSleptOverlap < sleepiestGuardActivity.sleepSchedule[i]){
 				sleepiestMinute = i;
 				mostSleptOverlap = sleepiestGuardActivity.sleepSchedule[i];
-				console.log("current most sleep overlapt minute: "+sleepiestMinute+" with an overlap of "+mostSleptOverlap);
+				//console.log("current most sleep overlapt minute: "+sleepiestMinute+" with an overlap of "+mostSleptOverlap);
 			}
 		}
-		console.log("sleepiest minute of the sleepiest guard found: "+sleepiestMinute);
+		//console.log("sleepiest minute of the sleepiest guard found: "+sleepiestMinute);
 		var result = mostSleepyGuard * sleepiestMinute;
+		//console.log("ding: result="+result);
+		*/
+		// part2
+		var mostOverlappedMinute = -1;
+		var biggestOverlap = 0;
+		var linkedGuardId = -1;
+		guards.forEach((sleepActivity,guardId)=>{
+			for (var i=0;i<60;i++){
+				if (biggestOverlap < sleepActivity.sleepSchedule[i]){
+					biggestOverlap = sleepActivity.sleepSchedule[i];
+					mostOverlappedMinute = i;
+					linkedGuardId = guardId;
+				}
+			}
+		});
+		var result = linkedGuardId * mostOverlappedMinute;
 		console.log("ding: result="+result);
-		
 		
 	}
 );
