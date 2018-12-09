@@ -20,7 +20,6 @@ while (!found){
 	});
 	console.log("cycleCount="+(++cycleCount));
 }
-*/
 
 
 
@@ -28,8 +27,6 @@ while (!found){
 
 var input = ["rvefnvyxzbodgpnpkumawhijsc","rvefqtyxzsddglnppumawhijsc","rvefqtywzbodglnkkubawhijsc","rvefqpyxzbozglnpkumawhiqsc","rvefqtyxzbotgenpkuyawhijsc","rvefqtyxzbodglnlkumtphijsc","rwefqtykzbodglnpkumawhijss","rvynqtyxzbodglnpkumawrijsc","rvefqtyxlbodgcnpkumawhijec","rvefqtyxzbodmlnpnumawhijsx","rvefqtyxzbqdbdnpkumawhijsc","rvefqtyxzlodblnpkuiawhijsc","rvefqtyizrodelnpkumawhijsc","rveffjyxzgodglnpkumawhijsc","rvefqjyxzbodalnpkumadhijsc","rvefqtidzbodglnpkumawhdjsc","hvefqtygzbodglnpkumawhijfc","rzefqtyxzbodglfhkumawhijsc","rmefqtyxzbolglnpkumaehijsc","rnefqqyxzbodglnhkumawhijsc","rvwfqvyxzbodglnpcumawhijsc","rvefqtyxzbokgltpkumavhijsc","rvefciyxzbodglnmkumawhijsc","rvefptyxzbodglnpkuhashijsc","rvefqtyxzrodglnpkxmawhiqsc","rvefqtyxzbotglnpkumawriwsc","rvufqtyxzbodglnplumawhijvc","rvefutykzbodglnpkumaahijsc","rvefqtyxqbodgllprumawhijsc","rvegqttxzbodgllpkumawhijsc","dvefqtyxzsodglnpkumawdijsc","rvefqtyxkbodglnfkumawhijsj","rvefqtyxzbodnlnpcumawhijnc","rvefqtyxzbodglfpkuocwhijsc","rvecqtyxzbbdganpkumawhijsc","rvefytyxzbodglnpkubgwhijsc","rvefxtyazbomglnpkumawhijsc","rvefqgyxzbodglnpkumawyiksc","avefqtyxzbodglnfkummwhijsc","fvefqtyxzbbdglnpkumswhijsc","rvefqtyxzxodglnpkumuuhijsc","rvezqtyxzbydclnpkumawhijsc","rvefqtyxzbohglnpkumawdijjc","rvejqtyxzbodrlnpkumawhijsd","rvefitzxzbxdglnpkumawhijsc","rvefutyxzbvdglnikumawhijsc","rvefqtyazbodgqnbkumawhijsc","rvefqtyxzbolglnpkwmajhijsc","rvefqtyxzjodglnpgwmawhijsc","rvefhtyxzbodglbpaumawhijsc","mvexqtyxzbodglnpkumawrijsc","rvefqtyxwbodglnpkumawhbxsc","rvefqtyxzbodgsnpkudawsijsc","rvwfqtyxzbonglnwkumawhijsc","rvefqtyxzjodglnpkfmawhwjsc","rvefqtyxzbodglntkumughijsc","rvefctyxzbodglnpkumawhiwsx","avefqtyvzbodglnpkumawhijsb","rfefqtyxzlodglnphumawhijsc","rvefqtyxzfowglnpkumaehijsc","rvhfvtyxzbodgqnpkumawhijsc","rfefqtyxzbodglapkumuwhijsc","rvefqclxzbodglnzkumawhijsc","qvefqtyxzbodglnckumcwhijsc","rvefqtyxzkodglnpkymawgijsc","rvefqtyxzbodgfnpkumafhizsc","rvefqtyxzbodglnxkumavhijsf","rvevqtyxzbodgpnpkurawhijsc","rvefqtyxziodglnpkubawhijss","rrefqtpxzyodglnpkumawhijsc","rvefqfyxzbodglcpkxmawhijsc","rvefdtyxzbodglnpkumvwhijsn","rverqtyxzbodglnpkwmawhijuc","rvecjtyxzboxglnpkumawhijsc","rvefqtyxzbodglnpkqmaxhifsc","rtnfqtyxzbodglnpkumawhijmc","lvefqtyxzbodelnpkumawhijsz","dvefqtyxzbbdgvnpkumawhijsc","rvefqlyhzbodglnpkumtwhijsc","roefqtyxlbodglnpkumawhyjsc","rvefqsydzjodglnpkumawhijsc","rveybtyxzbodglnpkumawhijsn","rvefqtyhzbodgvnpmumawhijsc","rvefqxyazboddlnpkumawhijsc","vvefqtyxzbohglqpkumawhijsc","reefhtyxzbodglnpkkmawhijsc","rvefqtyxzbodglnpkulowhijrc","rveqqtyxzbodgknpkumawhijsk","jvefqtqxzbodglnpkumawiijsc","rvefqtyxzboxglnpvuqawhijsc","rvefquyxzbodglwwkumawhijsc","rvefqtyxzbodnlnpkumawhgjbc","rvdfqthxdbodglnpkumawhijsc","rvefqtyxzbodllnpkumawhujsb","evefqtyxzboyglnpkumowhijsc","rvefktyxzbomglnpzumawhijsc","rvefqtyxzbodhlnnkrmawhijsc","rvefqtyxrbodglnpkujaehijsc","rvefqtyzzbodglnpkumrwhijsb","evefqtyxzpodglfpkumawhijsc","rvefqtyxibodglkpyumawhijsc","rrefqtyxzbodglnpkudawhajsc","rvifqtyxzbodglxpkumawhijlc","rxefqtyxzbedglnpkumawhijsp","rvnfqtyxzbopglnpkuqawhijsc","rvefqtyxkbodglnpoumawoijsc","dvefwtyxzbodglnpksmawhijsc","rvkfqtyxzbodglnpkdmawhijsa","rcefytyxzzodglnpkumawhijsc","rvefqtkxzbodglnpktqawhijsc","nvezqhyxzbodglnpkumawhijsc","rrefqtyxzbodgunpkumpwhijsc","rvefqtaxzbodgknpkumawhijic","pvefqtyxzbodglnpkuxawsijsc","rvefqtyxzbodglkpvumawhjjsc","wvefqtyxzkodglnpkumawhhjsc","rzefqtyxzbotglnpkumawhxjsc","rvefqtxpzbodglnpkumawzijsc","bgefqtyxzbodglnpkrmawhijsc","rvefqlyxzbodglnpkumilhijsc","cbefqtyxzbodglnpkumawhiesc","rvefqtyxzbydelnpkumahhijsc","rvefntyxzbodglnpkumaehijsw","rverqtyxztodglopkumawhijsc","rvefqtyxzdodgwrpkumawhijsc","rvefqtyxibodglnikumawhtjsc","qvafqtyxzbodglnpkurawhijsc","rvefqtyxwbodglnpaumawoijsc","rvefqtyxzoodglndknmawhijsc","rvdfqtlxzyodglnpkumawhijsc","rvefqtyxzbodglngfumawhinsc","rsefqtyxzbodglnpkumawhijek","rvoestyxzbodglnpkumawhijsc","svefqtyxzboaglnprumawhijsc","rvefqtybzbodgwnpkumawwijsc","rvefqtyxzdwdglnpkvmawhijsc","rvlfqtyxzbodglnpkrmawhixsc","rvefqtyxwbodglepkumawhijsd","rvefqtbxzbodglnqkumawhijmc","rvefqtzxzbodglnpkumuzhijsc","rvefqtyxzbodglnpkumawzwnsc","rvwfqtyxzboiglnpkumawhijsg","rtehotyxzbodglnpkudawhijsc","rvegqtyxzbodglnpyumawhijsl","rvecqtyxzbsdglnpkumawhojsc","rvefqtyxzbodmlnpkumaghijfc","rvefqtyxzxodglnpkumanvijsc","rvefqtyxzbodglnbiugawhijsc","lvefqtlxzbodglnplumawhijsc","rvefqtyxvbodglnpkumaldijsc","rmefqtyxzbodgvnpkuuawhijsc","rvefqtyxzbodglnpkymeuhijsc","rvefqtyxzuodganpsumawhijsc","rxefqtyxzbodglnpkumgwhijwc","rvefgtyxzbodglnpkudawxijsc","ahefqtyxzbodglnpkumawhejsc","rfefqtyxzbzdglnpkusawhijsc","rvefqtyszqodgljpkumawhijsc","rvefqtylzboiglnpkumrwhijsc","rvefqtyxzltdglnpkumawhijsu","rbefqtyxzbodglnpqumawhijsi","rvefqtyozpodglnpkumawhijsa","zvefqtyxzpopglnpkumawhijsc","rvefqtyxzbodglnfkqmawhijsp","rvefqtyxzbodgliakumawhijsf","rvefqtymzrodgfnpkumawhijsc","ivejqtyxzbodglnpkumawhijuc","rvefqtyxzbodflnpkxwawhijsc","dvrfqtyxzbodglnpkumashijsc","rqefqtyxzbwdglnpkumawvijsc","tvefqtkxzbodgltpkumawhijsc","rvefdtyxzbodguxpkumawhijsc","rveqqtyxvbodglnykumawhijsc","rvefqtypzcovglnpkumawhijsc","rvefqnyxzbosglnpkumdwhijsc","rvefstjxzbodslnpkumawhijsc","rvefqzyxzpodglnpkummwhijsc","rvefqkyxzbodglnhgumawhijsc","rvufqvyxzbodklnpkumawhijsc","rvefotyxzhodglnpkumawhijsk","rvefqtyxzbokglnpkumawvcjsc","lvefqtyxzbolglnpkumawoijsc","rvefqtywzoodglfpkumawhijsc","rvehqtqxzbodglnpkumawhcjsc","rqefqtyxzbodolnpkumjwhijsc","rvefqtyxzbodglrpkunawgijsc","rvefqtyxzbodglamkumawdijsc","rvefvtyzzbodllnpkumawhijsc","rvefqtyxzbldglnpfcmawhijsc","rvefppyxzbodglnpkucawhijsc","rvefquyuzbodglnpkumkwhijsc","rvefqtyxzbodgqxpkumawhivsc","rtefotyxzbodglnpkudawhijsc","rvefqtyxzbodgbnmkuzawhijsc","ivefqtyxzbodgsnpkumzwhijsc","rvhfqtyxzbodolnpkumawhijsz","rvefvtyxzbodwlnpkusawhijsc","riemqtyxzbodglnpkumawhiasc","rvtfqtyxzbqdglnpkumawuijsc","raesqtyxzbodglnpkumawhijsj","rvefqtyxzbodalmpkumawhihsc","rvefqtlxzbodgznpkkmawhijsc","rvefqbyxzbodglgpkubawhijsc","rvefqtyxnbodgxnpkumswhijsc","rvefqtyxzkodvlnukumawhijsc","rvefqtyzzbocglnpkumafhijsc","rvhfqtyxzbodglmpkumgwhijsc","rvsfrtyxzbodnlnpkumawhijsc","rvefqtyxzbxdglnpkujcwhijsc","rvefqtyvzrodglnphumawhijsc","reetatyxzbodglnpkumawhijsc","rvefqtyxzbodglnpzumaoqijsc","ovefqtyyzbodglnvkumawhijsc","rvefqbyxzbodnlnpkumawhijsi","xvefqtyxzbodgrnpkumawrijsc","rvebqtyxzbodglnpkumazhiasc","rqeretyxzbodglnpkumawhijsc","rvefqtyxzyodglapkumvwhijsc","rvesqxyxzbodglnpvumawhijsc","rvefqtyxeborglnpkufawhijsc","rvecqtyxzbodflnpkumawnijsc","rvefdpyxtbodglnpkumawhijsc","rvefqtyfzbodclnpkymawhijsc","rvefqtywzbodglnpxumawhiusc","rvefqtyxzbodglnpkumawzbjwc","rvewqtyxdbodglnpxumawhijsc","rvefqtyxzgocglnpkgmawhijsc","rvufqtyxzbodggnpkuzawhijsc","rvefqtynzlodgllpkumawhijsc","rvedqtyxzbodghnpkumawhujsc","rvefqtyxlbodgnnpkpmawhijsc","rvefqtyxzboqglnpkzmawhijec","rvefqtyxzbodglnpkfmwwyijsc","rwefqtkxzbodzlnpkumawhijsc","rvefqtyxvbodglnpkufawhyjsc","rvefqtyxzbodgltpkumawhqmsc","rvefctyxzbodglfpkumathijsc","rvefqtyxzbodgfnpkuuawhijfc","rvefqttxzbodglnpmumawhijwc","rvefqtyxzbodglnpkqmawhihsj","rvefqtyxzbsdglcnkumawhijsc","rvbiqtyxzbodglnpkumawhijlc","rnefqtylzvodglnpkumawhijsc","mvefqtyxzbddglnpkumcwhijsc","rvefwtyxzbodglnpkgmawhijxc","rvefqtyxljodglnpkumxwhijsc","rvefqtyxzbodglnpkuprwhijsd","rcxfqtyxzbldglnpkumawhijsc","rvetqtyxzbojglnpkumewhijsc","rvxfqtyxzbtdglnpkbmawhijsc"];
 
-
-/*
 //part 1
 var with2OccurencesBoxCount = 0;
 var with3OccurencesBoxCount = 0;
@@ -62,7 +59,7 @@ input.forEach((boxId)=>{
 });
 
 console.log("checksum="+(with2OccurencesBoxCount*with3OccurencesBoxCount));
-*/
+
 //part 2
 
 
@@ -96,6 +93,81 @@ for (var i in input){
 	}
 	//console.log("end tries="+tries);
 }
+
+*/
+
+//day 3
+
+//part1
+var size = 1000;
+console.log("init fabric");
+//create fabric
+var fabric = new Array(size);
+for (var i=0;i<size;i++){
+	fabric[i] = new Array(size);
+	for (var j=0;j<size;j++){
+		fabric[i][j] = 0;
+	}
+}
+console.log("analysing patches");
+//#1358 @ 218,557: 13x17
+var patchFileRegexp = /#(\d+) @ (\d+),(\d+): (\d+)x(\d+)/;
+processFile(
+	"day3-input.txt",
+	(line)=>{
+		//console.log("processFile patch: raw="+line);
+		var patchParsingResult = patchFileRegexp.exec(line);
+		var patchId = +patchParsingResult[1];
+		var patchX = +patchParsingResult[2];
+		var patchY = +patchParsingResult[3];
+		var patchW = +patchParsingResult[4];
+		var patchH = +patchParsingResult[5];
+		//console.log("processFile patch: patchId="+patchId+" patchX="+patchX+" patchY="+patchY+" patchW="+patchW+" patchH="+patchH);
+		for (var i=patchX;i<(patchX+patchW);i++){
+			for (var j=patchY;j<(patchY+patchH);j++){
+				fabric[i][j]++;
+			}
+		}
+	},
+	(line)=>{
+		console.log("counting overlaps");
+		var overlapCount = 0;
+		for (var i=0;i<size;i++){
+			for (var j=0;j<size;j++){
+				if (fabric[i][j]>1){overlapCount++;}
+			}
+		}
+		console.log("overlaps="+overlapCount);
+	}
+);
+
+
+//**************** UTILS *****************
+
+function processFile(inputFile,lineReaderFunction,endFileFunction) {
+    var fs = require('fs'),
+        readline = require('readline'),
+        instream = fs.createReadStream(inputFile),
+        outstream = new (require('stream'))(),
+        lineReader = readline.createInterface(instream, outstream);
+     
+    lineReader.on('line', function (line) {
+		//console.log("processFile#on IN");
+        lineReaderFunction(line);
+		//console.log("processFile#on OUT");
+    });
+	
+	lineReader.on('close', function (line) {
+        endFileFunction(line);
+    });
+}
+// reading the file
+
+
+
+
+
+
 
 
 
