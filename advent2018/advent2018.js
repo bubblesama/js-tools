@@ -379,7 +379,28 @@ console.log("ding! best purged polymer size: "+minSize);
 //day 6
 
 //part 1
-
+var minX = 1000,maxX = 0 ,minY = 1000,maxY = 0;
+var coordinatesRegexp = /(\d+), (\d+)/;
+var coordinates = new Array();
+console.log("parsing coordinates, finding borders");
+processFile(
+	"day6-input.txt",
+	(line)=>{
+		//console.log("line="+line);
+		var coordinatesParsingResult = coordinatesRegexp.exec(line);
+		var x = +(coordinatesParsingResult[1]);
+		var y = +(coordinatesParsingResult[2]);
+		coordinates.push({"x":x,"y":y});
+		//console.log("coordinates: x="+x+" y="+y);
+		if (x<minX){minX=x;}//console.log("new minX="+minX);}
+		if (x>maxX){maxX=x;}//console.log("new maxX="+maxX);}
+		if (y<minY){minY=y;}//console.log("new minY="+minY);}
+		if (y>maxY){maxY=y;}//console.log("new maxY="+maxY);}
+	},
+	(line)=>{
+		console.log("borders: left="+minX+" right="+maxX+" up="+minY+" down="+maxY);
+	}
+);
 
 
 
