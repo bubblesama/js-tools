@@ -595,7 +595,6 @@ console.log("ding! total metadata: "+parseNode(simpleLicense1.split(' ')).metada
 console.log("ding! total metadata: "+parseNode(simpleLicense2.split(' ')).metadata);
 console.log("ding! total metadata: "+parseNode(complexLicense.split(' ')).metadata);
 console.log("ding! total metadata: "+parseNode(license.split(' ')).metadata);
-*/
 
 //day8 part2
 var parseNode = function(nodes){
@@ -635,6 +634,67 @@ console.log("ding! value: "+parseNode(simpleLicense1.split(' ')).value);
 console.log("ding! value: "+parseNode(simpleLicense2.split(' ')).value);
 console.log("ding! value: "+parseNode(complexLicense.split(' ')).value);
 console.log("ding! value: "+parseNode(license.split(' ')).value);
+
+*/
+
+//day 9
+//491 players; last marble is worth 71058 points
+//var playersAmount = 491;
+//var maxMarble = 71058;
+var playersAmount = 17;
+var maxMarble = 1104;
+
+
+//[8]  0 (8) 4  2  5  1  6  3  7
+var scores = new Array(playersAmount);
+for (var i=0;i<playersAmount;i++){
+	scores[i] = 0;
+}
+var circle = [0,8,4,2,5,1,6,3,7];
+var currentMarble = 8;
+var player = 9;
+var marble = 9;
+//next step
+console.log("playing the game!");
+while (marble<=maxMarble){
+	var currentMarbleIndex = circle.indexOf(currentMarble);
+	var multipleOf23 = ((marble %23) == 0);
+	if (multipleOf23){
+		//score for marble to place
+		scores[player-1] += marble;
+		//removing the special marble
+		var removedMarble = circle.splice((currentMarbleIndex-7+circle.length)%circle.length,1)[0];
+		scores[player-1] += removedMarble;
+		console.log("score: player="+player+" removedMarble="+removedMarble+" marble="+marble);
+		currentMarble = circle[(currentMarbleIndex-7+circle.length)%circle.length];
+	}else{
+		//console.log("currentMarbleIndex="+currentMarbleIndex);
+		var insertionIndex = (currentMarbleIndex + 2 + circle.length) %  circle.length;
+		circle.splice(insertionIndex,0,marble);
+		currentMarble = marble;
+		if (player > playersAmount){
+			player = 1;
+		}
+		//console.log("new circle: "+circle.join());
+	}
+	player++;
+	marble++;
+}
+//
+console.log("game played, counting scores");
+var maxScore = 0;
+var maxPlayer = -1;
+for (var i=0;i<playersAmount;i++){
+	if (scores[i]>maxScore){
+		maxScore=scores[i];
+		maxPlayer = i+1;
+	}
+}
+console.log("ding! "+maxPlayer+" maxed at "+maxScore);
+
+var test = (5-7+12*2)%12;
+console.log(test);
+
 
 /**************** UTILS *****************/
 function processFile(inputFile,lineReaderFunction,endFileFunction) {
