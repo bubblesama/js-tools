@@ -374,7 +374,7 @@ units.forEach((unit)=>{
 	}
 });
 console.log("ding! best purged polymer size: "+minSize);
-*/
+
 //day 6
 
 //part 1
@@ -482,6 +482,66 @@ processFile(
 			}
 		});
 		console.log("ding! biggest area="+biggestArea);
+	}
+);
+*/
+
+//part 2
+//searching for combined distance smaller than 10000 with 50 points: mean distance of 200
+
+var minX = 1000,maxX = 0 ,minY = 1000,maxY = 0;
+var coordinatesRegexp = /(\d+), (\d+)/;
+var coordinates = new Map();
+console.log("parsing coordinates, finding borders");
+processFile(
+	"day6-input.txt",
+	(line)=>{
+		//console.log("line="+line);
+		var coordinatesParsingResult = coordinatesRegexp.exec(line);
+		var x = +(coordinatesParsingResult[1]);
+		var y = +(coordinatesParsingResult[2]);
+		coordinates.set(line, {"x":x,"y":y});
+		//console.log("coordinates: x="+x+" y="+y);
+		if (x<minX){minX=x;}
+		if (x>maxX){maxX=x;}
+		if (y<minY){minY=y;}
+		if (y>maxY){maxY=y;}
+	},
+	(line)=>{
+		console.log("borders: left="+minX+" right="+maxX+" up="+minY+" down="+maxY);
+		//bigger board to account for the distance of 10000
+		var boardWidth = (maxX - minX)+1000;
+		var boardHeight = (maxY - minY)+1000;
+		console.log("populating the board: size="+boardWidth+"x"+boardHeight);
+		//init board
+		var board = new Array(boardWidth);
+		for (var i=0;i<boardWidth;i++){
+			board[i] = new Array(boardHeight);
+			for (var j=0;j<boardHeight;j++){
+				board[i][j] = {"x":(minX+i-500), "y": (minY+j-500),"distance": 0};
+			}
+		}
+		console.log("board populated, calculating combined distance");
+		coordinates.forEach((point,name)=>{
+			for (var i=0;i<boardWidth;i++){
+				for (var j=0;j<boardHeight;j++){
+					var cell = board[i][j];
+					var singleDistance = manhattan(point.x,point.y,cell.x,cell.y);
+					cell.distance += singleDistance;
+				}
+			}
+		});
+		//counting area per coordinates
+		console.log("combined distances calculated, computing <10000 area");
+		var area = 0;
+		for (var j=0;j<boardHeight;j++){
+			for (var i=0;i<boardWidth;i++){
+				if (board[i][j].distance < 10000){
+					area++;
+				}
+			}
+		}
+		console.log("ding! total area: "+area); 
 	}
 );
 
