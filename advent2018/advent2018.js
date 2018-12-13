@@ -639,10 +639,10 @@ console.log("ding! value: "+parseNode(license.split(' ')).value);
 
 //day 9
 //491 players; last marble is worth 71058 points
-//var playersAmount = 491;
-//var maxMarble = 71058;
-var playersAmount = 17;
-var maxMarble = 1104;
+var playersAmount = 491;
+var maxMarble = 71058;
+//var playersAmount = 10;
+//var maxMarble = 1618;
 
 
 //[8]  0 (8) 4  2  5  1  6  3  7
@@ -665,19 +665,21 @@ while (marble<=maxMarble){
 		//removing the special marble
 		var removedMarble = circle.splice((currentMarbleIndex-7+circle.length)%circle.length,1)[0];
 		scores[player-1] += removedMarble;
-		console.log("score: player="+player+" removedMarble="+removedMarble+" marble="+marble);
+		//console.log("score: player="+player+" removedMarble="+removedMarble+" marble="+marble);
 		currentMarble = circle[(currentMarbleIndex-7+circle.length)%circle.length];
+		//console.log("new circle: "+circle.join());
 	}else{
 		//console.log("currentMarbleIndex="+currentMarbleIndex);
 		var insertionIndex = (currentMarbleIndex + 2 + circle.length) %  circle.length;
 		circle.splice(insertionIndex,0,marble);
 		currentMarble = marble;
-		if (player > playersAmount){
-			player = 1;
-		}
+		
 		//console.log("new circle: "+circle.join());
 	}
 	player++;
+	if (player > playersAmount){
+		player = 1;
+	}
 	marble++;
 }
 //
