@@ -696,6 +696,7 @@ for (var i=0;i<playersAmount;i++){
 console.log("ding! "+maxPlayer+" maxed at "+maxScore);
 //day9part2= 2945647563?
 
+*/
 //day10part1
 
 var day10part1 = function(){
@@ -777,20 +778,38 @@ var day10part1 = function(){
 	);
 };
 
-day10part1();
-*/
+//day10part1();
 
 //day11
-var day11 = function(){
+var day11part1 = function(){
 	var serialNumber = 1955;
-	console.log("creating power grid");
+	console.log("booting power grid");
 	var size = 300;
 	var grid = new Array(size);
 	for (var i=0;i<size;i++){
 		grid[i] = new Array(size);
 		for (var j=0;j<size;j++){
+			grid[i][j] = {"x": i+1, "y": j+1, "power": getPowerCellLevel(i+1,j+1,serialNumber)};
 		}
 	}
+	console.log("power grid booted, cumulating power");
+	var maxPower = -1000;
+	var maxPowerTopLeftCoordinates = "";
+	for (var i=1;i<size-1;i++){
+		for (var j=1;j<size-1;j++){
+			var total = 0;
+			for (var x=-1;x<2;x++){
+				for (var y=-1;y<2;y++){
+					total += grid[i+x][j+y].power;
+				}
+			}
+			if (total > maxPower){
+				maxPower = total;
+				maxPowerTopLeftCoordinates = i+","+j;
+			}
+		}
+	}
+	console.log("ding! max power of "+maxPower+" on "+maxPowerTopLeftCoordinates);
 };
 
 var getPowerCellLevel = function(x,y,serial){
@@ -803,9 +822,12 @@ var getPowerCellLevel = function(x,y,serial){
 //Fuel cell at  122,79, grid serial number 57: power level -5.
 //Fuel cell at 217,196, grid serial number 39: power level  0.
 //Fuel cell at 101,153, grid serial number 71: power level  4.
-console.log(getPowerCellLevel(122,79,57));
-console.log(getPowerCellLevel(217,196,39));
-console.log(getPowerCellLevel(101,153,71));
+//console.log(getPowerCellLevel(122,79,57));
+//console.log(getPowerCellLevel(217,196,39));
+//console.log(getPowerCellLevel(101,153,71));
+
+day11part1();
+
 
 
 
