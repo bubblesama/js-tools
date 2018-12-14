@@ -782,6 +782,14 @@ var day10part1 = function(){
 
 //day11
 var day11part1 = function(){
+	console.log("booting power grid");
+	var grid = getBootedGrid(300,1955);
+	console.log("power grid booted, cumulating power");
+	var maximum = getMaxGridPower(grid,3);
+	console.log("ding! max power of "+maximum.max+" on "+maximum.spot);
+};
+
+var day11part2 = function(){
 	var serialNumber = 1955;
 	console.log("booting power grid");
 	var size = 300;
@@ -795,6 +803,17 @@ var day11part1 = function(){
 	console.log("power grid booted, cumulating power");
 	var maximum = getMaxGridPower(grid,3);
 	console.log("ding! max power of "+maximum.max+" on "+maximum.spot);
+};
+
+var getBootedGrid = function(size,serial){
+	var grid = new Array(size);
+	for (var i=0;i<size;i++){
+		grid[i] = new Array(size);
+		for (var j=0;j<size;j++){
+			grid[i][j] = {"x": i+1, "y": j+1, "power": getPowerCellLevel(i+1,j+1,serial)};
+		}
+	}
+	return grid;
 };
 
 //return {max:<max power, spot: <x,y for the top-left corner with max power>}
@@ -835,8 +854,9 @@ var getPowerCellLevel = function(x,y,serial){
 //console.log(getPowerCellLevel(122,79,57));
 //console.log(getPowerCellLevel(217,196,39));
 //console.log(getPowerCellLevel(101,153,71));
-
 day11part1();
+
+
 
 
 
