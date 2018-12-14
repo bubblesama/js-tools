@@ -780,11 +780,32 @@ var day10part1 = function(){
 day10part1();
 */
 
+//day11
+var day11 = function(){
+	var serialNumber = 1955;
+	console.log("creating power grid");
+	var size = 300;
+	var grid = new Array(size);
+	for (var i=0;i<size;i++){
+		grid[i] = new Array(size);
+		for (var j=0;j<size;j++){
+		}
+	}
+};
 
+var getPowerCellLevel = function(x,y,serial){
+	var rackId = x+10;
+	var rawPower = ((((rackId*y)+serial)*rackId)+"");
+	return  power = (+((rawPower.length < 3)?0:rawPower.substring(rawPower.length-3,rawPower.length-2)))-5;
 
+}
 
-
-
+//Fuel cell at  122,79, grid serial number 57: power level -5.
+//Fuel cell at 217,196, grid serial number 39: power level  0.
+//Fuel cell at 101,153, grid serial number 71: power level  4.
+console.log(getPowerCellLevel(122,79,57));
+console.log(getPowerCellLevel(217,196,39));
+console.log(getPowerCellLevel(101,153,71));
 
 
 
