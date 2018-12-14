@@ -638,9 +638,10 @@ console.log("ding! value: "+parseNode(license.split(' ')).value);
 */
 
 //day 9
+/*
 //491 players; last marble is worth 71058 points
 var playersAmount = 491;
-var maxMarble = 71058;
+var maxMarble = 71058;//*100 for part 2
 //var playersAmount = 10;
 //var maxMarble = 1618;
 
@@ -693,9 +694,75 @@ for (var i=0;i<playersAmount;i++){
 	}
 }
 console.log("ding! "+maxPlayer+" maxed at "+maxScore);
+*/
+//day9part2= 2945647563?
 
-var test = (5-7+12*2)%12;
-console.log(test);
+//day10part1
+var day10part1 = function(){
+	var specks = [];
+	console.log("listing specks...");
+	processFile(
+		"day10-input.txt",
+		(line)=>{
+			//position=<-30286,  40774> velocity=< 3, -4>
+			//console.log(line);
+			var x0 = +(line.substring(10,16));
+			var y0 = +(line.substring(18,24));
+			var dx = +(line.substring(36,38));
+			var dy = +(line.substring(40,42));
+			//console.log(""+x0+" "+y0+" "+dx+" "+dy);
+			specks.push({"x0":x0,"y0":y0,"dx":dx,"dy":dy,"x":x0,"y":y0});
+		},
+		(line)=>{
+			console.log("specks listed, calculating borders...");
+			var minX = 0, maxX = 0, minY=0, maxY = 0;
+			specks.forEach(speck=>{
+				minX = Math.min(minX,speck.x);
+				maxX = Math.max(maxX,speck.x);
+				minY = Math.min(minY,speck.y);
+				maxY = Math.max(maxY,speck.y);
+			});
+			var maxStep = 10000;
+			console.log("borders: "+minX+" "+maxX+" "+minY+" "+maxY+", stepping for continuous up/down or until step "+maxStep);
+			var isContinuous = false;
+			var currentStep = 0;
+			while (currentStep<maxStep && !isContinuous){
+				var ys = [];
+				// stepping and keeping y
+				specks.forEach(speck=>{
+					speck.x += speck.dx;
+					speck.y += speck.dy
+					ys.push(speck.y);
+				});
+				// checking continuousness
+				var sortedYs = ys.sort();
+				isContinuous = true;
+				var currentY = sortedYs[0];
+				for (var k=1;k<sortedYs.length;k++){
+					isContinuous = (sortedYs[k] == currentY+1);
+					currentY = sortedYs[k];
+				}
+				currentStep++;
+			}
+			console.log("ending on step #"+currentStep+",preparing rendering...");
+			//calculating image size
+			//minX = 0, maxX = 0, minY=0; maxY = 0;
+			
+			
+			
+		}
+	);
+};
+
+
+day10part1();
+
+
+
+
+
+
+
 
 
 /**************** UTILS *****************/

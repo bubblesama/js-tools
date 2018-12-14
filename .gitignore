@@ -7,3 +7,5 @@ taskmaster/tasks.db
 miettes/node_modules/
 
 games/node_modules/
+
+advent2018/node_modules/
