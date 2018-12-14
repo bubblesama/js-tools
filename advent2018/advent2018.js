@@ -792,13 +792,22 @@ var day11part1 = function(){
 var day11part2 = function(){
 	console.log("booting power grid");
 	var grid = getBootedGrid(300,1955);
+	console.log("power grid booted, calculating power");
 	var maxPower = -(300*300*5+10);
 	var maxSpot = -1;
 	var maxSize = -1;
-	for (var size=1;size++;size<300){
-		
-		size++;
+	for (var size=1;size<300;size++){
+		var currentMax = getMaxGridPower(grid,size);
+		if (currentMax.max > maxPower){
+			maxSize = size;
+			maxSpot = currentMax.spot;
+			maxPower = currentMax.max;
+		}
+		console.log(size);
 	}
+	var finalResult = maxSpot+","+maxSize;
+	console.log("ding! max for power "+maxPower+": "+finalResult);
+	//ding! max for power 168: 237,114,13 => 231,108,13
 };
 
 var getBootedGrid = function(size,serial){
@@ -813,27 +822,27 @@ var getBootedGrid = function(size,serial){
 };
 
 //return {max:<max power, spot: <x,y for the top-left corner with max power>}
-// grid: square matrix, range: size of the submatrix, not multiple of 2
+// grid: square matrix, range: size of the submatrix, not multiple of 2 
 var getMaxGridPower = function(grid,range){
 	var maxPower = -(range*range*5+1000);
 	var maxPowerTopLeftCoordinates = "";
-	var semiRange = Math.floor(range/2);
 	var size = grid.length;
-	for (var i=semiRange;i<size-semiRange;i++){
-		for (var j=semiRange;j<size-semiRange;j++){
+	for (var i=0;i<size-range;i++){
+		for (var j=0;j<size-range;j++){
 			var total = 0;
-			for (var x=-semiRange;x<semiRange+1;x++){
-				for (var y=-semiRange;y<semiRange+1;y++){
+			for (var x=0;x<range;x++){
+				for (var y=0;y<range;y++){
 					total += grid[i+x][j+y].power;
 				}
 			}
 			if (total > maxPower){
 				maxPower = total;
-				maxPowerTopLeftCoordinates = i+","+j;
+				maxPowerTopLeftCoordinates = (i+1)+","+(j+1);
 			}
 		}
 	}
 	return {"max":maxPower,"spot": maxPowerTopLeftCoordinates};
+	
 };
 
 // return an int: power level
@@ -854,6 +863,14 @@ var getPowerCellLevel = function(x,y,serial){
 day11part2();
 
 
+
+var day12part1 = function(){
+	var initialState = "##.###.......#..#.##..#####...#...#######....##.##.##.##..#.#.##########...##.##..##.##...####..####";
+	
+	
+	
+	
+};
 
 
 
