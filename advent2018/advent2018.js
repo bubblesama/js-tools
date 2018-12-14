@@ -694,10 +694,10 @@ for (var i=0;i<playersAmount;i++){
 	}
 }
 console.log("ding! "+maxPlayer+" maxed at "+maxScore);
-*/
 //day9part2= 2945647563?
 
 //day10part1
+
 var day10part1 = function(){
 	var specks = [];
 	console.log("listing specks...");
@@ -711,7 +711,7 @@ var day10part1 = function(){
 			var dx = +(line.substring(36,38));
 			var dy = +(line.substring(40,42));
 			//console.log(""+x0+" "+y0+" "+dx+" "+dy);
-			specks.push({"x0":x0,"y0":y0,"dx":dx,"dy":dy,"x":x0,"y":y0});
+			specks.push({"x0":x0,"y0":y0,"dx":dx,"dy":dy,"x":x0,"y":y0}); 	
 		},
 		(line)=>{
 			console.log("specks listed, calculating borders...");
@@ -747,15 +747,39 @@ var day10part1 = function(){
 			console.log("ending on step #"+currentStep+",preparing rendering...");
 			//calculating image size
 			//minX = 0, maxX = 0, minY=0; maxY = 0;
-			
-			
+			var picMinX = 0, picMaxX = 0, picMinY = 0, picMaxY = 0;
+			specks.forEach(speck=>{
+				picMinX = Math.min(picMinX,speck.x);
+				picMaxX = Math.max(picMaxX,speck.x);
+				picMinY = Math.min(picMinY,speck.y);
+				picMaxY = Math.max(picMaxY,speck.y);
+			});
+			var picW = picMaxX - picMinX;
+			var picH = picMaxY - picMinY;
+			console.log("pic size: w="+picW+" h="+picH+", specks from "+picMinX+","+picMinY+" to "+picMaxX+","+picMaxY);
+			var Jimp = require('jimp');
+			new Jimp(picW/10,picH/10, "#FFFFFF", (error, image) => {
+				var painted = 0;
+				specks.forEach(speck=>{
+					var picI = speck.x - picMinX;
+					var picJ = speck.y - picMinY;
+					if (picI<(picW/10) && picJ <(picH/10)){
+						image.setPixelColor(0x999999ff, picI, picJ);
+						painted++;
+					}
+				});
+				
+				image.setPixelColor(0x999999ff, 3, 3);
+				image.write("test.bmp",function(){console.log("pic done, pixels painted: "+painted );});
+			});
 			
 		}
 	);
 };
 
-
 day10part1();
+*/
+
 
 
 
