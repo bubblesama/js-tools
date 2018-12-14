@@ -793,13 +793,22 @@ var day11part1 = function(){
 		}
 	}
 	console.log("power grid booted, cumulating power");
-	var maxPower = -1000;
+	var maximum = getMaxGridPower(grid,3);
+	console.log("ding! max power of "+maximum.max+" on "+maximum.spot);
+};
+
+//return {max:<max power, spot: <x,y for the top-left corner with max power>}
+// grid: square matrix, range: size of the submatrix, not multiple of 2
+var getMaxGridPower = function(grid,range){
+	var maxPower = -(range*range*5+1000);
 	var maxPowerTopLeftCoordinates = "";
-	for (var i=1;i<size-1;i++){
-		for (var j=1;j<size-1;j++){
+	var semiRange = Math.floor(range/2);
+	var size = grid.length;
+	for (var i=semiRange;i<size-semiRange;i++){
+		for (var j=semiRange;j<size-semiRange;j++){
 			var total = 0;
-			for (var x=-1;x<2;x++){
-				for (var y=-1;y<2;y++){
+			for (var x=-semiRange;x<semiRange+1;x++){
+				for (var y=-semiRange;y<semiRange+1;y++){
 					total += grid[i+x][j+y].power;
 				}
 			}
@@ -809,15 +818,16 @@ var day11part1 = function(){
 			}
 		}
 	}
-	console.log("ding! max power of "+maxPower+" on "+maxPowerTopLeftCoordinates);
+	return {"max":maxPower,"spot": maxPowerTopLeftCoordinates};
 };
 
+// return an int: power level
 var getPowerCellLevel = function(x,y,serial){
 	var rackId = x+10;
 	var rawPower = ((((rackId*y)+serial)*rackId)+"");
 	return  power = (+((rawPower.length < 3)?0:rawPower.substring(rawPower.length-3,rawPower.length-2)))-5;
 
-}
+};
 
 //Fuel cell at  122,79, grid serial number 57: power level -5.
 //Fuel cell at 217,196, grid serial number 39: power level  0.
