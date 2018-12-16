@@ -889,21 +889,7 @@ var day12part1 = function(){
 			var currentStage = fullInitialState;
 			for (var i=0;i<20;i++){
 				console.log(currentStage);
-				var nextStage = "..";
-				for (var k=(minimalIndex+2);k<gardenLength-4;k++){
-					var localState = currentStage.substring(-minimalIndex+k-2,-minimalIndex+k+3);
-					//console.log("k="+k);
-					var newLocalState = "?";
-					if (resultByPattern.get(localState)){
-						newLocalState = resultByPattern.get(localState);
-					}else{
-						newLocalState = ".";
-						// console.log("! no state matching "+localState);
-					}
-					nextStage += newLocalState;
-				}
-				nextStage += "..";
-				currentStage = nextStage;
+				currentStage = getRawNewGarden(resultByPattern,currentStage);	
 			}
 			console.log("growth complete, calculating garden value");
 			var total = 0;
@@ -917,10 +903,23 @@ var day12part1 = function(){
 	);
 };
 
+var getRawNewGarden = function (resultByPattern, garden){
+	var nextStage = "..";
+	for (var k=2;k<garden.length-2;k++){
+		var localState = garden.substring(k-2,k+3);
+		var newLocalState = "?";
+		if (resultByPattern.get(localState)){
+			newLocalState = resultByPattern.get(localState);
+		}else{
+			newLocalState = ".";
+		}
+		nextStage += newLocalState;
+	}
+	nextStage += "..";
+	return nextStage;
+};
+
 day12part1();
-
-
-
 
 /**************** UTILS *****************/
 function processFile(inputFile,lineReaderFunction,endFileFunction) {
