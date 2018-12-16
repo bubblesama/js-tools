@@ -860,17 +860,65 @@ var getPowerCellLevel = function(x,y,serial){
 //console.log(getPowerCellLevel(217,196,39));
 //console.log(getPowerCellLevel(101,153,71));
 //day11part1();
-day11part2();
+//day11part2();
 
 
 
 var day12part1 = function(){
 	var initialState = "##.###.......#..#.##..#####...#...#######....##.##.##.##..#.#.##########...##.##..##.##...####..####";
-	
-	
-	
-	
+	var prefix = ".........................";
+	var suffix = "..................................................................";
+	var minimalIndex = -(prefix.length);
+	var fullInitialState = prefix+""+initialState+""+suffix;
+	var gardenLength = fullInitialState.length;
+	var resultByPattern = new Map();
+	console.log("garden planted with "+gardenLength+" spots starting at "+minimalIndex+", parsing growth combinations...");
+	processFile(
+		"day12-input.txt",
+		(line)=>{
+			//console.log("line= "+line);
+			var pattern = line.substring(0,5);
+			//console.log("pattern= "+pattern);
+			var result = line.substring(9,10);
+			//console.log("pattern= "+pattern+" result="+result);
+			resultByPattern.set(pattern,result)
+			
+		},
+		(line)=>{
+			console.log("combinations parsed, growing...");
+			var currentStage = fullInitialState;
+			for (var i=0;i<20;i++){
+				console.log(currentStage);
+				var nextStage = "..";
+				for (var k=(minimalIndex+2);k<gardenLength-4;k++){
+					var localState = currentStage.substring(-minimalIndex+k-2,-minimalIndex+k+3);
+					//console.log("k="+k);
+					var newLocalState = "?";
+					if (resultByPattern.get(localState)){
+						newLocalState = resultByPattern.get(localState);
+					}else{
+						newLocalState = ".";
+						// console.log("! no state matching "+localState);
+					}
+					nextStage += newLocalState;
+				}
+				nextStage += "..";
+				currentStage = nextStage;
+			}
+			console.log("growth complete, calculating garden value");
+			var total = 0;
+			for (var k=0;k<currentStage.length;k++){
+				if (currentStage.charAt(k) == "#"){
+					total += k+minimalIndex;	
+				}
+			}
+			console.log("ding! garden value: "+total);
+		}
+	);
 };
+
+day12part1();
+
 
 
 
