@@ -862,17 +862,11 @@ var getPowerCellLevel = function(x,y,serial){
 //day11part1();
 //day11part2();
 
-
-
 var day12part1 = function(){
 	var initialState = "##.###.......#..#.##..#####...#...#######....##.##.##.##..#.#.##########...##.##..##.##...####..####";
-	var prefix = ".........................";
-	var suffix = "..................................................................";
-	var minimalIndex = -(prefix.length);
-	var fullInitialState = prefix+""+initialState+""+suffix;
-	var gardenLength = fullInitialState.length;
+	var filler = "............................................";
 	var resultByPattern = new Map();
-	console.log("garden planted with "+gardenLength+" spots starting at "+minimalIndex+", parsing growth combinations...");
+	console.log("garden planted with "+initialState.length+" spots, parsing growth combinations...");
 	processFile(
 		"day12-input.txt",
 		(line)=>{
@@ -886,12 +880,17 @@ var day12part1 = function(){
 		},
 		(line)=>{
 			console.log("combinations parsed, growing...");
-			var currentStage = fullInitialState;
+			//var trimAndBorder = trimAndBorderGarden(initialState);
+			var currentStage = filler+initialState+filler;
+			var minimalIndex = -(filler.length);
 			for (var i=0;i<20;i++){
-				console.log(currentStage);
-				currentStage = getRawNewGarden(resultByPattern,currentStage);	
+				//console.log(currentStage);
+				//currentStage = getRawNewGarden(resultByPattern,currentStage);
+				trimAndBorder = trimAndBorderGarden(getRawNewGarden(resultByPattern,currentStage));	
+				currentStage = trimAndBorder.garden;
+				minimalIndex += trimAndBorder.delta;
 			}
-			console.log("growth complete, calculating garden value");
+			//console.log("growth complete, calculating garden value");
 			var total = 0;
 			for (var k=0;k<currentStage.length;k++){
 				if (currentStage.charAt(k) == "#"){
@@ -922,7 +921,26 @@ var getRawNewGarden = function (resultByPattern, garden){
 	return nextStage;
 };
 
+// return garden: new string for garden, delta: variation on the minimal index
+var trimAndBorderGarden = function(garden){
+	var trimmed = garden.substring(garden.indexOf("#"),garden.lastIndexOf("#")+1);
+	var deltaFirst = (garden.indexOf("#")-4);
+	var bordered = "...."+trimmed+"..."; 
+	return {"garden":bordered, "delta":deltaFirst};
+};
+
 day12part1();
+
+//var garden = "..#.#...";
+//console.log(garden);
+//var trimAndBorder = trimAndBorderGarden(garden);
+//garden = trimAndBorder.garden;
+//console.log(garden);
+//console.log(trimAndBorder.delta);
+
+
+
+
 
 /**************** UTILS *****************/
 function processFile(inputFile,lineReaderFunction,endFileFunction) {
