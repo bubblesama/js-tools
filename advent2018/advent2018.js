@@ -903,6 +903,9 @@ var day12part1 = function(){
 	);
 };
 
+// go through one step on a garden;
+// return elevated garden
+// resultByPatternmatching of five spots pattern with, garden: current garden state
 var getRawNewGarden = function (resultByPattern, garden){
 	var nextStage = "..";
 	for (var k=2;k<garden.length-2;k++){
