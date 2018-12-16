@@ -892,15 +892,67 @@ var day12part1 = function(){
 			}
 			//console.log("growth complete, calculating garden value");
 			var total = 0;
-			for (var k=0;k<currentStage.length;k++){
-				if (currentStage.charAt(k) == "#"){
-					total += k+minimalIndex;	
-				}
-			}
+			//for (var k=0;k<currentStage.length;k++){
+			//	if (currentStage.charAt(k) == "#"){
+			//		total += k+minimalIndex;	
+			//	}
+			//}
+			var value = absoluteGardenValue(currentStage);
+			console.log("values: total="+value.total+" plants="+value.plants+" index="+minimalIndex);
+			var total = value.total + minimalIndex*value.plants;
 			console.log("ding! garden value: "+total);
 		}
 	);
 };
+
+day12part1();
+
+var day12part2 = function(){
+	var initialState = "##.###.......#..#.##..#####...#...#######....##.##.##.##..#.#.##########...##.##..##.##...####..####";
+	var filler = "............................................";
+	var resultByPattern = new Map();
+	console.log("garden planted with "+initialState.length+" spots, parsing growth combinations...");
+	processFile(
+		"day12-input.txt",
+		(line)=>{
+			//console.log("line= "+line);
+			var pattern = line.substring(0,5);
+			//console.log("pattern= "+pattern);
+			var result = line.substring(9,10);
+			//console.log("pattern= "+pattern+" result="+result);
+			resultByPattern.set(pattern,result)
+			
+		},
+		(line)=>{
+			console.log("combinations parsed, growing to extrapolate");
+			//var trimAndBorder = trimAndBorderGarden(initialState);
+			var currentStage = filler+initialState+filler;
+			var minimalIndex = -(filler.length);
+			var statePer10k = new Map();
+			for (var i=0;i<20004;i++){
+				//console.log(currentStage);
+				//currentStage = getRawNewGarden(resultByPattern,currentStage);
+				trimAndBorder = trimAndBorderGarden(getRawNewGarden(resultByPattern,currentStage));	
+				currentStage = trimAndBorder.garden;
+				minimalIndex += trimAndBorder.delta;
+				if ((i%10000) == 0){
+					//kepping tabs to extrapolate
+					console.log("i="+i+" "+currentStage);
+					statePer10k.set(i,{"stage": currentStage, "index": minimalIndex, "delta": trimAndBorder.delta});
+				}
+			}
+			console.log("growth done, calculating extrapolation data...");
+			var deltaPer10k = statePer10k.get(20000).index - statePer10k.get(10000).index;
+			var stableGarden = statePer10k.get(20000).stage;
+			var stableDelta = statePer10k.get(20000).delta;
+			console.log("index growth per 10k="+deltaPer10k+" pattern speed: "+stableDelta+" pattern = "+stableGarden);
+			console.log("index at 20k="+statePer10k.get(20000).index);
+			var stableGardenValue = absoluteGardenValue(stableGarden);
+			console.log("garden value as "+stableGardenValue.total+" with "+stableGardenValue.plants+" plants");
+		}
+	);
+}
+day12part2();
 
 // go through one step on a garden;
 // return elevated garden
@@ -929,7 +981,17 @@ var trimAndBorderGarden = function(garden){
 	return {"garden":bordered, "delta":deltaFirst};
 };
 
-day12part1();
+var absoluteGardenValue = function (garden){
+	var total = 0;
+	var plants = 0;
+	for (var k=0;k<garden.length;k++){
+		if (garden.charAt(k) == "#"){
+			total += k;
+			plants++;
+		}
+	}
+	return {"total":total, "plants":plants};
+};
 
 //var garden = "..#.#...";
 //console.log(garden);
@@ -937,7 +999,6 @@ day12part1();
 //garden = trimAndBorder.garden;
 //console.log(garden);
 //console.log(trimAndBorder.delta);
-
 
 
 
