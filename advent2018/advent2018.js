@@ -905,7 +905,7 @@ var day12part1 = function(){
 	);
 };
 
-day12part1();
+//day12part1();
 
 var day12part2 = function(){
 	var initialState = "##.###.......#..#.##..#####...#...#######....##.##.##.##..#.#.##########...##.##..##.##...####..####";
@@ -952,7 +952,7 @@ var day12part2 = function(){
 		}
 	);
 }
-day12part2();
+//day12part2();
 
 // go through one step on a garden;
 // return elevated garden
@@ -999,6 +999,34 @@ var absoluteGardenValue = function (garden){
 //garden = trimAndBorder.garden;
 //console.log(garden);
 //console.log(trimAndBorder.delta);
+
+
+
+day14part1 = function(){
+	//var goal = 607331;
+	var goal = 5;
+	var stack = [3,7];
+	var elf1 = 0;
+	var elf2 = 1;
+	while (stack.length < goal + 10){
+		//adding recipes
+		var mix = 0+stack[elf1]+stack[elf2];
+		if (mix<10){
+			stack.push(mix);
+		}else{
+			stack.push(+((mix+"").charAt(0)));
+			stack.push(+((mix+"").charAt(1)));
+		}
+		//moving recipes
+		elf1 = (1+stack[elf1])%stack.length;
+		elf2 = (1+stack[elf2])%stack.length;
+		console.log(stack.join().replace(/,/g,''));
+	}
+	var tenScore = stack.slice(goal,goal+10).join().replace(/,/g,'');
+	console.log("tenScore="+tenScore);
+};
+
+day14part1();
 
 
 
