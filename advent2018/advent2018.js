@@ -1026,10 +1026,62 @@ day14part1 = function(){
 	console.log("tenScore="+tenScore);
 };
 
-day14part1();
+//day14part1();
 
-
-
+day14part2 = function(){
+	var goal = ""+607331;
+	//var goal = 5;
+	var stack = [3,7];
+	var elf1 = 0;
+	var elf2 = 1;
+	var patternFound = false;
+	var currentPattern = "";
+	var recipes = 0;
+	while (!patternFound){
+		//adding recipes
+		var mix = 0+stack[elf1]+stack[elf2];
+		if (mix<10){
+			stack.push(mix);
+			currentPattern+= mix;
+			if (!goal.startsWith(currentPattern)){
+				currentPattern = "";
+			}else{
+				if (goal == currentPattern){
+					patternFound = true;
+					recipes = stack.length - goal.length;
+				}
+			}
+		}else{
+			stack.push(+((mix+"").charAt(0)));
+			currentPattern+= (mix+"").charAt(0);
+			if (!goal.startsWith(currentPattern)){
+				currentPattern = "";
+				
+			}else{
+				if (goal == currentPattern){
+					patternFound = true;
+					recipes = stack.length - goal.length;
+				}
+			}
+			stack.push(+((mix+"").charAt(1)));
+			currentPattern+= (mix+"").charAt(1);
+			if (!goal.startsWith(currentPattern)){
+				currentPattern = "";
+			}else{
+				if (goal == currentPattern){
+					patternFound = true;
+					recipes = stack.length - goal.length;
+				}
+			}
+		}
+		//moving recipes
+		elf1 = (elf1+1+stack[elf1])%stack.length;
+		elf2 = (elf2+1+stack[elf2])%stack.length;
+		//console.log(stack.join().replace(/,/g,''));
+	}
+	console.log("ding! pattern found after "+recipes+" recipes");
+};
+day14part2();
 
 /**************** UTILS *****************/
 function processFile(inputFile,lineReaderFunction,endFileFunction) {
