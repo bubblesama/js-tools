@@ -1003,8 +1003,8 @@ var absoluteGardenValue = function (garden){
 
 
 day14part1 = function(){
-	//var goal = 607331;
-	var goal = 5;
+	var goal = 607331;
+	//var goal = 5;
 	var stack = [3,7];
 	var elf1 = 0;
 	var elf2 = 1;
@@ -1018,9 +1018,9 @@ day14part1 = function(){
 			stack.push(+((mix+"").charAt(1)));
 		}
 		//moving recipes
-		elf1 = (1+stack[elf1])%stack.length;
-		elf2 = (1+stack[elf2])%stack.length;
-		console.log(stack.join().replace(/,/g,''));
+		elf1 = (elf1+1+stack[elf1])%stack.length;
+		elf2 = (elf2+1+stack[elf2])%stack.length;
+		//console.log(stack.join().replace(/,/g,''));
 	}
 	var tenScore = stack.slice(goal,goal+10).join().replace(/,/g,'');
 	console.log("tenScore="+tenScore);
