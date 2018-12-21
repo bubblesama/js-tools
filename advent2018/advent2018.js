@@ -1188,10 +1188,38 @@ day16part1 = function(){
 	);
 
 };
-//deducted with logs on previsous version: 14 eqir,6 eqrr,7 gtri,0 gtrr,3 eqri,2 gtir,8 banr,10 setr,15 bani,13 muli,12 bori,5 seti,4 addr,9 addi,1 borr,11 mulr
+//day16part1();
+
+var day16part2 = function(){
+	//deducted with logs on previous version: 0 gtrr,1 borr,2 gtir,3 eqri,4 addr,5 seti,6 eqrr,7 gtri,8 banr,9 addi,10 setr,11 mulr, 12 bori,13 muli,14 eqir,15 bani
+	var opCodes = ["gtrr","borr","gtir","eqri","addr","seti","eqrr","gtri","banr","addi","setr","mulr","bori","muli","eqir","bani"];
+	var opRegexp = /(\d+) (\d+) (\d+) (\d+)/;
+	var registers = [0,0,0,0];
+	console.log("parsing program and executing each step");
+	processFile(
+		"day16-input-program.txt",
+		(line)=>{
+			var opParsingResult = opRegexp.exec(line);
+			if (opParsingResult!= null && opParsingResult.length == 5){
+				var opCode = +opParsingResult[1];
+				var a = +opParsingResult[2];
+				var b = +opParsingResult[3];
+				var c = +opParsingResult[4];
+				//console.log("opCode "+opCode+" is instruction "+opCodes[opCode]);
+				ops[opCodes[opCode]].execute(registers,a,b,c);
+			}else{
+				console.log("day16part2#processFile ERROR, OP not long enough!");
+				isAnalysisFinished = true;
+			}
+		},
+		(line)=>{
+			console.log("ding! program executed, value in register 0: "+registers[0]);
+		}
+	);
+};
+day16part2();
 
 
-day16part1();
 
 var ops = {
 	"addr": {
