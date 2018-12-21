@@ -1095,9 +1095,9 @@ day16part1 = function(){
 	var currentMachineStep = {"before": [], "op":[], "after": []};
 	var machineSteps = new Array();
 	
-	var beforeRegexp = /Before: \[(\d), (\d), (\d), (\d)\]/;
+	var beforeRegexp = /Before: \[(\d+), (\d+), (\d+), (\d+)\]/;
 	var opRegexp = /(\d+) (\d+) (\d+) (\d+)/;
-	var afterRegexp = /After:  \[(\d), (\d), (\d), (\d)\]/;
+	var afterRegexp = /After:  \[(\d+), (\d+), (\d+), (\d+)\]/;
 	console.log("parsing file for machine steps examples");
 	processFile(
 		"day16-input.txt",
@@ -1163,43 +1163,27 @@ day16part1 = function(){
 		},
 		(line)=>{
 			//logging status
-			console.log("machine steps examples parsed, "+machineSteps.length+" examples found, testing code compatiblity with examples");
-			//init of possibilities
-			var opCodePossibilities = new Array();
-			for (var i=0;i<16;i++){
-				opCodePossibilities[i] = new Array();
-				for (var operationName in ops){
-					opCodePossibilities[i].push(operationName);
-				}
-			}
-			//iterating on samples
+			console.log("machine steps examples parsed, "+machineSteps.length+" examples found, testing examples compatiblity with ops");
+			var threeOrMoreCount = 0;
 			machineSteps.forEach(example=>{
-				var opCode = example.op[0];
-				//testing compatiblity with each remaining possiblity of sample to keep compatible ones
-				var compatibleOperations = new Array();
-				opCodePossibilities[opCode].forEach(opName=>{
-					var simulated = ops[opName].simulate(example.before,example.op[1],example.op[2],example.op[3]);
+				var compatibleOpsCount = 0;
+				for (var opName in ops){
+					var simulation = ops[opName].simulate(example.before, example.op[1], example.op[2], example.op[3]);
 					var compatible = true;
 					for (var i=0;i<4;i++){
-						if (simulated[i] != example.after[i]){
+						if (simulation[i] != example.after[i]){
 							compatible = false;
 						}
 					}
 					if (compatible){
-						compatibleOperations.push(opName);
+						compatibleOpsCount++;
 					}
-				});
-				//keeping 
-				opCodePossibilities[opCode] = compatibleOperations;
-			});
-			var threeOrMoreCount = 0;
-			opCodePossibilities.forEach((opNames, opCode)=>{
-				console.log("opCode "+opCode+ " might be "+ opNames.join());
-				if (opNames.length >= 2){
+				}
+				if (compatibleOpsCount >=3){
 					threeOrMoreCount++;
 				}
 			});
-			console.log("ding! opCode with 3 possibilities or more: "+threeOrMoreCount);
+			console.log("ding! sample with 3 possibilities or more: "+threeOrMoreCount);
 		}
 	);
 
