@@ -1081,7 +1081,320 @@ day14part2 = function(){
 	}
 	console.log("ding! pattern found after "+recipes+" recipes");
 };
-day14part2();
+//day14part2();
+
+day16part1 = function(){
+	//FOUR TYPES: BEFORE -> OP -> AFTER -> BLANK
+	var lineParserStatus = ["BEFORE", "OP", "AFTER", "BLANK"];
+	var nextExpectedLineTypeIndex = 0;
+	var isAnalysisFinished = false;
+	
+	//Before: [0, 2, 1, 1]
+	//3 3 3 3
+	//After:  [0, 2, 1, 0]
+	var currentMachineStep = {"before": [], "op":[], "after": []};
+	var machineSteps = new Array();
+	
+	var beforeRegexp = /Before: \[(\d), (\d), (\d), (\d)\]/;
+	var opRegexp = /(\d+) (\d+) (\d+) (\d+)/;
+	var afterRegexp = /After:  \[(\d), (\d), (\d), (\d)\]/;
+	console.log("parsing file for machine steps examples");
+	processFile(
+		"day16-input.txt",
+		(line)=>{
+			if (!isAnalysisFinished){
+				//console.log(line);
+				switch(lineParserStatus[nextExpectedLineTypeIndex]) {
+					case "BEFORE":
+						var beforeParsingResult = beforeRegexp.exec(line);
+						if (beforeParsingResult != null && beforeParsingResult.length == 5){
+							var a = +beforeParsingResult[1];
+							var b = +beforeParsingResult[2];
+							var c = +beforeParsingResult[3];
+							var d = +beforeParsingResult[4];
+							//storing before status
+							currentMachineStep.before = [a,b,c,d];
+						}else{
+							console.log("day16part1#processFile ERROR, BEFORE not long enough!");
+							isAnalysisFinished = true;
+						}
+					break;
+					case "OP":
+						var opParsingResult = opRegexp.exec(line);
+						if (opParsingResult!= null && opParsingResult.length == 5){
+							var opCode = +opParsingResult[1];
+							var a = +opParsingResult[2];
+							var b = +opParsingResult[3];
+							var c = +opParsingResult[4];
+							//storing OP infos
+							currentMachineStep.op = [opCode,a,b,c];
+						}else{
+							console.log("day16part1#processFile ERROR, OP not long enough!");
+							isAnalysisFinished = true;
+						}
+					break;
+					case "AFTER":
+						var afterParsingResult = afterRegexp.exec(line);
+						if (afterParsingResult != null && afterParsingResult.length == 5){
+							var a = +afterParsingResult[1];
+							var b = +afterParsingResult[2];
+							var c = +afterParsingResult[3];
+							var d = +afterParsingResult[4];
+							//storing status
+							currentMachineStep.after = [a,b,c,d];
+							//wrapping up before+op+after
+							machineSteps.push(currentMachineStep);
+							currentMachineStep = {"before": [], "op":[], "after": []};
+						}else{
+							console.log("day16part1#processFile ERROR, AFTER not long enough!");
+							isAnalysisFinished = true;
+						}
+					break;
+					case "BLANK":
+						
+					break;
+					default:
+						console.log("day16part1#processFile ERROR, unexpected line type!");
+						isAnalysisFinished = true;
+					break;
+				}
+				nextExpectedLineTypeIndex = (nextExpectedLineTypeIndex+1) % lineParserStatus.length;
+			}
+		},
+		(line)=>{
+			//logging status
+			console.log("machine steps examples parsed, "+machineSteps.length+" examples found, testing code compatiblity with examples");
+			//init of possibilities
+			var opCodePossibilities = new Array();
+			for (var i=0;i<16;i++){
+				opCodePossibilities[i] = new Array();
+				for (var operationName in ops){
+					opCodePossibilities[i].push(operationName);
+				}
+			}
+			//iterating on samples
+			machineSteps.forEach(example=>{
+				var opCode = example.op[0];
+				//testing compatiblity with each remaining possiblity of sample to keep compatible ones
+				var compatibleOperations = new Array();
+				opCodePossibilities[opCode].forEach(opName=>{
+					var simulated = ops[opName].simulate(example.before,example.op[1],example.op[2],example.op[3]);
+					var compatible = true;
+					for (var i=0;i<4;i++){
+						if (simulated[i] != example.after[i]){
+							compatible = false;
+						}
+					}
+					if (compatible){
+						compatibleOperations.push(opName);
+					}
+				});
+				//keeping 
+				opCodePossibilities[opCode] = compatibleOperations;
+			});
+			var threeOrMoreCount = 0;
+			opCodePossibilities.forEach((opNames, opCode)=>{
+				console.log("opCode "+opCode+ " might be "+ opNames.join());
+				if (opNames.length >= 2){
+					threeOrMoreCount++;
+				}
+			});
+			console.log("ding! opCode with 3 possibilities or more: "+threeOrMoreCount);
+		}
+	);
+
+};
+
+day16part1();
+
+var ops = {
+	"addr": {
+		"execute": function(state, reg1, reg2, reg3){
+			state[reg3] = state[reg1]+state[reg2];
+		},
+		"simulate": function(state, reg1, reg2, reg3){
+			var result = [state[0],state[1],state[2],state[3]];
+			ops.addr.execute(result,reg1,reg2,reg3);
+			return result;
+		}
+	},
+	"addi": {
+		"execute": function(state, reg1, reg2, reg3){
+			state[reg3] = state[reg1]+reg2;
+		},
+		"simulate": function(state, reg1, reg2, reg3){
+			var result = [state[0],state[1],state[2],state[3]];
+			ops.addi.execute(result,reg1,reg2,reg3);
+			return result;
+		}
+	},
+	"mulr": {
+		"execute": function(state, reg1, reg2, reg3){
+			state[reg3] = state[reg1]*state[reg2];
+		},
+		"simulate": function(state, reg1, reg2, reg3){
+			var result = [state[0],state[1],state[2],state[3]];
+			ops.mulr.execute(result,reg1,reg2,reg3);
+			return result;
+		}
+	},
+	"muli": {
+		"execute": function(state, reg1, reg2, reg3){
+			state[reg3] = state[reg1]*reg2;
+		},
+		"simulate": function(state, reg1, reg2, reg3){
+			var result = [state[0],state[1],state[2],state[3]];
+			ops.muli.execute(result,reg1,reg2,reg3);
+			return result;
+		}
+	},
+	"banr": {
+		"execute": function(state, reg1, reg2, reg3){
+			state[reg3] = state[reg1]&state[reg2];
+		},
+		"simulate": function(state, reg1, reg2, reg3){
+			var result = [state[0],state[1],state[2],state[3]];
+			ops.banr.execute(result,reg1,reg2,reg3);
+			return result;
+		}
+	},
+	"bani": {
+		"execute": function(state, reg1, reg2, reg3){
+			state[reg3] = state[reg1]&reg2;
+		},
+		"simulate": function(state, reg1, reg2, reg3){
+			var result = [state[0],state[1],state[2],state[3]];
+			ops.bani.execute(result,reg1,reg2,reg3);
+			return result;
+		}
+	},
+	"borr": {
+		"execute": function(state, reg1, reg2, reg3){
+			state[reg3] = state[reg1]|state[reg2];
+		},
+		"simulate": function(state, reg1, reg2, reg3){
+			var result = [state[0],state[1],state[2],state[3]];
+			ops.borr.execute(result,reg1,reg2,reg3);
+			return result;
+		}
+	},
+	"bori": {
+		"execute": function(state, reg1, reg2, reg3){
+			state[reg3] = state[reg1]|reg2;
+		},
+		"simulate": function(state, reg1, reg2, reg3){
+			var result = [state[0],state[1],state[2],state[3]];
+			ops.bori.execute(result,reg1,reg2,reg3);
+			return result;
+		}
+	},
+	"setr": {
+		"execute": function(state, reg1, reg2, reg3){
+			state[reg3] = state[reg1];
+		},
+		"simulate": function(state, reg1, reg2, reg3){
+			var result = [state[0],state[1],state[2],state[3]];
+			ops.setr.execute(result,reg1,reg2,reg3);
+			return result;
+		}
+	},
+	"seti": {
+		"execute": function(state, reg1, reg2, reg3){
+			state[reg3] = reg1;
+		},
+		"simulate": function(state, reg1, reg2, reg3){
+			var result = [state[0],state[1],state[2],state[3]];
+			ops.seti.execute(result,reg1,reg2,reg3);
+			return result;
+		}
+	},
+	"gtir": {
+		"execute": function(state, reg1, reg2, reg3){
+			if (reg1 > state[reg2]){
+				state[reg3] = 1;
+			}else{
+				state[reg3] = 0;
+			}
+		},
+		"simulate": function(state, reg1, reg2, reg3){
+			var result = [state[0],state[1],state[2],state[3]];
+			ops.gtir.execute(result,reg1,reg2,reg3);
+			return result;
+		}
+	},
+	"gtri": {
+		"execute": function(state, reg1, reg2, reg3){
+			if (state[reg1] > reg2){
+				state[reg3] = 1;
+			}else{
+				state[reg3] = 0;
+			}
+		},
+		"simulate": function(state, reg1, reg2, reg3){
+			var result = [state[0],state[1],state[2],state[3]];
+			ops.gtri.execute(result,reg1,reg2,reg3);
+			return result;
+		}
+	},
+	"gtrr": {
+		"execute": function(state, reg1, reg2, reg3){
+			if (state[reg1] > state[reg2]){
+				state[reg3] = 1;
+			}else{
+				state[reg3] = 0;
+			}
+		},
+		"simulate": function(state, reg1, reg2, reg3){
+			var result = [state[0],state[1],state[2],state[3]];
+			ops.gtrr.execute(result,reg1,reg2,reg3);
+			return result;
+		}
+	},
+	"eqir": {
+		"execute": function(state, reg1, reg2, reg3){
+			if (reg1 == state[reg2]){
+				state[reg3] = 1;
+			}else{
+				state[reg3] = 0;
+			}
+		},
+		"simulate": function(state, reg1, reg2, reg3){
+			var result = [state[0],state[1],state[2],state[3]];
+			ops.eqir.execute(result,reg1,reg2,reg3);
+			return result;
+		}
+	},
+	"eqri": {
+		"execute": function(state, reg1, reg2, reg3){
+			if (state[reg1] == reg2){
+				state[reg3] = 1;
+			}else{
+				state[reg3] = 0;
+			}
+		},
+		"simulate": function(state, reg1, reg2, reg3){
+			var result = [state[0],state[1],state[2],state[3]];
+			ops.eqri.execute(result,reg1,reg2,reg3);
+			return result;
+		}
+	},
+	"eqrr": {
+		"execute": function(state, reg1, reg2, reg3){
+			if (state[reg1] == state[reg2]){
+				state[reg3] = 1;
+			}else{
+				state[reg3] = 0;
+			}
+		},
+		"simulate": function(state, reg1, reg2, reg3){
+			var result = [state[0],state[1],state[2],state[3]];
+			ops.eqrr.execute(result,reg1,reg2,reg3);
+			return result;
+		}
+	}
+};
+
+
 
 /**************** UTILS *****************/
 function processFile(inputFile,lineReaderFunction,endFileFunction) {
