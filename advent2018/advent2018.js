@@ -1188,6 +1188,8 @@ day16part1 = function(){
 	);
 
 };
+//deducted with logs on previsous version: 14 eqir,6 eqrr,7 gtri,0 gtrr,3 eqri,2 gtir,8 banr,10 setr,15 bani,13 muli,12 bori,5 seti,4 addr,9 addi,1 borr,11 mulr
+
 
 day16part1();
 
