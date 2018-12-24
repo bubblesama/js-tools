@@ -924,35 +924,39 @@ var day12part2 = function(){
 			
 		},
 		(line)=>{
-			console.log("combinations parsed, growing to extrapolate");
+			console.log("combinations parsed, growing...");
 			//var trimAndBorder = trimAndBorderGarden(initialState);
 			var currentStage = filler+initialState+filler;
 			var minimalIndex = -(filler.length);
-			var statePer10k = new Map();
-			for (var i=0;i<20004;i++){
+			for (var i=0;i<1001;i++){
 				//console.log(currentStage);
 				//currentStage = getRawNewGarden(resultByPattern,currentStage);
 				trimAndBorder = trimAndBorderGarden(getRawNewGarden(resultByPattern,currentStage));	
 				currentStage = trimAndBorder.garden;
 				minimalIndex += trimAndBorder.delta;
-				if ((i%10000) == 0){
-					//kepping tabs to extrapolate
-					console.log("i="+i+" "+currentStage);
-					statePer10k.set(i,{"stage": currentStage, "index": minimalIndex, "delta": trimAndBorder.delta});
-				}
+				
+				//console.log("growth complete, calculating garden value");
+				var total = 0;
+				//for (var k=0;k<currentStage.length;k++){
+				//	if (currentStage.charAt(k) == "#"){
+				//		total += k+minimalIndex;	
+				//	}
+				//}
+				var value = absoluteGardenValue(currentStage);
+				//console.log("values: total="+value.total+" plants="+value.plants+" index="+minimalIndex);
+				var total = value.total + minimalIndex*value.plants;
+				console.log("ding! garden value: "+total);
 			}
-			console.log("growth done, calculating extrapolation data...");
-			var deltaPer10k = statePer10k.get(20000).index - statePer10k.get(10000).index;
-			var stableGarden = statePer10k.get(20000).stage;
-			var stableDelta = statePer10k.get(20000).delta;
-			console.log("index growth per 10k="+deltaPer10k+" pattern speed: "+stableDelta+" pattern = "+stableGarden);
-			console.log("index at 20k="+statePer10k.get(20000).index);
-			var stableGardenValue = absoluteGardenValue(stableGarden);
-			console.log("garden value as "+stableGardenValue.total+" with "+stableGardenValue.plants+" plants");
 		}
 	);
 }
-//day12part2();
+day12part2();
+// +23 par cycle
+//11842	 au step 500
+// 23*(50000000000-500) + 11842 (23
+// 1150000000342 ko
+// 1150000000319 ko
+// 1150000000365 test
 
 // go through one step on a garden;
 // return elevated garden
@@ -1645,7 +1649,8 @@ processFile(
 		}
 	});
 };
-day18part2();
+//day18part2();
+
 //period: 28
 //motif:
 //221615
