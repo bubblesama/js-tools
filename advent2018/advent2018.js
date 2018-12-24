@@ -1525,7 +1525,163 @@ processFile(
 		console.log("ding! value of the forest is "+value);
 	});
 };
-day18part1();
+//day18part1();
+
+
+var day18part2 = function(){
+console.log("reading the forest map...");
+//init forest map
+var forest = new Array();
+var height = 50;
+var width = 50;
+for (var i=0; i<width; i++){
+	var newColumn = new Array();
+	for (var j=0; j<height; j++){
+		newColumn.push('.');
+	}
+	forest.push(newColumn);
+}
+var currentJ=0;
+processFile(
+	"day18-input.txt",
+	(line)=>{
+		var mapLine = new Array();
+		for (var i=0;i<line.length;i++){
+			forest[i][currentJ] = line.charAt(i);
+		}
+		currentJ++;
+	},
+	(line)=>{
+		console.log("map read, landscape of "+width+"x"+height+", going through time...");
+		for (var k=0;k<1001;k++){
+			var lumberYardCount = 0;
+			var forestCount = 0;
+			for (var j=0; j<height; j++){
+				for (var i=0; i<width; i++){
+					if (forest[i][j] == '#'){
+						lumberYardCount++;
+					}else if (forest[i][j] == '|'){
+						forestCount++;
+					}
+				}
+			}
+			var value = lumberYardCount*forestCount;
+			console.log(value);
+			//console.log("================ "+k+" ==============================");
+			//show current forest
+			//for (var j=0; j<height; j++){
+			//	var shownLine = "";
+			//	for (var i=0; i<width; i++){
+			//		shownLine += forest[i][j];
+			//	}
+			//	//console.log(shownLine);
+			//}
+			//calculating next forest generation
+			//init forest
+			var newForest = new Array();
+			for (var i=0; i<width; i++){
+				var newColumn = new Array();
+				for (var j=0; j<height; j++){
+					newColumn.push('.');
+				}
+				newForest.push(newColumn);
+			}
+			//calculating next forest state
+			for (var j=0; j<height; j++){
+				for (var i=0; i<width; i++){
+					//counting neighbourhood
+					var nearOpenCount = 0;
+					var nearTreesCount = 0;
+					var nearLumberyardCount = 0;
+					for (var di=-1; di<2; di++){
+						for (var dj=-1; dj<2; dj++){
+							if ( (di != 0 || dj != 0) && (i+di>=0 && i+di<width && j+dj>=0 && j+dj<height)){
+								switch (forest[i+di][j+dj]){
+									case '.':
+										nearOpenCount++;
+									break;
+									case '|':
+										nearTreesCount++;
+									break;
+									case '#':
+										nearLumberyardCount++;
+									break;
+								}
+							}
+						}
+					}
+					//calculating next state
+					var currentSpotState = forest[i][j];
+					var nextState = '.';
+					//open
+					if (currentSpotState == '.'){
+						if (nearTreesCount >=3){
+							nextState = '|';
+						}else{
+							nextState = '.';
+						}
+					}else if (currentSpotState == '|'){
+					//trees
+						if (nearLumberyardCount >=3){
+							nextState = '#';
+						}else{
+							nextState = '|';
+						}
+					}else if(currentSpotState == '#'){
+					//lumberyard
+						if (nearLumberyardCount>0 && nearTreesCount>0){
+							nextState = '#';
+						}else{
+							nextState = '.';
+						}
+					}else{
+						//impossible case!
+						console.log("ERROR! unknown map tile:"+currentSpotState);
+					}
+					newForest[i][j] = nextState;
+				}
+			}
+			forest = newForest;
+		}
+	});
+};
+day18part2();
+//period: 28
+//motif:
+//221615
+//221900 
+//223728 (en 700)
+//224553
+//224196
+//223482
+//218750
+//215625
+//215904
+//216456
+//215760
+//215950
+//214900
+//212711
+//210528
+//209646
+//209374
+//209163
+//208603
+//209614
+//212160
+//212553 ko
+//215404 ok
+//217064
+//220284
+//219710
+//221676
+//221676
+//221615
+//221900
+
+//1 000 000 000 % 28 = 20
+//7043 % 28 = 0
+//=> 
 
 
 
