@@ -21,6 +21,8 @@ io.sockets.on('connection', function (socket) {
 	// enregistrement et validation /refus d'accès
 	// association à une partie
 
+	var currentUserLogin = "";
+
 	// gestion de la requête de login
 	socket.on('user-login', function(userLogin,userPass,clientSideCallback){
 		console.log("socket#user-login userLogin="+userLogin+" userPass.length="+userPass.length);
@@ -30,6 +32,7 @@ io.sockets.on('connection', function (socket) {
 				sessionCode = ""+Math.floor(Math.random()*1000000);
 				 USERS[userLogin].code = sessionCode;
 			}
+			currentUserLogin = userLogin;
 			clientSideCallback(true,"well done",sessionCode);
 		}else{
 			clientSideCallback(false,"authentication error");
@@ -37,7 +40,15 @@ io.sockets.on('connection', function (socket) {
 	});
 
 	socket.on('disconnect',function(){
-		console.log("disconnect!");
+		console.log("disconnect");
+		if (currentUserLogin != null && !("" == (currentUserLogin))){
+			var currentGameName = USERS[currentUserLogin].game;
+			if (currentGameName != null){
+				console.log("disconnect "+currentUserLogin+" from "+currentGameName+"!");
+				//TODO cleaning current games
+				USERS[currentUserLogin].game = null;
+			}
+		}
 	});
 
 	//list of games
@@ -84,6 +95,8 @@ io.sockets.on('connection', function (socket) {
 					}else{
 						success = true;
 						message = "games-join OK";
+						//registering current game for user
+						USERS[userLogin].game = gameName;
 					}
 				}
 			}else{
