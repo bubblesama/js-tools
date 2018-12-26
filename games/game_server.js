@@ -26,7 +26,7 @@ io.sockets.on('connection', function (socket) {
 	// gestion de la requête de login
 	socket.on('login', function(from,acknowledgment){
 		//TODO secure secretNumberManager
-		var secretCode = ""+Math.floor(Math.random()*1000);
+		var secretCode = ""+Math.floor(Math.random()*1000000);
 		console.log("socket#login from="+from+" secretCode="+secretCode);
 		acknowledgment(true,secretCode);
 	});
@@ -35,6 +35,14 @@ io.sockets.on('connection', function (socket) {
 	socket.on('disconnect',function(){
 	});
 });
+
+
+//--------------- PARTIE METIER GESTION DES JOUEURS
+var users = [
+	{"login": "mylogin", "pass": "123"}
+];
+
+
 
 //--------------- PARTIE METIER JEU DES PETITS CHEVAUX
 var game = {
@@ -227,6 +235,7 @@ var games = {"horses_18":game};
 //var method = "doSomething";
 //var controlMethod = "can"+method.substring(0,1).toUpperCase()+method.substring(1);
 //console.log("TEST: method="+method+" controlMethod="+controlMethod);
+var serverPort = 4040;
 console.log("lancement serveur");
-server.listen(4040);
-console.log("serveur en route");
+server.listen(serverPort);
+console.log("serveur en route sur le port "+serverPort);

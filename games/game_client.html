@@ -10,10 +10,19 @@
 			<p>status: <span id="user-connection">not connected</span></p>
 		<div id="user-board">
 			<h3>user board</h3>
-			<p><label for="user-name">login: </label><input type="text" id="user-name" name="user-name" size="10" value="mylogin" /></p>
+			<p><label for="user-name">login: </label><input type="text" id="user-name-input" name="user-name-input" size="10" value="mylogin" /><span id="user-name-value" style="visibility: hidden">no login</span></p>
 			<p>secret number: <span id="user-secret">no secret</span></p>
-			<p><input id="button-login" type="button" onclick="tryLogin();" value="login" /></p>
+			<input id="user-login-button" type="button" onclick="tryLogin();" value="login" />
 		</div>
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
 		<script>
 			//SOCKET IO
@@ -34,17 +43,26 @@
 
 			var tryLogin = function(){
 				// récupération du nom utilisateur
-				var playerName = document.getElementById("user-name").value;
+				var playerName = document.getElementById("user-name-input").value;
 				console.log("tryLogin playerName="+playerName);
 				// appel serveur
 				socket.emit('login',playerName,function(success,secretCode){
 					console.log("socket#tryLogin server response: success="+success+" secretCode="+secretCode);
-					// TODO gestion succes
-					//console.log("socket#tryLogin initial user-secret="+document.getElementById("user-secret").innerHTML);
-					document.getElementById("user-secret").innerHTML = secretCode;
-					document.getElementById("user-name").disabled = true;
-					document.getElementById("button-login").style.diplay = 'none';
-					 // TODO gestion echec
+					if (success){
+						//TODO gestion succes
+						//console.log("socket#tryLogin initial user-secret="+document.getElementById("user-secret").innerHTML);
+						document.getElementById("user-secret").innerHTML = secretCode;
+						document.getElementById("user-name-input").style.display = 'none';
+						document.getElementById("user-name-value").innerHTML = playerName;
+						document.getElementById("user-name-value").style.visibility = 'visible';
+						document.getElementById("user-login-button").style.visibility = 'hidden';
+					}else{
+					// TODO gestion echec
+						console.log("erreur d'authent");
+						
+						
+						
+					}
 				});
 			};
 		</script>
