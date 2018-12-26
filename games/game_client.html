@@ -5,15 +5,28 @@
 		<title>horses</title>
 	</head>
 	<body>
-		<div>
-			<h3>server access</h3>
-			<p>status: <span id="user-connection">not connected</span></p>
+
 		<div id="user-board">
 			<h3>user board</h3>
-			<p><label for="user-name">login: </label><input type="text" id="user-name" name="user-name" size="10" value="mylogin" /></p>
-			<p>secret number: <span id="user-secret">no secret</span></p>
-			<p><input id="button-login" type="button" onclick="tryLogin();" value="login" /></p>
+			<p>server access: <span id="user-connection">not connected</span></p>
+			<div id="user-login-message" style="color: #FF0000"></div>
+			<p><label for="user-name-input">login: </label><input type="text" id="user-name-input" name="user-name-input" size="10" value="mylogin" /><span id="user-name-value" style="visibility: hidden">no login</span></p>
+			<p>session code: <span id="user-session-code">no session</span>
+			<p id="user-pass"><label for="user-pass-input">pass: <input type="password" id="user-pass-input" name="user-pass-input" size="10" value="123" /></p>
+			<p><input id="user-login-button" type="button" onclick="tryLogin();" value="login" /></p>
 		</div>
+
+		<div id="game-list" style="visibility: hidden">
+			<h3>game list</h3>
+			<div id="game-list-message" style="color: #FF0000"></div>
+			<div id="game-list-infos" />
+		</div>
+
+		<div id="game-board" style="visibility: hidden">
+			<h3>game board</h3>
+			<div id="game-info" />
+		</div>
+		
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
 		<script>
 			//SOCKET IO
@@ -21,10 +34,11 @@
 			console.log("socket connecting");
 			var socket = io.connect('http://localhost:4040');
 			//gestion des messages
-			socket.on('message', function(message){
-				console.log("socket#message message="+ message.content);
+			socket.on('connection-status', function(message){
+				console.log("socket#connection-status message="+ message.content);
 				document.getElementById("user-connection").innerHTML = "connected";
 			});
+			
 			socket.on('game', function(game){
 				console.log("game from server: "+ game.id);
 				//for (var key in game){
@@ -32,21 +46,118 @@
 				//}
 			});
 
+			var currentLogin = "";
+			var currentSessionCode = -1;
+			var isLoggedIn = false;
+			var currentGameName = "";
+			
 			var tryLogin = function(){
 				// récupération du nom utilisateur
-				var playerName = document.getElementById("user-name").value;
-				console.log("tryLogin playerName="+playerName);
+				var userName = document.getElementById("user-name-input").value;
+				var userPass = document.getElementById("user-pass-input").value;
+				console.log("tryLogin playerName="+userName);
 				// appel serveur
-				socket.emit('login',playerName,function(success,secretCode){
-					console.log("socket#tryLogin server response: success="+success+" secretCode="+secretCode);
-					// TODO gestion succes
-					//console.log("socket#tryLogin initial user-secret="+document.getElementById("user-secret").innerHTML);
-					document.getElementById("user-secret").innerHTML = secretCode;
-					document.getElementById("user-name").disabled = true;
-					document.getElementById("button-login").style.diplay = 'none';
-					 // TODO gestion echec
+				socket.emit('user-login',userName,userPass,function(success, message, sessionCode){
+					console.log("socket#tryLogin server response: success="+success+" message="+message);
+					if (success){
+						currentLogin = userName;
+						currentSessionCode = +(sessionCode);
+						isLoggedIn = true;
+						// gestion succes
+						//clean messages
+						document.getElementById("user-login-message").innerHTML = ' ';
+						//diplay validated login and session
+						document.getElementById("user-name-input").style.display = 'none';
+						document.getElementById("user-name-value").innerHTML = currentLogin;
+						document.getElementById("user-name-value").style.visibility = 'visible';
+						document.getElementById("user-session-code").innerHTML = currentSessionCode;
+						//hide login stuff
+						document.getElementById("user-pass").style.display = 'none';
+						document.getElementById("user-login-button").style.display = 'none';
+						updateGameList();
+					}else{
+					// TODO gestion echec
+						document.getElementById("user-login-message").innerHTML = ' '+message;
+						console.log("erreur d'authent");
+					}
 				});
 			};
+
+			var updateGameList = function(){
+				socket.emit("games-list",function(success, message, gameList){
+					console.log("socket#updateGameList server response: success="+success+" message="+message+" gameList.length="+gameList.length);
+					//{"name": gameName, "id": SERVER_GAMES[gameName].game_id, "type":  SERVER_GAMES[gameName].game_id}
+					var gameListInnerHtml = "<ul>";
+					for (var gameInfoIndex in gameList){
+						gameListInnerHtml += 
+							"<li id=\"game-info-"+gameList[gameInfoIndex].type+"-"+gameList[gameInfoIndex].id+"\" game_id=\""+gameList[gameInfoIndex].name+"\" >("
+							+gameList[gameInfoIndex].type+") "+gameList[gameInfoIndex].name
+							+": "+gameList[gameInfoIndex].players.count+"/"+gameList[gameInfoIndex].players.max+" "
+							+"<input type=\"button\" id=\"game-join-"+gameList[gameInfoIndex].name+"\" onclick=\"joinGame('"+gameList[gameInfoIndex].name+"')\" value=\"join\" />"
+							+"</li>";
+					}
+					gameListInnerHtml += "</ul>";
+					document.getElementById("game-list-infos").innerHTML = gameListInnerHtml;
+					document.getElementById("game-list").style.visibility = 'visible';
+				});
+			};
+
+			var joinGame = function(gameName){
+				console.log("socket#joinGame IN gameName="+gameName);
+				socket.emit("games-join",gameName, currentLogin, currentSessionCode, function(success, message){
+					console.log("socket#joinGame server response: success="+success+" message="+message);
+					if (success){
+						document.getElementById("game-list-message").innerHTML = ' ';
+						currentGameName = gameName;
+						updateGameList();
+						updateCurrentGameStatus();
+					}else{
+						// managing errors while joining game
+						document.getElementById("game-list-message").innerHTML = ' '+message;
+						console.log("socket#joinGame erreur lors de l'acces à un jeu");
+					}
+				});
+			};
+
+			var updateCurrentGameStatus = function(){
+				console.log("socket#updateCurrentGameStatus IN currentGameName="+currentGameName);
+				socket.emit("game-status", currentGameName, currentLogin, currentSessionCode, function(success, message, gameStatus){
+					console.log("socket#updateCurrentGameStatus server response: success="+success+" message="+message);
+					if (success){
+						console.log("socket#updateCurrentGameStatus turn="+gameStatus.state.turn);
+						//TODO show game status
+						var displayedGameStatus = "<span> game="+currentGameName+" turn="+gameStatus.state.turn+"</span>";
+						displayedGameStatus += "<p>players</p><ul>";
+						//players
+						for (var playerId in gameStatus.state.players){
+							displayedGameStatus +="<li style='color:";
+							displayedGameStatus +=gameStatus.state.players[playerId].login == currentLogin?"#00FF00":"#FF0000";
+							displayedGameStatus +="' >";
+							displayedGameStatus += gameStatus.state.players[playerId].login;
+							displayedGameStatus +="</li>";
+						}
+						displayedGameStatus += "</ul>";
+						//actions
+						displayedGameStatus += "<p>actions</p><ul>";
+						for (var actionIndex in gameStatus.actions){
+							//console.log("socket#updateCurrentGameStatus actionIndex="+actionIndex);
+							displayedGameStatus +="<li style='color:";
+							displayedGameStatus += gameStatus.actions[actionIndex].can.success?"#00FF00":"#FF0000";
+							displayedGameStatus +="' >";
+							displayedGameStatus += gameStatus.actions[actionIndex].name;
+							displayedGameStatus +="</li>";
+						}
+						document.getElementById("game-info").innerHTML = displayedGameStatus;
+						document.getElementById("game-board").style.visibility = 'visible';
+						document.getElementById("game-list").style.visibility = 'hidden';
+					}else{
+						
+					}
+				
+				});
+			}
+
+
 		</script>
 		</body>
 </html>
