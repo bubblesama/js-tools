@@ -11,8 +11,8 @@ var server = http.createServer(function(req, res) {
 var io = require('socket.io').listen(server);
 // connection management by logging
 io.sockets.on('connection', function (socket) {
-	console.log('Un client est connecté !');
-	socket.emit('message', { content: 'Vous êtes bien connecté !', importance: '1' });
+	console.log('new client connected');
+	socket.emit('connection-status', { content: 'Vous êtes bien connecté !', importance: '1', status: 'OK' });
 	socket.emit('game', game);
 	//TODO login infos et protocole
 	// requete de login avec clé et nom de joueur

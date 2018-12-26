@@ -30,7 +30,7 @@
 			console.log("socket connecting");
 			var socket = io.connect('http://localhost:4040');
 			//gestion des messages
-			socket.on('message', function(message){
+			socket.on('connection-status', function(message){
 				console.log("socket#message message="+ message.content);
 				document.getElementById("user-connection").innerHTML = "connected";
 			});
