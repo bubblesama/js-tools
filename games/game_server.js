@@ -24,11 +24,11 @@ io.sockets.on('connection', function (socket) {
 	// gestion de la requête de login
 	socket.on('user-login', function(userLogin,userPass,clientSideCallback){
 		console.log("socket#user-login userLogin="+userLogin+" userPass.length="+userPass.length);
-		if (users[userLogin] != null &&  users[userLogin].pass == userPass){
-			var sessionCode = users[userLogin].code;
+		if (USERS[userLogin] != null &&  USERS[userLogin].pass == userPass){
+			var sessionCode = USERS[userLogin].code;
 			if (sessionCode == null){
 				sessionCode = ""+Math.floor(Math.random()*1000000);
-				 users[userLogin].code = sessionCode;
+				 USERS[userLogin].code = sessionCode;
 			}
 			clientSideCallback(true,"well done",sessionCode);
 		}else{
@@ -63,25 +63,41 @@ io.sockets.on('connection', function (socket) {
 	//joining a game
 	socket.on('games-join', function(gameName, userLogin, userSessionCode, clientSideCallback){
 		console.log("socket#games-join IN gameName="+gameName+" userLogin="+userLogin);
-		//TODO session user controlMethod
-		
-		//TODO get game and control access
-		var chosenGame = SERVER_GAMES[gameName];
-		if (chosenGame != null){
-			//TODO add player to game
-			chosenGame.addPlayer(userLogin);
-			
+		var success = false;
+		var message = "games-join error while joining game";
+		// session user control method
+		if (USERS[userLogin] == null || USERS[userLogin].code != userSessionCode){
+			message = "games-join authentication error!";
 		}else{
-			//TODO unexisting game
+			//get game and control access
+			var chosenGame = SERVER_GAMES[gameName];
+			if (chosenGame != null){
+				//control on players count
+				if (chosenGame.getPlayersCount() >= chosenGame.getPlayersMax()){
+					message = "games-join too many players on "+gameName;
+				}else{
+					//TODO add player to game
+					var tryJoiningResult = chosenGame.addPlayer(userLogin);
+					if (!tryJoiningResult.success){
+						success = false;
+						message = tryJoiningResult.message;
+					}else{
+						success = true;
+						message = "games-join OK";
+					}
+				}
+			}else{
+				// unexisting game
+				message = "games-join game "+gameName+" not found!";
+			}
 		}
-
-		clientSideCallback(true,"games-join mock response");
+		clientSideCallback(success,message);
 	});
 
 });
 
 //--------------- PARTIE METIER GESTION DES JOUEURS
-var users = {
+var USERS = {
 	"mylogin": {"pass": "123"},
 	"polo": {"pass": "secret_polo_horse_banana"}
 };
@@ -103,9 +119,14 @@ var firstHorseGame = {
 		return this.game_max_players;
 	},
 	addPlayer: function (playerName){
+		var result = {success: false, message: "addPlayer KO"};
 		var currentPlayerCount = this.getPlayersCount();
+		//TODO controlling duplicate for users
 		this.players["player"+(currentPlayerCount+1)] = {};
 		actions.resetGame(this);
+		result.success = true;
+		result.message = "addPlayer OK";
+		return result;
 	},
 	'game_id': 18,
 	'game_type': "horses",
@@ -229,9 +250,9 @@ var controls = {
 		}else{
 			result.comment = "too "+((playersCount < 2)?"few":"many")+"players: "+playersCount+" instead of 2";
 			if (playersCount < 2){
-				result.comment = "too few players:"+playersCount+" instead of 2";
+				result.comment = "too few players:"+playersCount+" instead of 2 min";
 			}else{
-				result.comment = "too many players:"+playersCount+" instead of 2";
+				result.comment = "too many players:"+playersCount+" instead of 4 max";
 			}
 		}
 		return result;
@@ -272,6 +293,8 @@ var controls = {
 			}
 		}
 	}
+	
+	
 };
 
 

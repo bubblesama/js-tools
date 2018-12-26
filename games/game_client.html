@@ -18,11 +18,13 @@
 
 		<div id="game-list" style="visibility: hidden">
 			<h3>game list</h3>
+			<div id="game-list-message" style="color: #FF0000"></div>
 			<div id="game-list-infos" />
 		</div>
 
 		<div id="game-board" style="visibility: hidden">
 			<h3>game board</h3>
+			
 		</div>
 		
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
@@ -104,9 +106,12 @@
 				socket.emit("games-join",gameName, currentLogin, currentSessionCode, function(success, message){
 					console.log("socket#joinGame server response: success="+success+" message="+message);
 					if (success){
+						document.getElementById("game-list-message").innerHTML = ' ';
 						updateGameList();
 					}else{
-						//TODO managing errors while joining game
+						// managing errors while joining game
+						document.getElementById("game-list-message").innerHTML = ' '+message;
+						console.log("erreur lors de l'acces à un jeu");
 					}
 				});
 			};
