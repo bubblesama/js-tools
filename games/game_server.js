@@ -21,7 +21,7 @@ io.sockets.on('connection', function (socket) {
 	// enregistrement et validation /refus d'accès
 	// association à une partie
 
-	var currentUserLogin = "";
+	var currentUserLogin;
 
 	// gestion de la requête de login
 	socket.on('user-login', function(userLogin,userPass,clientSideCallback){
@@ -119,12 +119,26 @@ io.sockets.on('connection', function (socket) {
 		}else{
 			success = true;
 			message = "games-status OK";
-			gameStatus = SERVER_GAMES[gameName];
+			gameStatus = {};
+			var game = SERVER_GAMES[gameName];
+			gameStatus.state = game;
+			
+			var gameActions = [];
+			//launchDice
+			var currentAction = {name: "launchDice"};
+			currentAction.can = controls.canLaunchDice(game)(userLogin);
+			gameActions.push(currentAction);
+			//TODO endTurn
+
+			
+			//TODO moveHorse
+			
+			
+
+			gameStatus.actions = gameActions;
 		}
 		clientSideCallback(success,message,gameStatus);
 	});
-	
-	
 
 });
 
@@ -133,7 +147,6 @@ var USERS = {
 	"mylogin": {"pass": "123"},
 	"polo": {"pass": "secret_polo_horse_banana"}
 };
-
 
 //--------------- PARTIE METIER JEU DES PETITS CHEVAUX
 var firstHorseGame = {
@@ -175,7 +188,6 @@ var firstHorseGame = {
 			'rolledThisTurn': false,
 			'usedThisTurn': false
 		}
-		
 	},
 	actions: ["resetGame", "launchDice", "moveHorse", "endTurn"]
 };

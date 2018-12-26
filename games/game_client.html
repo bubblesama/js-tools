@@ -121,21 +121,32 @@
 
 			var updateCurrentGameStatus = function(){
 				console.log("socket#updateCurrentGameStatus IN currentGameName="+currentGameName);
-				socket.emit("game-status", currentGameName, currentLogin, currentSessionCode, function(success, message, gameState){
+				socket.emit("game-status", currentGameName, currentLogin, currentSessionCode, function(success, message, gameStatus){
 					console.log("socket#updateCurrentGameStatus server response: success="+success+" message="+message);
 					if (success){
-						console.log("socket#updateCurrentGameStatus turn="+gameState.turn);
+						console.log("socket#updateCurrentGameStatus turn="+gameStatus.state.turn);
 						//TODO show game status
-						var displayedGameStatus = "<span> "+currentGameName+" turn="+gameState.turn+"</span>";
-						displayedGameStatus += "<ul>";
-						for (var playerId in gameState.players){
+						var displayedGameStatus = "<span> game="+currentGameName+" turn="+gameStatus.state.turn+"</span>";
+						displayedGameStatus += "<p>players</p><ul>";
+						//players
+						for (var playerId in gameStatus.state.players){
 							displayedGameStatus +="<li style='color:";
-							displayedGameStatus +=gameState.players[playerId].login == currentLogin?"#00FF00":"#FF0000";
+							displayedGameStatus +=gameStatus.state.players[playerId].login == currentLogin?"#00FF00":"#FF0000";
 							displayedGameStatus +="' >";
-							displayedGameStatus += gameState.players[playerId].login;
+							displayedGameStatus += gameStatus.state.players[playerId].login;
 							displayedGameStatus +="</li>";
 						}
 						displayedGameStatus += "</ul>";
+						//actions
+						displayedGameStatus += "<p>actions</p><ul>";
+						for (var actionIndex in gameStatus.actions){
+							//console.log("socket#updateCurrentGameStatus actionIndex="+actionIndex);
+							displayedGameStatus +="<li style='color:";
+							displayedGameStatus += gameStatus.actions[actionIndex].can.success?"#00FF00":"#FF0000";
+							displayedGameStatus +="' >";
+							displayedGameStatus += gameStatus.actions[actionIndex].name;
+							displayedGameStatus +="</li>";
+						}
 						document.getElementById("game-info").innerHTML = displayedGameStatus;
 						document.getElementById("game-board").style.visibility = 'visible';
 						document.getElementById("game-list").style.visibility = 'hidden';
