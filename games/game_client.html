@@ -24,7 +24,7 @@
 
 		<div id="game-board" style="visibility: hidden">
 			<h3>game board</h3>
-			
+			<div id="game-info" />
 		</div>
 		
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
@@ -49,6 +49,7 @@
 			var currentLogin = "";
 			var currentSessionCode = -1;
 			var isLoggedIn = false;
+			var currentGameName = "";
 			
 			var tryLogin = function(){
 				// récupération du nom utilisateur
@@ -107,14 +108,35 @@
 					console.log("socket#joinGame server response: success="+success+" message="+message);
 					if (success){
 						document.getElementById("game-list-message").innerHTML = ' ';
+						currentGameName = gameName;
 						updateGameList();
+						updateCurrentGameStatus();
 					}else{
 						// managing errors while joining game
 						document.getElementById("game-list-message").innerHTML = ' '+message;
-						console.log("erreur lors de l'acces à un jeu");
+						console.log("socket#joinGame erreur lors de l'acces à un jeu");
 					}
 				});
 			};
+
+			var updateCurrentGameStatus = function(){
+				console.log("socket#updateCurrentGameStatus IN currentGameName="+currentGameName);
+				socket.emit("game-status", currentGameName, currentLogin, currentSessionCode, function(success, message, gameState){
+					console.log("socket#updateCurrentGameStatus server response: success="+success+" message="+message);
+					if (success){
+						console.log("socket#updateCurrentGameStatus turn="+gameState.turn);
+						//TODO show game status
+						var displayedGameStatus = "<span> "+currentGameName+" turn="+gameState.turn+"</span>";
+						document.getElementById("game-info").innerHTML = displayedGameStatus;
+						document.getElementById("game-board").style.visibility = 'visible';
+						document.getElementById("game-list").style.visibility = 'hidden';
+					}else{
+						
+					}
+				
+				});
+			}
+
 
 		</script>
 		</body>

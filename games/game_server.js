@@ -93,6 +93,25 @@ io.sockets.on('connection', function (socket) {
 		}
 		clientSideCallback(success,message);
 	});
+	
+	//joining a game
+	socket.on('game-status', function(gameName, userLogin, userSessionCode, clientSideCallback){
+		console.log("socket#game-status IN gameName="+gameName+" userLogin="+userLogin);
+		var success = false;
+		var message = "games-status error while getting game status";
+		var gameStatus = {};
+		// session user control method
+		if (USERS[userLogin] == null || USERS[userLogin].code != userSessionCode){
+			message = "games-status authentication error!";
+		}else{
+			success = true;
+			message = "games-status OK";
+			gameStatus = SERVER_GAMES[gameName];
+		}
+		clientSideCallback(success,message,gameStatus);
+	});
+	
+	
 
 });
 
@@ -144,7 +163,8 @@ var firstHorseGame = {
 			'usedThisTurn': false
 		}
 		
-	}
+	},
+	actions: ["resetGame", "launchDice", "moveHorse", "endTurn"]
 };
 
 // helpers pour accès aux données du jeu
@@ -189,7 +209,7 @@ var actions = {
 			}
 		}
 		//TODO fin de reset du board
-		
+		game.turn = 1;
 		//test
 		console.log("actions#resetGame done");
 	},
