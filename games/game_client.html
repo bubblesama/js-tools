@@ -5,23 +5,13 @@
 		<title>horses</title>
 	</head>
 	<body>
-		<div>
-			<h3>server access</h3>
-			<p>status: <span id="user-connection">not connected</span></p>
 		<div id="user-board">
 			<h3>user board</h3>
+			<p>server access: <span id="user-connection">not connected</span></p>
 			<p><label for="user-name">login: </label><input type="text" id="user-name-input" name="user-name-input" size="10" value="mylogin" /><span id="user-name-value" style="visibility: hidden">no login</span></p>
-			<p>secret number: <span id="user-secret">no secret</span></p>
+			<p id="user-pass">pass: <input type="password" id="user-pass-input" name="user-pass-input" size="10" value="123" /></p>
 			<input id="user-login-button" type="button" onclick="tryLogin();" value="login" />
 		</div>
-		
-		
-		
-		
-		
-		
-		
-		
 		
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
 		<script>
@@ -43,17 +33,17 @@
 
 			var tryLogin = function(){
 				// récupération du nom utilisateur
-				var playerName = document.getElementById("user-name-input").value;
-				console.log("tryLogin playerName="+playerName);
+				var userName = document.getElementById("user-name-input").value;
+				var userPass = document.getElementById("user-pass-input").value;
+				console.log("tryLogin playerName="+userName);
 				// appel serveur
-				socket.emit('login',playerName,function(success,secretCode){
-					console.log("socket#tryLogin server response: success="+success+" secretCode="+secretCode);
+				socket.emit('user-login',userName,userPass,function(success,message){
+					console.log("socket#tryLogin server response: success="+success+" message="+message);
 					if (success){
 						//TODO gestion succes
-						//console.log("socket#tryLogin initial user-secret="+document.getElementById("user-secret").innerHTML);
-						document.getElementById("user-secret").innerHTML = secretCode;
+						document.getElementById("user-pass").style.display = 'none';
 						document.getElementById("user-name-input").style.display = 'none';
-						document.getElementById("user-name-value").innerHTML = playerName;
+						document.getElementById("user-name-value").innerHTML = userName;
 						document.getElementById("user-name-value").style.visibility = 'visible';
 						document.getElementById("user-login-button").style.visibility = 'hidden';
 					}else{

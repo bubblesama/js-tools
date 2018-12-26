@@ -24,11 +24,9 @@ io.sockets.on('connection', function (socket) {
 	
 	
 	// gestion de la requête de login
-	socket.on('login', function(from,acknowledgment){
-		//TODO secure secretNumberManager
-		var secretCode = ""+Math.floor(Math.random()*1000000);
-		console.log("socket#login from="+from+" secretCode="+secretCode);
-		acknowledgment(true,secretCode);
+	socket.on('user-login', function(userLogin,userPass,acknowledgment){
+		console.log("socket#login userLogin="+userLogin+" userPass="+userPass);
+		acknowledgment(true,"well done");
 	});
 	
 
@@ -38,9 +36,9 @@ io.sockets.on('connection', function (socket) {
 
 
 //--------------- PARTIE METIER GESTION DES JOUEURS
-var users = [
-	{"login": "mylogin", "pass": "123"}
-];
+var users = {
+	"mylogin": {"pass": "123"}
+};
 
 
 
