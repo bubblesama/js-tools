@@ -101,11 +101,14 @@
 
 			var joinGame = function(gameName){
 				console.log("socket#joinGame IN gameName="+gameName);
-			
-			
-			
-			
-			
+				socket.emit("games-join",gameName, currentLogin, currentSessionCode, function(success, message){
+					console.log("socket#joinGame server response: success="+success+" message="+message);
+					if (success){
+						updateGameList();
+					}else{
+						//TODO managing errors while joining game
+					}
+				});
 			};
 
 		</script>

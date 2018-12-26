@@ -59,6 +59,24 @@ io.sockets.on('connection', function (socket) {
 		}
 		clientSideCallback(true,"mock response",gameList);
 	});
+	
+	//joining a game
+	socket.on('games-join', function(gameName, userLogin, userSessionCode, clientSideCallback){
+		console.log("socket#games-join IN gameName="+gameName+" userLogin="+userLogin);
+		//TODO session user controlMethod
+		
+		//TODO get game and control access
+		var chosenGame = SERVER_GAMES[gameName];
+		if (chosenGame != null){
+			//TODO add player to game
+			chosenGame.addPlayer(userLogin);
+			
+		}else{
+			//TODO unexisting game
+		}
+
+		clientSideCallback(true,"games-join mock response");
+	});
 
 });
 
@@ -83,6 +101,11 @@ var firstHorseGame = {
 	},
 	getPlayersMax: function(){
 		return this.game_max_players;
+	},
+	addPlayer: function (playerName){
+		var currentPlayerCount = this.getPlayersCount();
+		this.players["player"+(currentPlayerCount+1)] = {};
+		actions.resetGame(this);
 	},
 	'game_id': 18,
 	'game_type': "horses",
