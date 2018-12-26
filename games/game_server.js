@@ -25,8 +25,17 @@ io.sockets.on('connection', function (socket) {
 	
 	// gestion de la requête de login
 	socket.on('user-login', function(userLogin,userPass,acknowledgment){
-		console.log("socket#login userLogin="+userLogin+" userPass="+userPass);
-		acknowledgment(true,"well done");
+		console.log("socket#login userLogin="+userLogin+" userPass.length="+userPass.length);
+		if (users[userLogin] != null &&  users[userLogin].pass == userPass){
+			var sessionCode = users[userLogin].code;
+			if (sessionCode == null){
+				sessionCode = ""+Math.floor(Math.random()*1000000);
+				 users[userLogin].code = sessionCode;
+			}
+			acknowledgment(true,"well done",sessionCode);
+		}else{
+			acknowledgment(false,"authentication error");
+		}
 	});
 	
 
@@ -39,7 +48,6 @@ io.sockets.on('connection', function (socket) {
 var users = {
 	"mylogin": {"pass": "123"}
 };
-
 
 
 //--------------- PARTIE METIER JEU DES PETITS CHEVAUX
