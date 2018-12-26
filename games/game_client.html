@@ -33,7 +33,7 @@
 			var socket = io.connect('http://localhost:4040');
 			//gestion des messages
 			socket.on('connection-status', function(message){
-				console.log("socket#message message="+ message.content);
+				console.log("socket#connection-status message="+ message.content);
 				document.getElementById("user-connection").innerHTML = "connected";
 			});
 			
@@ -87,15 +87,25 @@
 					var gameListInnerHtml = "<ul>";
 					for (var gameInfoIndex in gameList){
 						gameListInnerHtml += 
-							"<li id=game-info-"+gameList[gameInfoIndex].type+"-"+gameList[gameInfoIndex].id+">("
+							"<li id=\"game-info-"+gameList[gameInfoIndex].type+"-"+gameList[gameInfoIndex].id+"\" game_id=\""+gameList[gameInfoIndex].name+"\" >("
 							+gameList[gameInfoIndex].type+") "+gameList[gameInfoIndex].name
-							+": "+gameList[gameInfoIndex].players.count+"/"+gameList[gameInfoIndex].players.max
+							+": "+gameList[gameInfoIndex].players.count+"/"+gameList[gameInfoIndex].players.max+" "
+							+"<input type=\"button\" id=\"game-join-"+gameList[gameInfoIndex].name+"\" onclick=\"joinGame('"+gameList[gameInfoIndex].name+"')\" value=\"join\" />"
 							+"</li>";
 					}
 					gameListInnerHtml += "</ul>";
 					document.getElementById("game-list-infos").innerHTML = gameListInnerHtml;
 					document.getElementById("game-list").style.visibility = 'visible';
 				});
+			};
+
+			var joinGame = function(gameName){
+				console.log("socket#joinGame IN gameName="+gameName);
+			
+			
+			
+			
+			
 			};
 
 		</script>
