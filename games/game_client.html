@@ -14,6 +14,9 @@
 			<p id="user-pass"><label for="user-pass-input">pass: <input type="password" id="user-pass-input" name="user-pass-input" size="10" value="123" /></p>
 			<p><input id="user-login-button" type="button" onclick="tryLogin();" value="login" /></p>
 		</div>
+		<div id="game-list">
+			<h3>game list</h3>
+		</div>
 		<div id="game-board">
 			<h3>game board</h3>
 		</div>
@@ -29,6 +32,7 @@
 				console.log("socket#message message="+ message.content);
 				document.getElementById("user-connection").innerHTML = "connected";
 			});
+			
 			socket.on('game', function(game){
 				console.log("game from server: "+ game.id);
 				//for (var key in game){
@@ -38,6 +42,7 @@
 
 			var currentLogin = "";
 			var currentSessionCode = -1;
+			var isLoggedIn = false;
 			
 			var tryLogin = function(){
 				// récupération du nom utilisateur
@@ -45,11 +50,12 @@
 				var userPass = document.getElementById("user-pass-input").value;
 				console.log("tryLogin playerName="+userName);
 				// appel serveur
-				socket.emit('user-login',userName,userPass,function(success,message,sessionCode){
+				socket.emit('user-login',userName,userPass,function(success, message, sessionCode){
 					console.log("socket#tryLogin server response: success="+success+" message="+message);
 					if (success){
 						currentLogin = userName;
 						currentSessionCode = +(sessionCode);
+						isLoggedIn = true;
 						// gestion succes
 						//clean messages
 						document.getElementById("user-login-message").innerHTML = ' ';
@@ -61,7 +67,9 @@
 						//hide login stuff
 						document.getElementById("user-pass").style.display = 'none';
 						document.getElementById("user-login-button").style.display = 'none';
-
+						
+						updateGameList();
+						
 					}else{
 					// TODO gestion echec
 						document.getElementById("user-login-message").innerHTML = ' '+message;
@@ -69,6 +77,14 @@
 					}
 				});
 			};
+
+			var updateGameList = function(){
+				socket.emit("games-list",function(success, message, gameList){
+					console.log("socket#updateGameList server response: success="+success+" message="+message);
+				
+				});
+			};
+
 		</script>
 		</body>
 </html>

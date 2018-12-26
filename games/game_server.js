@@ -13,36 +13,44 @@ var io = require('socket.io').listen(server);
 io.sockets.on('connection', function (socket) {
 	console.log('new client connected');
 	socket.emit('connection-status', { content: 'Vous êtes bien connecté !', importance: '1', status: 'OK' });
-	socket.emit('game', game);
+	//socket.emit('game', game);
 	//TODO login infos et protocole
 	// requete de login avec clé et nom de joueur
 	// enregistrement et validation /refus d'accès
 	// association à une partie
-	//
-	//
-	//
 	
 	
 	// gestion de la requête de login
-	socket.on('user-login', function(userLogin,userPass,acknowledgment){
-		console.log("socket#login userLogin="+userLogin+" userPass.length="+userPass.length);
+	socket.on('user-login', function(userLogin,userPass,clientSideCallback){
+		console.log("socket#user-login userLogin="+userLogin+" userPass.length="+userPass.length);
 		if (users[userLogin] != null &&  users[userLogin].pass == userPass){
 			var sessionCode = users[userLogin].code;
 			if (sessionCode == null){
 				sessionCode = ""+Math.floor(Math.random()*1000000);
 				 users[userLogin].code = sessionCode;
 			}
-			acknowledgment(true,"well done",sessionCode);
+			clientSideCallback(true,"well done",sessionCode);
 		}else{
-			acknowledgment(false,"authentication error");
+			clientSideCallback(false,"authentication error");
 		}
 	});
 	
+	
 
 	socket.on('disconnect',function(){
+		console.log("disconnect!");
 	});
+	
+	//list of games
+		socket.on('games-list', function(clientSideCallback){
+		console.log("socket#games-list IN");
+		clientSideCallback(true,"mock response");
+	});
+	
+	
+	
+	
 });
-
 
 //--------------- PARTIE METIER GESTION DES JOUEURS
 var users = {
