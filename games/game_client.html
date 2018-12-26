@@ -5,6 +5,7 @@
 		<title>horses</title>
 	</head>
 	<body>
+
 		<div id="user-board">
 			<h3>user board</h3>
 			<p>server access: <span id="user-connection">not connected</span></p>
@@ -14,10 +15,13 @@
 			<p id="user-pass"><label for="user-pass-input">pass: <input type="password" id="user-pass-input" name="user-pass-input" size="10" value="123" /></p>
 			<p><input id="user-login-button" type="button" onclick="tryLogin();" value="login" /></p>
 		</div>
-		<div id="game-list">
+
+		<div id="game-list" style="visibility: hidden">
 			<h3>game list</h3>
+			<div id="game-list-infos" />
 		</div>
-		<div id="game-board">
+
+		<div id="game-board" style="visibility: hidden">
 			<h3>game board</h3>
 		</div>
 		
@@ -67,9 +71,7 @@
 						//hide login stuff
 						document.getElementById("user-pass").style.display = 'none';
 						document.getElementById("user-login-button").style.display = 'none';
-						
 						updateGameList();
-						
 					}else{
 					// TODO gestion echec
 						document.getElementById("user-login-message").innerHTML = ' '+message;
@@ -80,8 +82,19 @@
 
 			var updateGameList = function(){
 				socket.emit("games-list",function(success, message, gameList){
-					console.log("socket#updateGameList server response: success="+success+" message="+message);
-				
+					console.log("socket#updateGameList server response: success="+success+" message="+message+" gameList.length="+gameList.length);
+					//{"name": gameName, "id": SERVER_GAMES[gameName].game_id, "type":  SERVER_GAMES[gameName].game_id}
+					var gameListInnerHtml = "<ul>";
+					for (var gameInfoIndex in gameList){
+						gameListInnerHtml += 
+							"<li id=game-info-"+gameList[gameInfoIndex].type+"-"+gameList[gameInfoIndex].id+">("
+							+gameList[gameInfoIndex].type+") "+gameList[gameInfoIndex].name
+							+": "+gameList[gameInfoIndex].players.count+"/"+gameList[gameInfoIndex].players.max
+							+"</li>";
+					}
+					gameListInnerHtml += "</ul>";
+					document.getElementById("game-list-infos").innerHTML = gameListInnerHtml;
+					document.getElementById("game-list").style.visibility = 'visible';
 				});
 			};
 

@@ -1,5 +1,6 @@
 var http = require('http');
 var fs = require('fs');
+
 // Chargement du fichier index.html affiché au client
 var server = http.createServer(function(req, res) {
     fs.readFile('./game_client.html', 'utf-8', function(error, content) {
@@ -7,6 +8,7 @@ var server = http.createServer(function(req, res) {
         res.end(content);
     });
 });
+
 // loading socket.io
 var io = require('socket.io').listen(server);
 // connection management by logging
@@ -18,8 +20,7 @@ io.sockets.on('connection', function (socket) {
 	// requete de login avec clé et nom de joueur
 	// enregistrement et validation /refus d'accès
 	// association à une partie
-	
-	
+
 	// gestion de la requête de login
 	socket.on('user-login', function(userLogin,userPass,clientSideCallback){
 		console.log("socket#user-login userLogin="+userLogin+" userPass.length="+userPass.length);
@@ -34,33 +35,58 @@ io.sockets.on('connection', function (socket) {
 			clientSideCallback(false,"authentication error");
 		}
 	});
-	
-	
 
 	socket.on('disconnect',function(){
 		console.log("disconnect!");
 	});
-	
+
 	//list of games
-		socket.on('games-list', function(clientSideCallback){
+	socket.on('games-list', function(clientSideCallback){
 		console.log("socket#games-list IN");
-		clientSideCallback(true,"mock response");
+		//creating a simple list of games
+		// commmon parameters for all types of games: name, id, type
+		var gameList = [];
+		for (var gameName in SERVER_GAMES){
+			gameList.push({
+				"name": gameName, 
+				"id": SERVER_GAMES[gameName].getGameId(), 
+				"type":  SERVER_GAMES[gameName].getGameType(), 
+				"players": {
+					"count":SERVER_GAMES[gameName].getPlayersCount(),
+					"max": SERVER_GAMES[gameName].getPlayersMax()
+					}
+			});
+		}
+		clientSideCallback(true,"mock response",gameList);
 	});
-	
-	
-	
-	
+
 });
 
 //--------------- PARTIE METIER GESTION DES JOUEURS
 var users = {
-	"mylogin": {"pass": "123"}
+	"mylogin": {"pass": "123"},
+	"polo": {"pass": "secret_polo_horse_banana"}
 };
 
 
 //--------------- PARTIE METIER JEU DES PETITS CHEVAUX
-var game = {
-	'id': 18,
+var firstHorseGame = {
+	//base functions for generic games infos
+	getGameId: function(){
+		return this.game_id;
+	},
+	getGameType: function(){
+		return this.game_type;
+	},
+	getPlayersCount: function(){
+		return helpers.getPlayersCount(this);
+	},
+	getPlayersMax: function(){
+		return this.game_max_players;
+	},
+	'game_id': 18,
+	'game_type': "horses",
+	'game_max_players': 4,
 	'players':  {
 		'player1': {},
 		'player2': {}
@@ -97,8 +123,6 @@ var helpers = {
 		}
 		return playersCount;
 	}
-	
-	
 };
 
 //available game actions
@@ -166,7 +190,7 @@ var actions = {
 	},
 	//
 	logGameId: function(){
-		console.log("logGameId gameId="+game.id);
+		console.log("logGameId firstHorseGameId="+firstHorseGame.id);
 	}
 };
 
@@ -189,7 +213,7 @@ var controls = {
 		}
 		return result;
 	},
-	//TODO contrôle du lancer de dé
+	// contrôle du lancer de dé
 	canLaunchDice: function(game){
 		return function (playerName){
 			var result = {'success': false, 'comment': "none"};
@@ -205,7 +229,7 @@ var controls = {
 			return result;
 		}
 	},
-	//TODO contrôle du mouvement d'un cheval
+	// contrôle du mouvement d'un cheval
 	canMoveHorse: function(game){
 		return function (playerName){
 			return function (horseId){
@@ -232,10 +256,10 @@ var controls = {
 //SIMPLE TEST FONCTIONNEL
 //actions.logGameId();
 //if (controls.canResetGame(game).success){
-//	actions['resetGame'](game);
-//	actions.launchDice(game)("player1");
-//	actions.moveHorse(game)("player1")(2);
-//	console.log("TEST player1.horse(2).step="+helpers.getHorse(game)('player1')(2).step);
+//	actions['resetGame'](firstHorseGame);
+//	actions.launchDice(firstHorseGame)("player1");
+//	actions.moveHorse(firstHorseGame)("player1")(2);
+//	console.log("TEST player1.horse(2).step="+helpers.getHorse(firstHorseGame)('player1')(2).step);
 //}
 
 //--------------- FIN PARTIE METIER JEU DES PETITS CHEVAUX
@@ -244,7 +268,7 @@ var controls = {
 
 
 //--------------- GESTIONNAIRE GLOBAL DES PARTIES
-var games = {"horses_18":game};
+var SERVER_GAMES = {"horses_18":firstHorseGame};
 
 //var method = "doSomething";
 //var controlMethod = "can"+method.substring(0,1).toUpperCase()+method.substring(1);
