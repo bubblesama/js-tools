@@ -141,7 +141,7 @@ var firstHorseGame = {
 		var result = {success: false, message: "addPlayer KO"};
 		var currentPlayerCount = this.getPlayersCount();
 		//TODO controlling duplicate for users
-		this.players["player"+(currentPlayerCount+1)] = {};
+		this.players["player"+(currentPlayerCount+1)] = {login: playerName};
 		actions.resetGame(this);
 		result.success = true;
 		result.message = "addPlayer OK";
@@ -151,8 +151,8 @@ var firstHorseGame = {
 	'game_type': "horses",
 	'game_max_players': 4,
 	'players':  {
-		'player1': {},
-		'player2': {}
+		'player1': {login: "toto"},
+		'player2': {login: "tutu"}
 	},
 	'turn': 1,
 	'activePlayer': 'player1',

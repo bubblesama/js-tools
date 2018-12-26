@@ -127,6 +127,15 @@
 						console.log("socket#updateCurrentGameStatus turn="+gameState.turn);
 						//TODO show game status
 						var displayedGameStatus = "<span> "+currentGameName+" turn="+gameState.turn+"</span>";
+						displayedGameStatus += "<ul>";
+						for (var playerId in gameState.players){
+							displayedGameStatus +="<li style='color:";
+							displayedGameStatus +=gameState.players[playerId].login == currentLogin?"#00FF00":"#FF0000";
+							displayedGameStatus +="' >";
+							displayedGameStatus += gameState.players[playerId].login;
+							displayedGameStatus +="</li>";
+						}
+						displayedGameStatus += "</ul>";
 						document.getElementById("game-info").innerHTML = displayedGameStatus;
 						document.getElementById("game-board").style.visibility = 'visible';
 						document.getElementById("game-list").style.visibility = 'hidden';
