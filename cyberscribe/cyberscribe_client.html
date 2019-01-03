@@ -7,7 +7,7 @@
 	<body>
 
 		<div id="user-board">
-			<h3>user board</h3>
+			<h2>user board</h3>
 			<p>server access: <span id="user-connection">not connected</span></p>
 			<div id="user-login-message" style="color: #FF0000"></div>
 			<p><label for="user-name-input">login: </label><input type="text" id="user-name-input" name="user-name-input" size="10" value="mylogin" /><span id="user-name-value" style="visibility: hidden">no login</span></p>
@@ -16,6 +16,13 @@
 			<p><input id="user-login-button" type="button" onclick="tryLogin();" value="login" /></p>
 		</div>
 
+		<div id="message-board" style="visibility: hidden;">
+			<h2>messages</h3>
+			<div id="user-login-message" style="color: #FF0000"></div>
+			<h3>writing</h3>
+			<p><label for="message-write">message: </label><input type="text" id="message-write" name="message-write" size="10" value="message" />
+			<p><input id="message-send-button" type="button" onclick="sendMessage();" value="send" /></p>
+		</div>
 		
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
 		<script>
@@ -57,7 +64,8 @@
 						//hide login stuff
 						document.getElementById("user-pass").style.display = 'none';
 						document.getElementById("user-login-button").style.display = 'none';
-						updateGameList();
+						//show messages
+						document.getElementById("message-board").style.visibility = 'visible';
 					}else{
 					// TODO gestion echec
 						document.getElementById("user-login-message").innerHTML = ' '+message;
