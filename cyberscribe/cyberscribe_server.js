@@ -1,0 +1,61 @@
+var http = require('http');
+var fs = require('fs');
+
+// Chargement du fichier HTML affiché au client
+var server = http.createServer(function(req, res) {
+    fs.readFile('./cyberscribe_client.html', 'utf-8', function(error, content) {
+        res.writeHead(200, {"Content-Type": "text/html"});
+        res.end(content);
+    });
+});
+
+var USERS = {
+	"mylogin": {"pass": "123"},
+	"polo": {"pass": "secret_polo_horse_banana"}
+};
+
+// loading socket.io
+var io = require('socket.io').listen(server);
+// connection management by logging
+io.sockets.on('connection', function (socket) {
+	console.log('new client connected');
+	socket.emit('connection-status', { content: 'Vous êtes bien connecté !', importance: '1', status: 'OK' });
+
+	var currentUserLogin;
+
+	// gestion de la requête de login
+	socket.on('user-login', function(userLogin,userPass,clientSideCallback){
+		console.log("socket#user-login userLogin="+userLogin+" userPass.length="+userPass.length);
+		if (USERS[userLogin] != null &&  USERS[userLogin].pass == userPass){
+			var sessionCode = USERS[userLogin].code;
+			if (sessionCode == null){
+				sessionCode = ""+Math.floor(Math.random()*1000000);
+				 USERS[userLogin].code = sessionCode;
+			}
+			currentUserLogin = userLogin;
+			clientSideCallback(true,"well done",sessionCode);
+		}else{
+			clientSideCallback(false,"authentication error");
+		}
+	});
+
+	socket.on('disconnect',function(){
+		console.log("disconnect");
+		if (currentUserLogin != null && !("" == (currentUserLogin))){
+			var currentGameName = USERS[currentUserLogin].game;
+			if (currentGameName != null){
+				console.log("disconnect "+currentUserLogin+" from "+currentGameName+"!");
+				//TODO cleaning current games
+				USERS[currentUserLogin].game = null;
+			}
+		}
+	});
+
+});
+
+
+
+var serverPort = 4040;
+console.log("launching chat server");
+server.listen(serverPort);
+console.log("server running on port "+serverPort);
