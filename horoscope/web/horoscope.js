@@ -32,6 +32,7 @@ var forbiddenDates = {};
 
 
 function startup(){
+	_updateFromPath();
 	var shouldGetDate = _updateFromHash();
 	$("#mainContent").html("calling server for signs...");
 	if (!calledForSigns){
@@ -101,6 +102,7 @@ function _updateFromHash(){
 
 // replace hash method of routing
 function _updateFromPath(){
+	console.log("_updateFromPath IN pathname="+window.location.pathname);
 
 
 
