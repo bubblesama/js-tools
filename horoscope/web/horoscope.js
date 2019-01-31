@@ -97,7 +97,17 @@ function _updateFromHash(){
 		$("#welcome").show();
 	}
 	return shouldGetDate;
-}
+};
+
+// replace hash method of routing
+function _updateFromPath(){
+
+
+
+};
+
+
+
 
 function _refreshPage(date, isStats, sign, quizzId){
 	// nettoyage des infos
@@ -148,7 +158,7 @@ function _refreshPage(date, isStats, sign, quizzId){
 		// pas de signe: infos sur le choix des signes
 		$("#welcome").show();
 	}
-}
+};
 
 var monthNames = ["janvier", "février", "mars","avril", "mai", "juin", "juillet","août", "septembre", "octobre","novembre", "décembre"];
 
@@ -164,7 +174,7 @@ function _setDate(rawDate){
 	}
 	currentDate = rawDate;
 	$("#statsLink").attr("href", "#/date/"+currentDate+"/stats/");
-}
+};
 
 function _setSign(sign){
 	console.log("_setSign IN sign="+sign);
@@ -172,7 +182,7 @@ function _setSign(sign){
 	$("#sign_"+sign).addClass("chosenSign");
 	//$("#currentSign").html(currentSign);
 	$("#currentSignInfo").show();
-}
+};
 
 function _createQuizz(){
 	console.log("_createQuizz IN");
@@ -191,7 +201,7 @@ function _setQuizzId(quizzId){
 	$("#quizzId").html(quizzId);
 	$("#quizzLink").attr("href","#/date/"+currentDate+"/sign/"+currentSign+"/quizz/"+quizzId);
 	$("#quizzLink").show();
-}
+};
 
 function _getQuizzPredictions(quizzId){
 	console.log("_getQuizzPredictions IN quizzId="+quizzId);
@@ -230,7 +240,7 @@ function _clearQuizz(){
 	$("#prediction_00").html("none");
 	$("#prediction_01").html("none");
 	$("#prediction_02").html("none");
-}
+};
 
 function _sendGuess(quizzId,guess){
 	console.log("_sendAnswer IN quizzId = "+quizzId+" guess="+guess);
@@ -258,7 +268,7 @@ function _sendGuess(quizzId,guess){
 			}
 		}
 	);
-}
+};
 
 function _getPrediction(){
 	//console.log("_getPrediction IN currentDate = "+currentDate);
