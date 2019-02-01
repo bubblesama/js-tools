@@ -6,6 +6,16 @@ var calledForSigns = false;
 var currentSign = "none";
 var currentDate = "none";
 var currentQuizz = "none";
+var  currentContext = {
+	"date": null,
+	"sign": null,
+	"quizz": null,
+	"isStats": false
+};
+
+
+
+
 
 var i18n = { 
 	"aquarius": "Verseau",
@@ -100,32 +110,77 @@ function _updateFromHash(){
 	return shouldGetDate;
 };
 
+
 // replace hash method of routing
 function _updateFromPath(){
-	console.log("_updateFromPath IN pathname="+window.location.pathname);
-
-
-
+	console.debug("_updateFromPath IN pathname="+window.location.pathname);
+	var urlPath = window.location.pathname;
+	//check format https://lpr01.ddns.net/horoscope/date/20190201/sign/taurus/quizz/5c54639f8b6d7904f7faa485
+	var shouldGetDate = true;
+	if (urlPath.indexOf("date") >= 0){
+		var rawDate = urlPath.split("/")[2];
+		console.debug("_updateFromPath date parameter found: rawDate="+rawDate);
+		var isDateCorrectlyFormated = /^201\d[0-2]\d[0-1]\d$/.test(rawDate);
+		if (isDateCorrectlyFormated){
+			var date = rawDate;
+			shouldGetDate = false;
+			if (urlPath.indexOf("sign") >= 0){
+				var rawSign = urlPath.split("/")[4];
+				console.debug("_updateFromPath sign parameter found: rawSign="+rawSign);
+				//TODO contrôle format signe
+				var isSignCorrectlyFormated = true;
+				if (isSignCorrectlyFormated){
+					var sign = rawSign;
+					if (urlPath.indexOf("quizz") >= 0){
+						var rawQuizz = urlPath.split("/")[6];
+						console.debug("_updateFromPath quizz parameter found: rawQuizz="+rawQuizz);
+						//TODO contrôle format quizz
+						var isQuizzCorrectlyFormated = true;
+						if (isQuizzCorrectlyFormated){
+							var quizz = rawQuizz; 
+							_refreshPage(date, false, sign, quizz);
+						}else{
+							// TODO gestion des formats de quizz pourris
+						}
+					}else{
+						_refreshPage(date, false, sign);
+					}
+				}else{
+					//TODO gestion des formats de signe pourris
+				}			
+			}else{
+				// est-ce les stats?
+				if (urlPath.indexOf("stats") >= 0){
+					_refreshPage(date, true);
+				}else{
+					_refreshPage(date, false);
+				}
+			}
+		}else{
+			//TODO gestion des formats de date pourris
+		}
+	}
+	return shouldGetDate;
 };
 
 
 
 
-function _refreshPage(date, isStats, sign, quizzId){
+function _refreshPage(date, isStats, sign, quizz){
 	// nettoyage des infos
 	$("#welcome").hide();
 	$("#infos").hide();
 	$("#warning").hide();
 	$("#quickLinks a").removeClass("chosenSign");
 	$("#predictions div").removeClass("false");
-	//console.log("_refreshPage IN date="+date+ " sign="+sign+" quizzId="+quizzId);
+	console.debug("_refreshPage IN date="+date+ " sign="+sign+" quizz="+quizz);
 	if (date){
 		_setDate(date);
 		if (sign){
 			_setSign(sign);
-			if (quizzId){
-				_setQuizzId(quizzId);
-				_getQuizzPredictions(quizzId);
+			if (quizz){
+				_setQuizzId(quizz);
+				_getQuizzPredictions(quizz);
 			}else{
 				_clearQuizz();
 				_createQuizz();
@@ -136,7 +191,7 @@ function _refreshPage(date, isStats, sign, quizzId){
 			_clearQuizz();
 			if (isStats){
 				var statOutput = "stats for "+date+": ";
-				//TODO gestion des stats
+				//gestion des stats
 				$.get(
 					rootPath+"date/"+date+"/stats/", 
 					function(data) {
@@ -175,12 +230,14 @@ function _setDate(rawDate){
 		$("#currentDate").html(date.getDate()+" "+monthNames[date.getMonth()]+" "+date.getFullYear());
 	}
 	currentDate = rawDate;
+	currentContext.date = rawDate;
 	$("#statsLink").attr("href", "#/date/"+currentDate+"/stats/");
 };
 
 function _setSign(sign){
 	console.log("_setSign IN sign="+sign);
 	currentSign = sign;
+	currentContext.sign = sign;
 	$("#sign_"+sign).addClass("chosenSign");
 	//$("#currentSign").html(currentSign);
 	$("#currentSignInfo").show();
@@ -198,10 +255,11 @@ function _createQuizz(){
 	);
 };
 
-function _setQuizzId(quizzId){
-	currentQuizz = quizzId;
-	$("#quizzId").html(quizzId);
-	$("#quizzLink").attr("href","#/date/"+currentDate+"/sign/"+currentSign+"/quizz/"+quizzId);
+function _setQuizzId(quizz){
+	currentQuizz = quizz;
+	currentContext.quizz = quizz;
+	$("#quizzId").html(quizz);
+	$("#quizzLink").attr("href","#/date/"+currentDate+"/sign/"+currentSign+"/quizz/"+quizz);
 	$("#quizzLink").show();
 };
 
@@ -212,7 +270,7 @@ function _getQuizzPredictions(quizzId){
 	$.get(
 		fullQuizzPath,
 		function(data) {
-			//console.log("_getQuizzPredictions recuperation du quizz: "+data+" fullQuizzPath="+fullQuizzPath);
+			console.debug("_getQuizzPredictions recuperation du quizz: "+data+" fullQuizzPath="+fullQuizzPath);
 			var quizzData = JSON.parse(data);
 			var result = "";
 			if (quizzData.code == "OK"){
@@ -245,26 +303,26 @@ function _clearQuizz(){
 };
 
 function _sendGuess(quizzId,guess){
-	console.log("_sendAnswer IN quizzId = "+quizzId+" guess="+guess);
+	console.debug("_sendGuess IN quizzId = "+quizzId+" guess="+guess);
 	var fullAnswerPath = rootPath+"date/"+currentDate+"/sign/"+currentSign+"/quizz/"+quizzId+"/guess/"+guess;
 	$.get(
 		fullAnswerPath,
 		function(data) {
-			console.log("_sendAnswer recuperation du resultat: "+data);
+			console.debug("_sendGuess recuperation du resultat: "+data);
 			var response = JSON.parse(data);
 			if (response.code != "OK"){
-				console.log("_sendAnwser KO: "+response.message);
+				console.debug("_sendGuess KO: "+response.message);
 				if (response.code == "DONE"){
 					_clearQuizz();
 					$("#warning").html(response.message);
 					$("#warning").show();
 				}
 			}else{
-				console.log("_sendAnswer OK");
+				console.debug("_sendGuess OK");
 				for (var i=0;i<response.details.length;i++){
 					if (response.details[i] != currentSign){
 						$("#prediction_0"+i).addClass("false");
-						console.log("_sendAnswer adding false class to #prediction_0"+i);
+						console.debug("_sendGuess adding false class to #prediction_0"+i);
 					}
 				}
 			}
@@ -273,27 +331,27 @@ function _sendGuess(quizzId,guess){
 };
 
 function _getPrediction(){
-	//console.log("_getPrediction IN currentDate = "+currentDate);
+	console.debug("_getPrediction IN currentDate = "+currentDate);
 	if(currentSign != "none"){
 		var path = rootPath+"date/"+currentDate+"/sign/"+currentSign+"/";
 		//console.log(path);
 		$.get(
 			path,
 			function(data){
-				console.log("_getPrediction: "+data);
+				console.debug("_getPrediction: "+data);
 			}
 		);
 	}else{
-		console.log("_getPrediction no sign!");
+		console.debug("_getPrediction no sign!");
 	}
-	console.log("_getPrediction OUT");
+	console.debug("_getPrediction OUT");
 };
 
 function _testPost(){
 	$.post( 
 		rootPath+"date/"+currentDate+"/test/",
 		function(data) {
-			console.log("_testPost: "+data);
+			console.debug("_testPost: "+data);
 		}
 	);
 };
