@@ -1,6 +1,8 @@
 //var rootPath="http://localhost:8088/horoscope/";
 
-rootPath="";
+var rootPath="";
+var apiPath = "api"
+
 
 var calledForSigns = false;
 var currentSign = "none";
@@ -42,13 +44,13 @@ var forbiddenDates = {};
 
 
 function startup(){
-	_updateFromPath();
+	//_updateFromPath();
 	var shouldGetDate = _updateFromHash();
 	$("#mainContent").html("calling server for signs...");
 	if (!calledForSigns){
 		calledForSigns = true;
 		$.get(
-			rootPath+"signs/", 
+			apiPath+"/signs/", 
 			function(data) {
 				var htmlSignsList = "";
 				var signs = JSON.parse(data).signs;
@@ -193,7 +195,7 @@ function _refreshPage(date, isStats, sign, quizz){
 				var statOutput = "stats for "+date+": ";
 				//gestion des stats
 				$.get(
-					rootPath+"date/"+date+"/stats/", 
+					apiPath+"/date/"+date+"/stats/", 
 					function(data) {
 						var result = JSON.parse(data);
 						var rightRatio = 0;
@@ -246,7 +248,7 @@ function _setSign(sign){
 function _createQuizz(){
 	console.log("_createQuizz IN");
 	$.post( 
-		rootPath+"date/"+currentDate+"/sign/"+currentSign+"/quizz/",
+		apiPath+"/date/"+currentDate+"/sign/"+currentSign+"/quizz/",
 		function(data) {
 			//console.log("_createQuizz: quizz created "+data);
 			var quizzId = JSON.parse(data).quizzId;
@@ -265,7 +267,7 @@ function _setQuizzId(quizz){
 
 function _getQuizzPredictions(quizzId){
 	console.log("_getQuizzPredictions IN quizzId="+quizzId);
-	var fullQuizzPath = rootPath+"date/"+currentDate+"/sign/"+currentSign+"/quizz/"+quizzId;
+	var fullQuizzPath = apiPath+"/date/"+currentDate+"/sign/"+currentSign+"/quizz/"+quizzId;
 	var hash = "#/date/"+currentDate+"/sign/"+currentSign+"/quizz/"+quizzId;
 	$.get(
 		fullQuizzPath,
@@ -304,7 +306,7 @@ function _clearQuizz(){
 
 function _sendGuess(quizzId,guess){
 	console.debug("_sendGuess IN quizzId = "+quizzId+" guess="+guess);
-	var fullAnswerPath = rootPath+"date/"+currentDate+"/sign/"+currentSign+"/quizz/"+quizzId+"/guess/"+guess;
+	var fullAnswerPath = apiPath+"/date/"+currentDate+"/sign/"+currentSign+"/quizz/"+quizzId+"/guess/"+guess;
 	$.get(
 		fullAnswerPath,
 		function(data) {
@@ -333,7 +335,7 @@ function _sendGuess(quizzId,guess){
 function _getPrediction(){
 	console.debug("_getPrediction IN currentDate = "+currentDate);
 	if(currentSign != "none"){
-		var path = rootPath+"date/"+currentDate+"/sign/"+currentSign+"/";
+		var path = apiPath+"/date/"+currentDate+"/sign/"+currentSign+"/";
 		//console.log(path);
 		$.get(
 			path,
@@ -349,7 +351,7 @@ function _getPrediction(){
 
 function _testPost(){
 	$.post( 
-		rootPath+"date/"+currentDate+"/test/",
+		apiPath+"/date/"+currentDate+"/test/",
 		function(data) {
 			console.debug("_testPost: "+data);
 		}
