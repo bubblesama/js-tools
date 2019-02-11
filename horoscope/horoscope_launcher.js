@@ -372,8 +372,6 @@ function getHoroscopes(date, context, callback){
 	);
 }
 
-
-
 function randomInt(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
@@ -404,6 +402,7 @@ app.get(
 );
 
 // service des pages statiques
+// NOTE: not used on production: nginx manages
 app.get(
 	'/'+rootPath+'/web/:file',
 	function(req,res){
@@ -426,6 +425,7 @@ app.get(
 );
 
 // service des lib
+// NOTE: not used on production: nginx manages
 app.get(
 	'/'+rootPath+'/web/lib/:file',
 	function(req,res){
