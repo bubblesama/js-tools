@@ -29,7 +29,8 @@
 			//SOCKET IO
 			// init
 			console.log("socket connecting");
-			var socket = io.connect('http://localhost:4040');
+			//NOTE  var socket = io('https://lpr01.ddns.net/',{path: '/cyberscribe/socket.io'});
+			var socket = io('http://localhost:4040');
 			//gestion des messages
 			socket.on('connection-status', function(message){
 				console.log("socket#connection-status message="+ message.content);
@@ -42,7 +43,7 @@
 			var isLoggedIn = false;
 
 			var tryLogin = function(){
-				// récupération du nom utilisateur
+				// rï¿½cupï¿½ration du nom utilisateur
 				var userName = document.getElementById("user-name-input").value;
 				var userPass = document.getElementById("user-pass-input").value;
 				console.log("tryLogin playerName="+userName);
