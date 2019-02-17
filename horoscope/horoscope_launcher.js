@@ -9,6 +9,7 @@ var MongoClient = require('mongodb').MongoClient;
 var app = express();
 
 var rootPath = 'horoscope';
+var apiPath = 'horoscope/api';
 //NOTE 
 //var horoscopeFolderPath = "/projects/horoscope/data/";
 var horoscopeFolderPath = "D:/projects/js-tools/horoscope/data/";
@@ -30,7 +31,7 @@ var quizzOrderings = [[0,1,2],[0,2,1],[1,0,2],[1,2,0],[2,0,1],[2,1,0]];
  Cas de l'horoscope par date
 */
 app.get(
-	'/'+rootPath+'/date/:date',
+	'/'+apiPath+'/date/:date',
 	function(req,res){
 		fs.readFile(
 			horoscopeFolderPath+"json."+req.params.date+".txt",
@@ -52,7 +53,7 @@ app.get(
  creation d'un quizz
 */
 app.post(
-	'/'+rootPath+'/date/:date/sign/:sign/quizz/',
+	'/'+apiPath+'/date/:date/sign/:sign/quizz/',
 	function(req,res){
 		console.log("post quizz: IN date="+req.params.date+" sign="+req.params.sign);
 		var quizzSigns = [req.params.sign];
@@ -102,7 +103,7 @@ var query = {date: date, guess :{ $ne: "none" }};
 
 
 app.get(
-	'/'+rootPath+'/date/:date/stats/',
+	'/'+apiPath+'/date/:date/stats/',
 	function(req,res){
 		console.log("GET stats IN: date="+req.params.date);
 		var date = req.params.date;
@@ -159,7 +160,7 @@ app.get(
 );
 
 app.get(
-	'/'+rootPath+'/date/:date/sign/:sign/quizz/:quizzId',
+	'/'+apiPath+'/date/:date/sign/:sign/quizz/:quizzId',
 	function(req,res){
 		console.log("GET quizz IN: quizzId="+req.params.quizzId);
 		var quizzId = req.params.quizzId;
@@ -221,7 +222,7 @@ app.get(
 
 /* gestion de la reponse au quizz*/
 app.get(
-	'/'+rootPath+'/date/:date/sign/:sign/quizz/:quizzId/guess/:guess',
+	'/'+apiPath+'/date/:date/sign/:sign/quizz/:quizzId/guess/:guess',
 	function(req,res){
 		var quizzId = req.params.quizzId;
 		var guess = parseInt(req.params.guess);
@@ -275,7 +276,7 @@ app.get(
 
 //http://localhost:8088/horoscope/signs
 app.get(
-	'/'+rootPath+'/signs/',
+	'/'+apiPath+'/signs/',
 	function(req,res){
 		//NOTE passage à la date du jour
 		//var signsResponse = {"date": (new Date()).toISOString().slice(0,10).replace(/-/g,""), "signs": signs};
@@ -287,7 +288,7 @@ app.get(
 
 // http://localhost:8088/horoscope/date/20160908/sign/aries
 app.get(
-	'/'+rootPath+'/date/:date/sign/:sign',
+	'/'+apiPath+'/date/:date/sign/:sign',
 	function(req,res){
 		fs.readFile(
 			horoscopeFolderPath+"json."+req.params.date+".txt",
@@ -313,8 +314,11 @@ app.get(
 // creation du serveur
 var server=http.createServer(app);
 
+
+var serverPort = 8088;
+console.log("serveur launched, listening on port "+serverPort);
 // lancement serveur
-server.listen(8088,"0.0.0.0");
+server.listen(serverPort,"0.0.0.0");
 
 function getHoroscope(date, sign, context, callback){
 	console.log("getHoroscope: IN date="+date+" sign="+sign);
@@ -368,8 +372,6 @@ function getHoroscopes(date, context, callback){
 	);
 }
 
-
-
 function randomInt(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
@@ -400,6 +402,7 @@ app.get(
 );
 
 // service des pages statiques
+// NOTE: not used on production: nginx manages
 app.get(
 	'/'+rootPath+'/web/:file',
 	function(req,res){
@@ -422,6 +425,7 @@ app.get(
 );
 
 // service des lib
+// NOTE: not used on production: nginx manages
 app.get(
 	'/'+rootPath+'/web/lib/:file',
 	function(req,res){
