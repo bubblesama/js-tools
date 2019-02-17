@@ -29,7 +29,8 @@
 			//SOCKET IO
 			// init
 			console.log("socket connecting");
-			var socket = io('http://localhost:4040',{path: '/cyberscribe/socket.io'});
+			//NOTE  var socket = io('https://lpr01.ddns.net/',{path: '/cyberscribe/socket.io'});
+			var socket = io('http://localhost:4040');
 			//gestion des messages
 			socket.on('connection-status', function(message){
 				console.log("socket#connection-status message="+ message.content);
