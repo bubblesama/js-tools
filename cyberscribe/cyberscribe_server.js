@@ -44,6 +44,11 @@ io.on('connection', function (socket) {
 		}
 	});
 
+	socket.on('message-write', function(login, sessionCode,clientSideCallback){
+		console.log("socket#message-write sessionCode="+sessionCode);
+
+	});
+
 	socket.on('disconnect',function(){
 		console.log("disconnect");
 		if (currentUserLogin != null && !("" == (currentUserLogin))){
