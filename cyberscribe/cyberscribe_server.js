@@ -18,8 +18,9 @@ var USERS = {
 };
 
 // lancement socket.io
-//NOTE var io = require('socket.io')(server);
-var io = require('socket.io')(server,{path: '/cyberscribe/socket.io'});
+//NOTE local 
+var io = require('socket.io')(server);
+//NOTE lpr01 var io = require('socket.io')(server,{path: '/cyberscribe/socket.io'});
 // connection management by logging
 io.on('connection', function (socket) {
 	console.log('new client connected');

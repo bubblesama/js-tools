@@ -30,7 +30,7 @@
 			// init
 			console.log("socket connecting");
 			//NOTE  var socket = io('https://lpr01.ddns.net/',{path: '/cyberscribe/socket.io'});
-			var socket = io('http://localhost:4040');
+			var socket = io('http://localhost:4040/');
 			//gestion des messages
 			socket.on('connection-status', function(message){
 				console.log("socket#connection-status message="+ message.content);
@@ -73,6 +73,12 @@
 						console.log("erreur d'authent");
 					}
 				});
+			};
+
+			var sendMessage = function(){
+				var message = document.getElementById("message-write").value;
+				console.log("sendMessage IN message="+message);
+
 			};
 
 		</script>
