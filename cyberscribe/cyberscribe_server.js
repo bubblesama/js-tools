@@ -46,7 +46,7 @@ io.on('connection', function (socket) {
 
 	socket.on('message-write', function(login, sessionCode,clientSideCallback){
 		console.log("socket#message-write sessionCode="+sessionCode);
-
+		clientSideCallback("message received");
 	});
 
 	socket.on('disconnect',function(){

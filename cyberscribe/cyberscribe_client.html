@@ -79,6 +79,7 @@
 				var message = document.getElementById("message-write").value;
 				console.log("sendMessage IN message="+message);
 				socket.emit('message-write', currentLogin, currentSessionCode, function(success, message){
+					console.log("socket#sendMessage server response: success="+success+" message="+message);
 					//TODO log des messages
 					//TODO gestion de péremption de session
 				
