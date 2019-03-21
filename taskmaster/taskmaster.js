@@ -45,14 +45,18 @@ app.post(
 		console.log("POST IN: req.body.name="+req.body.name);
 		//TODO insert BDD
 		db = new sqlite3.Database(dbFile);
+		var insertStatement = "INSERT INTO tasks VALUES (\""+req.body.name+"\")";
+		console.log("insertStatement: "+insertStatement);
 		db.run(
-			"INSERT INTO tasks VALUES ("+req.body.name+")",
+			insertStatement,
 			[],
 			function(error){
 				db.close();
 				console.log("POST INSERT done");
 				writeTasksAndForm(req,res);
 				if (error == null){
+				}else{
+					console.log("ERREUR d'INSERT: "+error);
 				}
 			}
 		);
@@ -74,10 +78,10 @@ function writeTasksAndForm(req,res){
 						console.log("writeTasksAndForm some rows! rows="+rows);
 						rows.forEach(function(row) {
 							console.log("writeTasksAndForm one row");
-							allTasksResult.tasks.add({"name":raw.name});
+							allTasksResult.tasks.push({"name":row.name});
 						});
 						var template = Handlebars.compile(fileContent);
-						var data = {"content":"Je suis Contenu le contenu"};
+						var data = {content:"Je suis Contenu le contenu",tasks:allTasksResult.tasks};
 						db.close();
 						res.end(""+template(data));
 					}
