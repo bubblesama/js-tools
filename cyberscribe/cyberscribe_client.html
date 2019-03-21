@@ -29,7 +29,8 @@
 			//SOCKET IO
 			// init
 			console.log("socket connecting");
-			var socket = io.connect('http://localhost:4040');
+			//NOTE  var socket = io('https://lpr01.ddns.net/',{path: '/cyberscribe/socket.io'});
+			var socket = io('http://localhost:4040/');
 			//gestion des messages
 			socket.on('connection-status', function(message){
 				console.log("socket#connection-status message="+ message.content);
@@ -42,7 +43,7 @@
 			var isLoggedIn = false;
 
 			var tryLogin = function(){
-				// récupération du nom utilisateur
+				// rï¿½cupï¿½ration du nom utilisateur
 				var userName = document.getElementById("user-name-input").value;
 				var userPass = document.getElementById("user-pass-input").value;
 				console.log("tryLogin playerName="+userName);
@@ -71,6 +72,17 @@
 						document.getElementById("user-login-message").innerHTML = ' '+message;
 						console.log("erreur d'authent");
 					}
+				});
+			};
+
+			var sendMessage = function(){
+				var message = document.getElementById("message-write").value;
+				console.log("sendMessage IN message="+message);
+				socket.emit('message-write', currentLogin, currentSessionCode, function(success, message){
+					console.log("socket#sendMessage server response: success="+success+" message="+message);
+					//TODO log des messages
+					//TODO gestion de pÃ©remption de session
+				
 				});
 			};
 

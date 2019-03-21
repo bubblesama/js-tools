@@ -3,7 +3,7 @@ var fs = require('fs');
 var moment = require('moment');
 
 
-// chargement du fichier HTML affiché au client
+// chargement du fichier HTML affichï¿½ au client
 var server = http.createServer(function(req, res) {
     fs.readFile('./cyberscribe_client.html', 'utf-8', function(error, content) {
         res.writeHead(200, {"Content-Type": "text/html"});
@@ -18,13 +18,15 @@ var USERS = {
 };
 
 // lancement socket.io
-var io = require('socket.io').listen(server);
+//NOTE local 
+var io = require('socket.io')(server);
+//NOTE lpr01 var io = require('socket.io')(server,{path: '/cyberscribe/socket.io'});
 // connection management by logging
-io.sockets.on('connection', function (socket) {
+io.on('connection', function (socket) {
 	console.log('new client connected');
-	socket.emit('connection-status', { content: 'Vous êtes bien connecté !', importance: '1', status: 'OK' });
+	socket.emit('connection-status', { content: 'Vous ï¿½tes bien connectï¿½ !', importance: '1', status: 'OK' });
 	var currentUserLogin;
-	// gestion de la requête de login
+	// gestion de la requï¿½te de login
 	socket.on('user-login', function(userLogin,userPass,clientSideCallback){
 		console.log("socket#user-login userLogin="+userLogin+" userPass.length="+userPass.length);
 		if (USERS[userLogin] != null &&  USERS[userLogin].pass == userPass){
@@ -40,6 +42,11 @@ io.sockets.on('connection', function (socket) {
 		}else{
 			clientSideCallback(false,"authentication error");
 		}
+	});
+
+	socket.on('message-write', function(login, sessionCode,clientSideCallback){
+		console.log("socket#message-write sessionCode="+sessionCode);
+		clientSideCallback("message received");
 	});
 
 	socket.on('disconnect',function(){
