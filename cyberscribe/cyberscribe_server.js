@@ -1,9 +1,17 @@
 var http = require('http');
 var fs = require('fs');
 var moment = require('moment');
+var loki = require('lokijs');
 
 
-// chargement du fichier HTML affich� au client
+
+//global vars
+//database link
+var database;
+
+
+
+// chargement du fichier HTML affiche au client
 var server = http.createServer(function(req, res) {
     fs.readFile('./cyberscribe_client.html', 'utf-8', function(error, content) {
         res.writeHead(200, {"Content-Type": "text/html"});
@@ -17,7 +25,7 @@ var USERS = {
 	"polo": {"pass": "secret_polo_horse_banana"}
 };
 
-// lancement socket.io
+// socket.io conf
 //NOTE local 
 var io = require('socket.io')(server);
 //NOTE lpr01 var io = require('socket.io')(server,{path: '/cyberscribe/socket.io'});
@@ -26,6 +34,7 @@ io.on('connection', function (socket) {
 	console.log('new client connected');
 	socket.emit('connection-status', { content: 'Vous �tes bien connect� !', importance: '1', status: 'OK' });
 	var currentUserLogin;
+	
 	// gestion de la requete de login
 	socket.on('user-login', function(userLogin,userPass,clientSideCallback){
 		console.log("socket#user-login userLogin="+userLogin+" userPass.length="+userPass.length);
@@ -52,25 +61,40 @@ io.on('connection', function (socket) {
 	socket.on('disconnect',function(){
 		console.log("disconnect");
 		if (currentUserLogin != null && !("" == (currentUserLogin))){
-			var currentGameName = USERS[currentUserLogin].game;
-			if (currentGameName != null){
-				console.log("disconnect "+currentUserLogin+" from "+currentGameName+"!");
-				//TODO cleaning current games
-				USERS[currentUserLogin].game = null;
-			}
+			
 		}
 	});
 
 });
 
-var serverPort = 4040;
-console.log("launching chat server");
+
+
+//database and server startup
+
+console.log("starting loki database");
+database = new loki(
+    'cyberscribe-lokidb.json',
+    {
+        autosave: "true",
+        autosaveInterval: 2000,
+    }
+);
+
+database.loadDatabase(
+    {},
+    function(err){
+		console.log("loki database loaded, checking intialiszation");
+		var status = database.addCollection("status");
+        status.insert({status: "on"});
+		database.saveDatabase();
+		console.log("launching chat server");
+		var serverPort = 4040;
+		server.listen(serverPort);
+		console.log("server running on port "+serverPort);
+    }
+);
 
 
 
+//BUSINESS CODE
 
-server.listen(serverPort);
-console.log("server running on port "+serverPort);
-
-//tests moment
-//console.log("moment first:"+moment().format());
