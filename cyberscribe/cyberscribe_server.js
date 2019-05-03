@@ -26,7 +26,7 @@ io.on('connection', function (socket) {
 	console.log('new client connected');
 	socket.emit('connection-status', { content: 'Vous �tes bien connect� !', importance: '1', status: 'OK' });
 	var currentUserLogin;
-	// gestion de la requ�te de login
+	// gestion de la requete de login
 	socket.on('user-login', function(userLogin,userPass,clientSideCallback){
 		console.log("socket#user-login userLogin="+userLogin+" userPass.length="+userPass.length);
 		if (USERS[userLogin] != null &&  USERS[userLogin].pass == userPass){
@@ -65,6 +65,10 @@ io.on('connection', function (socket) {
 
 var serverPort = 4040;
 console.log("launching chat server");
+
+
+
+
 server.listen(serverPort);
 console.log("server running on port "+serverPort);
 
