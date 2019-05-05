@@ -18,12 +18,6 @@ var server = http.createServer(function(req, res) {
     });
 });
 
-// utilisateurs
-var USERS = {
-	"mylogin": {"pass": "123"},
-	"polo": {"pass": "secret_polo_horse_banana"}
-};
-
 // socket.io conf
 //NOTE local 
 var io = require('socket.io')(server);
@@ -31,7 +25,7 @@ var io = require('socket.io')(server);
 // connection management by logging
 io.on('connection', function (socket) {
 	console.log('new client connected');
-	socket.emit('connection-status', { content: 'Vous �tes bien connect� !', importance: '1', status: 'OK' });
+	socket.emit('connection-status', { content: 'Vous etes bien connecte !', importance: '1', status: 'OK' });
 	var currentUserLogin;
 	
 	// gestion de la requete de login
@@ -59,7 +53,7 @@ io.on('connection', function (socket) {
 		var message = getMessageObject(userFrom,content);
 		socketsByUser.forEach(
 			function(socket, userLogin){
-				console.log("socket#message-write emitting on socket for "+userLogin);
+				console.log("socket#message-write emitting on socket for \""+userLogin+"\"");
 				socket.emit("message-received",message);
 			}
 		);
@@ -89,43 +83,35 @@ database = new loki(
 database.loadDatabase(
     {},
     function(err){
-		console.log("loki database loaded, checking intialiszation");
+		console.log("#init loki database loaded, checking intialiszation");
 		var status = database.addCollection("status");
 		status.insert({status: "on"});
 		var users = database.addCollection("users");
 		if (users.count() < 1){
-			console.log("no users, creating the default admin user");
+			console.log("#init no users, creating the default admin user");
 			users.insert(getUserObject("lise","123"));
 			users.insert(getUserObject("paul","123"));
 		}else{
-			console.log("users database loaded");
+			console.log("#init users database loaded");
 		}
 		database.saveDatabase();
-		console.log("launching chat server");
+		console.log("#init launching chat server");
 		var serverPort = 4040;
 		server.listen(serverPort);
-		console.log("server running on port "+serverPort);
+		console.log("#init server running on port "+serverPort);
     }
 );
-
 //BUSINESS CODE
 
 //fonction de login: check en BDD, retour asynchrone dans _callback
 // parametre de callback: TODO
-//
-function login(user, password, _callback){
-
-};
+function login(user, password, _callback){};
 
 // TODO
-function logout(user, _callback){
-
-};
+function logout(user, _callback){};
 
 //TODO
-function message(userFrom, userTo, content, _callback){
-
-};
+function message(userFrom, userTo, content, _callback){};
 
 //USERS MANAGEMENT
 function getUserObject(userLogin, userPassword){
@@ -149,5 +135,3 @@ function getMessageObject(userFrom, content){
 		timestamp: moment().format()
 	};
 }
-
-

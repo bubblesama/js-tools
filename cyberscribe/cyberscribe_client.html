@@ -19,6 +19,10 @@
 		<div id="message-board" style="visibility: hidden;">
 			<h2>messages</h3>
 			<div id="user-login-message" style="color: #FF0000"></div>
+			<h3>reading</h3>
+			<ul id="message-logs">
+				<li>no message</li>
+			</ul>
 			<h3>writing</h3>
 			<p><label for="message-write">message: </label><input type="text" id="message-write" name="message-write" size="10" value="message" />
 			<p><input id="message-send-button" type="button" onclick="sendMessage();" value="send" /></p>
@@ -28,7 +32,7 @@
 		<script>
 			//SOCKET IO
 			// init
-			console.log("socket connecting");
+			console.log("#init socket connecting");
 			//NOTE  var socket = io('https://lpr01.ddns.net/',{path: '/cyberscribe/socket.io'});
 			var socket = io('http://localhost:4040/');
 			//gestion des messages
@@ -38,6 +42,9 @@
 			});
 			socket.on('message-received', function(messageObject){
 				console.log("socket#message-received from="+messageObject.from+" content="+messageObject.content);
+				var li = document.createElement("li");
+				li.appendChild(document.createTextNode(""+messageObject.from+" wrote: "+messageObject.content));
+				document.getElementById("message-logs").appendChild(li);
 			});
 
 			var currentLogin = "";
@@ -87,9 +94,6 @@
 				
 				});
 			};
-
-
-
 
 		</script>
 		</body>
