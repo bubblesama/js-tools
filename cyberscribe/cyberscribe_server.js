@@ -3,13 +3,9 @@ var fs = require('fs');
 var moment = require('moment');
 var loki = require('lokijs');
 
-
-
 //global vars
 //database link
 var database;
-
-
 
 // chargement du fichier HTML affiche au client
 var server = http.createServer(function(req, res) {
@@ -70,7 +66,6 @@ io.on('connection', function (socket) {
 
 
 //database and server startup
-
 console.log("starting loki database");
 database = new loki(
     'cyberscribe-lokidb.json',
@@ -94,36 +89,25 @@ database.loadDatabase(
     }
 );
 
-
 //BUSINESS CODE
 function toto(){
 	console.log("toto!");
 };
 toto();
 
-
 //fonction de login: check en BDD, retour asynchrone dans _callback
 // parametre de callback: TODO
 //
 function login(user, password, _callback){
 
-
-
 };
-
 
 // TODO
 function logout(user, _callback){
 
 };
 
-
 //TODO
 function message(userFrom, userTo, content, _callback){
 
 };
-
-
-
-
-
