@@ -41,7 +41,8 @@ io.on('connection', function (socket) {
 		var dbUserLogin = users.findOne({login: userLogin});
 		if (dbUserLogin != null){
 			if (hash(userPass) == dbUserLogin.hash){
-				console.log("socket#user-login nice!");
+				console.log("socket#user-login login success for "+userLogin+"!");
+				socketsByUser.set(userLogin, socket);
 				clientSideCallback(true,"well done",4567);
 			}else{
 				console.log("socket#user-login incorrect password for "+userLogin);
@@ -51,29 +52,20 @@ io.on('connection', function (socket) {
 			console.log("socket#user-login no user with login "+userLogin);
 			clientSideCallback(false,"authentication error");
 		}
-		/*
-		if (USERS[userLogin] != null &&  USERS[userLogin].pass == userPass){
-			var sessionCode = USERS[userLogin].code;
-			if (sessionCode == null){
-				sessionCode = ""+Math.floor(Math.random()*1000000);
-				USERS[userLogin].code = sessionCode;
-				USERS[userLogin].timeout = moment().add(2,"hours").format();
-				console.log("socket#user-login new session: userLogin="+userLogin+" timeout="+USERS[userLogin].timeout);
-			}
-			currentUserLogin = userLogin;
-			socketsByUser.set(userLogin,socket);
-			clientSideCallback(true,"well done",sessionCode);
-		}else{
-			clientSideCallback(false,"authentication error");
-		}
-		*/
 	});
 
-	socket.on('message-write', function(userTo, sessionCode, clientSideCallback){
-		console.log("socket#message-write sessionCode="+sessionCode);
+	socket.on('message-write', function(userFrom, sessionCode, content, clientSideCallback){
+		console.log("socket#message-write userFrom="+userFrom+" sessionCode="+sessionCode+" content="+content);
+		var message = getMessageObject(userFrom,content);
+		socketsByUser.forEach(
+			function(socket, userLogin){
+				console.log("socket#message-write emitting on socket for "+userLogin);
+				socket.emit("message-received",message);
+			}
+		);
 		clientSideCallback("message received");
 	});
-
+ 
 	socket.on('disconnect',function(){
 		console.log("disconnect");
 		if (currentUserLogin != null && !("" == (currentUserLogin))){
@@ -103,7 +95,8 @@ database.loadDatabase(
 		var users = database.addCollection("users");
 		if (users.count() < 1){
 			console.log("no users, creating the default admin user");
-			users.insert(getUserObject("mylogin","123"));
+			users.insert(getUserObject("lise","123"));
+			users.insert(getUserObject("paul","123"));
 		}else{
 			console.log("users database loaded");
 		}
@@ -116,10 +109,6 @@ database.loadDatabase(
 );
 
 //BUSINESS CODE
-function toto(){
-	console.log("toto!");
-};
-toto();
 
 //fonction de login: check en BDD, retour asynchrone dans _callback
 // parametre de callback: TODO
@@ -151,3 +140,14 @@ var noSecret = "nosecret";
 function hash(source){
 	return crypto.createHmac('sha256', noSecret).update(source).digest('hex');
 };
+
+//MESSSAGE MANAGEMENT
+function getMessageObject(userFrom, content){
+	return {
+		from: userFrom,
+		content: content,
+		timestamp: moment().format()
+	};
+}
+
+

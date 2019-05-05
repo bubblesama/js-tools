@@ -10,7 +10,7 @@
 			<h2>user board</h3>
 			<p>server access: <span id="user-connection">not connected</span></p>
 			<div id="user-login-message" style="color: #FF0000"></div>
-			<p><label for="user-name-input">login: </label><input type="text" id="user-name-input" name="user-name-input" size="10" value="mylogin" /><span id="user-name-value" style="visibility: hidden">no login</span></p>
+			<p><label for="user-name-input">login: </label><input type="text" id="user-name-input" name="user-name-input" size="10" value="paul" /><span id="user-name-value" style="visibility: hidden">no login</span></p>
 			<p>session code: <span id="user-session-code">no session</span>
 			<p id="user-pass"><label for="user-pass-input">pass: <input type="password" id="user-pass-input" name="user-pass-input" size="10" value="123" /></p>
 			<p><input id="user-login-button" type="button" onclick="tryLogin();" value="login" /></p>
@@ -36,7 +36,9 @@
 				console.log("socket#connection-status message="+ message.content);
 				document.getElementById("user-connection").innerHTML = "connected";
 			});
-			
+			socket.on('message-received', function(messageObject){
+				console.log("socket#message-received from="+messageObject.from+" content="+messageObject.content);
+			});
 
 			var currentLogin = "";
 			var currentSessionCode = -1;
@@ -76,15 +78,18 @@
 			};
 
 			var sendMessage = function(){
-				var message = document.getElementById("message-write").value;
-				console.log("sendMessage IN message="+message);
-				socket.emit('message-write', currentLogin, currentSessionCode, function(success, message){
+				var content = document.getElementById("message-write").value;
+				console.log("sendMessage IN message="+content);
+				socket.emit('message-write', currentLogin, currentSessionCode, content, function(success, message){
 					console.log("socket#sendMessage server response: success="+success+" message="+message);
 					//TODO log des messages
 					//TODO gestion de péremption de session
 				
 				});
 			};
+
+
+
 
 		</script>
 		</body>
