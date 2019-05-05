@@ -2,10 +2,13 @@ var http = require('http');
 var fs = require('fs');
 var moment = require('moment');
 var loki = require('lokijs');
+var crypto = require('crypto');
 
 //global vars
 //database link
 var database;
+//socket for users
+var socketsByUser = new Map();
 
 // chargement du fichier HTML affiche au client
 var server = http.createServer(function(req, res) {
@@ -32,8 +35,23 @@ io.on('connection', function (socket) {
 	var currentUserLogin;
 	
 	// gestion de la requete de login
-	socket.on('user-login', function(userLogin,userPass,clientSideCallback){
+	socket.on('user-login', function(userLogin, userPass, clientSideCallback){
 		console.log("socket#user-login userLogin="+userLogin+" userPass.length="+userPass.length);
+		var users = database.addCollection("users");
+		var dbUserLogin = users.findOne({login: userLogin});
+		if (dbUserLogin != null){
+			if (hash(userPass) == dbUserLogin.hash){
+				console.log("socket#user-login nice!");
+				clientSideCallback(true,"well done",4567);
+			}else{
+				console.log("socket#user-login incorrect password for "+userLogin);
+				clientSideCallback(false,"authentication error");
+			}
+		}else{
+			console.log("socket#user-login no user with login "+userLogin);
+			clientSideCallback(false,"authentication error");
+		}
+		/*
 		if (USERS[userLogin] != null &&  USERS[userLogin].pass == userPass){
 			var sessionCode = USERS[userLogin].code;
 			if (sessionCode == null){
@@ -43,10 +61,12 @@ io.on('connection', function (socket) {
 				console.log("socket#user-login new session: userLogin="+userLogin+" timeout="+USERS[userLogin].timeout);
 			}
 			currentUserLogin = userLogin;
+			socketsByUser.set(userLogin,socket);
 			clientSideCallback(true,"well done",sessionCode);
 		}else{
 			clientSideCallback(false,"authentication error");
 		}
+		*/
 	});
 
 	socket.on('message-write', function(login, sessionCode,clientSideCallback){
@@ -57,13 +77,12 @@ io.on('connection', function (socket) {
 	socket.on('disconnect',function(){
 		console.log("disconnect");
 		if (currentUserLogin != null && !("" == (currentUserLogin))){
-			
+			socketsByUser.delete(currentUserLogin);
+			currentUserLogin = null;
 		}
 	});
 
 });
-
-
 
 //database and server startup
 console.log("starting loki database");
@@ -80,7 +99,14 @@ database.loadDatabase(
     function(err){
 		console.log("loki database loaded, checking intialiszation");
 		var status = database.addCollection("status");
-        status.insert({status: "on"});
+		status.insert({status: "on"});
+		var users = database.addCollection("users");
+		if (users.count() < 1){
+			console.log("no users, creating the default admin user");
+			users.insert(getUserObject("mylogin","123"));
+		}else{
+			console.log("users database loaded");
+		}
 		database.saveDatabase();
 		console.log("launching chat server");
 		var serverPort = 4040;
@@ -110,4 +136,18 @@ function logout(user, _callback){
 //TODO
 function message(userFrom, userTo, content, _callback){
 
+};
+
+//USERS MANAGEMENT
+function getUserObject(userLogin, userPassword){
+	return {
+		login: userLogin,
+		hash: hash(userPassword),
+		created: moment().format()
+	};
+};
+
+var noSecret = "nosecret";
+function hash(source){
+	return crypto.createHmac('sha256', noSecret).update(source).digest('hex');
 };
