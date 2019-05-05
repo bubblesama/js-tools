@@ -95,6 +95,35 @@ database.loadDatabase(
 );
 
 
-
 //BUSINESS CODE
+function toto(){
+	console.log("toto!");
+};
+toto();
+
+
+//fonction de login: check en BDD, retour asynchrone dans _callback
+// parametre de callback: TODO
+//
+function login(user, password, _callback){
+
+
+
+};
+
+
+// TODO
+function logout(user, _callback){
+
+};
+
+
+//TODO
+function message(userFrom, userTo, content, _callback){
+
+};
+
+
+
+
 
