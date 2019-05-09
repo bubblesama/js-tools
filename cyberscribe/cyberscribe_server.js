@@ -24,7 +24,7 @@ var io = require('socket.io')(server);
 //NOTE lpr01 var io = require('socket.io')(server,{path: '/cyberscribe/socket.io'});
 // connection management by logging
 io.on('connection', function (socket) {
-	console.log('new client connected');
+	console.log('socket#connection ew client connected');
 	socket.emit('connection-status', { content: 'Vous etes bien connecte !', importance: '1', status: 'OK' });
 	var currentUserLogin;
 	
@@ -36,6 +36,7 @@ io.on('connection', function (socket) {
 		if (dbUserLogin != null){
 			if (hash(userPass) == dbUserLogin.hash){
 				console.log("socket#user-login login success for "+userLogin+"!");
+				currentUserLogin = userLogin;
 				socketsByUser.set(userLogin, socket);
 				clientSideCallback(true,"well done",4567);
 			}else{
@@ -61,7 +62,7 @@ io.on('connection', function (socket) {
 	});
  
 	socket.on('disconnect',function(){
-		console.log("disconnect");
+		console.log("socket#disconnect currentUserLogin="+currentUserLogin);
 		if (currentUserLogin != null && !("" == (currentUserLogin))){
 			socketsByUser.delete(currentUserLogin);
 			currentUserLogin = null;
