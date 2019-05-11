@@ -8,3 +8,4 @@ gestion des utilisateurs avec mot de passe et péremption de session
 packages npm à installer
 npm install moment --save 
 npm install socket.io --save 
+npm install lokijs --save 
