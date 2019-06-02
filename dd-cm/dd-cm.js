@@ -31,6 +31,9 @@ document.addEventListener('keyup', (event) => {
 //******************* CLASSES **********************************************************
 
 
+/**
+ * Case de la carte
+ */
 class WorldTile {
 
 	constructor(type,i,j){
@@ -40,6 +43,7 @@ class WorldTile {
 		this.discovered = false;
 	}
 
+
 	getTileToShowCoordinates(){
 		if (!this.discovered && (this.type == "MOUTAIN_GREY" || this.type == "MOUTAIN_RED" || this.type == "MOUTAIN_BLUE" ||this.type == "MOUTAIN_PURPLE")){
 			return WorldTile.worldSpritesCoordinatesByName()["MOUTAIN_BLACK"];
@@ -48,6 +52,9 @@ class WorldTile {
 		}
 	}
 
+	/**
+	 * Indique si la case est un élément de donjon
+	 */
 	isDungeon(){
 		var result = false;
 		switch(this.type) {
@@ -79,6 +86,10 @@ class WorldTile {
 		return result;
 	}
 	
+	/**
+	 * indique la possibilité de traverser un élément de la carte, en fonction des éléments possédés par le joueur
+	 * @param {*} player 
+	 */
 	isPassable(player){
 		var result = false;
 		switch(this.type) {
@@ -117,6 +128,9 @@ class WorldTile {
 		return result;
 	}
 	
+	/**
+	 * fournir le découpage du sprite des éléments de la carte
+	 */
 	static worldSpritesCoordinatesByName() {
 		return {
 			"EMPTY": [7,0],
@@ -319,32 +333,6 @@ var model = {
 	
 	update: function(){
 		if (game.state == STATES.world){
-			/*
-			if (keyMap.d){
-				this.player.moveOnWorldIfPossible(1,0);
-			}
-			if (keyMap.q){
-				this.player.moveOnWorldIfPossible(-1,0);
-			}
-			if (keyMap.z){
-				this.player.moveOnWorldIfPossible(0,-1);
-			}
-			if (keyMap.x){
-				this.player.moveOnWorldIfPossible(0,1);
-			}
-			if (keyMap.a){
-				this.player.moveOnWorldIfPossible(-1,-1);
-			}
-			if (keyMap.e){
-				this.player.moveOnWorldIfPossible(1,-1);
-			}
-			if (keyMap.c){
-				this.player.moveOnWorldIfPossible(1,1);
-			}
-			if (keyMap.w){
-				this.player.moveOnWorldIfPossible(-1,1);
-			}
-			*/
 			if (keyMap.d){
 				this.player.moveOnWorldIfPossible(1,0);
 			}
@@ -394,7 +382,7 @@ game.ticker = 0;
 game.lastFpsCountDate = Date.now();
 game.fps = 0;
 
-const STATES = {world: "STATE_WORLD",dungeon: "STATE_DUNGEON"};
+const STATES = {world: "STATE_WORLD", dungeon: "STATE_DUNGEON"};
 game.state = STATES.world;
 
 game.draw = function(){
