@@ -13,7 +13,7 @@ var apiPath = 'horoscope/api';
 //NOTE 
 //var horoscopeFolderPath = "/projects/horoscope/data/";
 var horoscopeFolderPath = "D:/projects/js-tools/horoscope/data/";
-var staticHttp200Header = {"Content-Type": "text/html; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"};
+var staticHtmlHttp200Header = {"Content-Type": "text/html; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"};
 var signs = ["aries","taurus","gemini","cancer","leo","virgo","libra","scorpius","sagittarius","capricorn","aquarius","pisces"];
 
 var horoscopeStatus = {};
@@ -86,7 +86,7 @@ app.post(
 						response.result = "OK";
 						response.quizzId = result.insertedIds[0];
 					}
-					res.writeHead(200, staticHttp200Header);
+					res.writeHead(200, staticHtmlHttp200Header);
 					res.end(JSON.stringify(response));
 				}
 			);
@@ -393,7 +393,7 @@ app.get(
 					res.end();
 				}else{
 					//console.log("web file ok");
-					res.writeHead(200, staticHttp200Header);
+					res.writeHead(200, staticHtmlHttp200Header);
 					res.end(data);
 				}
 			}
@@ -415,8 +415,14 @@ app.get(
 					res.writeHead(403, {"Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
 					res.end();
 				}else{
-					//console.log("web file ok: "+req.params.file);
-					res.writeHead(200, staticHttp200Header);
+					var httpHeader = staticHtmlHttp200Header;
+					if (req.params.file.includes("css")){
+						httpHeader = {"Content-Type": "text/css; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"};
+					}else{
+
+					}
+					console.log("web file ok: "+req.params.file);
+					res.writeHead(200, httpHeader);
 					res.end(data);
 				}
 			}
@@ -439,7 +445,7 @@ app.get(
 					res.end();
 				}else{
 					//console.log("web lib file ok: "+req.params.file);
-					res.writeHead(200, staticHttp200Header);
+					res.writeHead(200, staticHtmlHttp200Header);
 					res.end(data);
 				}
 			}

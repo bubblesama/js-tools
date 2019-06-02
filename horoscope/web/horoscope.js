@@ -3,8 +3,6 @@
 var rootPath="";
 var apiPath = "api"
 
-
-var calledForSigns = false;
 var currentSign = "none";
 var currentDate = "none";
 var currentQuizz = "none";
@@ -14,10 +12,9 @@ var  currentContext = {
 	"quizz": null,
 	"isStats": false
 };
+var calledForSigns = false;
 
-
-
-
+var hardOrderedCodedSigns = ["aries", "taurus","gemini","cancer","leo","virgo","libra","scorpius","sagittarius","capricorn","aquarius","pisces"];
 
 var i18n = { 
 	"aquarius": "Verseau",
@@ -40,34 +37,23 @@ var i18n = {
 };
 var forbiddenDates = {};
 
-
-
-
 function startup(){
 	//_updateFromPath();
 	var shouldGetDate = _updateFromHash();
+	if (shouldGetDate){
+		currentDate = "20160906";
+	}
 	$("#mainContent").html("calling server for signs...");
 	if (!calledForSigns){
 		calledForSigns = true;
-		$.get(
-			apiPath+"/signs/", 
-			function(data) {
-				var htmlSignsList = "";
-				var signs = JSON.parse(data).signs;
-				if (shouldGetDate){
-					_setDate(JSON.parse(data).date);
-				}
-				//$("#quickLinks").append("signs ")
-				for (var i = 0; i < signs.length; i++) {
-					if ($("#sign_"+signs[i])){
-						$("#signsLinks").append("<a class='quickLink' href='#/date/"+currentDate+"/sign/"+signs[i]+"' id='sign_"+signs[i]+"' >"+i18n[""+signs[i]]+"</a>");
-						if (signs[i] == currentSign){
-							$("#sign_"+currentSign).addClass("chosenSign");
-						}
-					}
+		for (var i = 0; i < hardOrderedCodedSigns.length; i++) {
+			if ($("#sign_"+hardOrderedCodedSigns[i])){
+				$("#signsLinks").append("<a class='quickLink' href='#/date/"+currentDate+"/sign/"+hardOrderedCodedSigns[i]+"' id='sign_"+hardOrderedCodedSigns[i]+"' >"+i18n[""+hardOrderedCodedSigns[i]]+"</a>");
+				if (hardOrderedCodedSigns[i] == currentSign){
+					$("#sign_"+currentSign).addClass("chosenSign");
 				}
 			}
-		);
+		}
 		$("#homeLink").click(function(){_refreshPage(currentDate,false);});
 		$("#goPrediction").click(function(){_getPrediction();});
 		$("#testPost").click(function(){_testPost();});
@@ -82,6 +68,7 @@ function _updateFromHash(){
 	if (window.location.hash){
 		var hash = window.location.hash;
 		//console.log("startup: hash="+hash);
+		//TODO blindage: hash avec les dates et autre suivant les bons motifs
 		if (hash.indexOf("date") >= 0){
 			shouldGetDate = false;
 			var date = hash.split("/")[2];
@@ -111,7 +98,6 @@ function _updateFromHash(){
 	}
 	return shouldGetDate;
 };
-
 
 // replace hash method of routing
 function _updateFromPath(){
@@ -164,9 +150,6 @@ function _updateFromPath(){
 	}
 	return shouldGetDate;
 };
-
-
-
 
 function _refreshPage(date, isStats, sign, quizz){
 	// nettoyage des infos
