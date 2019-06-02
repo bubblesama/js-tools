@@ -299,10 +299,26 @@ var model = {
 			var fullMazeSize = mazeGeneratorConfiguration.size*mazeGeneratorConfiguration.bits.tiles.width;
 			var newI = (this.dungeon.i+deltaI+fullMazeSize)%fullMazeSize;
 			var newJ = (this.dungeon.j+deltaJ+fullMazeSize)%fullMazeSize;
-			if (model.dungeon.currentMaze.map[newI][newJ] == 0){
-				this.dungeon.stepDi = deltaI;
-				this.dungeon.stepDj = deltaJ;
-
+			if (model.dungeon.currentMaze.map[newI][newJ] != 1){
+				var tileIndex = model.dungeon.currentMaze.map[newI][newJ];
+				var cornerFound = false;
+				//no block tile: checking which tile it is
+				for (var checkedTileType in dungeonTilesCornerMoves){
+					if (dungeonTilesCornerMoves[checkedTileType].index == tileIndex){
+						cornerFound = true;
+						for (var checkedMove in dungeonTilesCornerMoves[checkedTileType].moves){
+							if (deltaI == dungeonTilesCornerMoves[checkedTileType].moves[checkedMove].inDi && deltaJ == dungeonTilesCornerMoves[checkedTileType].moves[checkedMove].inDj){
+								this.dungeon.stepDi = dungeonTilesCornerMoves[checkedTileType].moves[checkedMove].outDi;
+								this.dungeon.stepDj = dungeonTilesCornerMoves[checkedTileType].moves[checkedMove].outDj;
+							}
+						}
+					}
+				}
+				if (!cornerFound){
+					this.dungeon.stepDi = deltaI;
+					this.dungeon.stepDj = deltaJ;
+	
+				}
 				if (deltaI > 0){
 					this.dungeon.faceRight = true;
 				}else if (deltaI < 0){
