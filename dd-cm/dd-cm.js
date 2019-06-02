@@ -366,16 +366,13 @@ var model = {
 				if (keyMap.d){
 					this.player.startMovingOnDungeonIfPossible(1,0);
 					shouldStopStepAnimation = false;
-				}
-				if (keyMap.q){
+				}else if (keyMap.q){
 					this.player.startMovingOnDungeonIfPossible(-1,0);
 					shouldStopStepAnimation = false;
-				}
-				if (keyMap.z){
+				}else if (keyMap.z){
 					this.player.startMovingOnDungeonIfPossible(0,-1);
 					shouldStopStepAnimation = false;
-				}
-				if (keyMap.s){
+				} else if (keyMap.s){
 					this.player.startMovingOnDungeonIfPossible(0,1);
 					shouldStopStepAnimation = false;
 				}
