@@ -17,6 +17,54 @@ var worldMapData= {
 " llnl rfff      l  "
 };
 
+var dungeonTilesCornerMoves = {
+	TOP_RIGHT: {
+		index: 2,
+		moves: [
+			{
+				inDi: 1, inDj:0,  outDi: 1, outDj: 1
+			},
+			{
+				inDi: 0, inDj:-1,  outDi: -1, outDj: -1
+			}
+		]
+	},
+	DOWN_RIGHT: {
+		index: 3,
+		moves: [
+			{
+				inDi: 1, inDj:0,  outDi: 1, outDj: -1
+			},
+			{
+				inDi: 0, inDj:1,  outDi: -1, outDj: 1
+			}
+		]
+	},
+	DOWN_LEFT: {
+		index: 4,
+		moves: [
+			{
+				inDi: 0, inDj:1,  outDi: 1, outDj: 1
+			},
+			{
+				inDi: -1, inDj:0,  outDi: -1, outDj: -1
+			}
+		]
+	},
+	TOP_LEFT: {
+		index: 5,
+		moves: [
+			{
+				inDi: 0, inDj:-1,  outDi: 1, outDj: -1
+			},
+			{
+				inDi: -1, inDj:0,  outDi: -1, outDj: 1
+			}
+		]	
+	},
+
+};
+
 var mazeGeneratorConfiguration = {
 	
 	size: 6,
@@ -91,7 +139,7 @@ var mazeGeneratorConfiguration = {
 						"111111111"
 			}
 		],
-		// for each type of maze bit by closed side, the list of available bit on each side (ex: for top-closed maze bit, available bits on the left side are left-closed, down-closed on top-closed bits)
+		// for each type of maze bit by closed side, the list of available bit on each side (ex: for top-closed maze bit, available bits on the left side are left-closed, down-closed or top-closed bits)
 		list: {
 			top: {
 				i: 1,
