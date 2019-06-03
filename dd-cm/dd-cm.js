@@ -297,8 +297,8 @@ var model = {
 		},
 		startMovingOnDungeonIfPossible(deltaI, deltaJ){
 			var fullMazeSize = mazeGeneratorConfiguration.size*mazeGeneratorConfiguration.bits.tiles.width;
-			var newI = (this.dungeon.i+deltaI+fullMazeSize)%fullMazeSize;
-			var newJ = (this.dungeon.j+deltaJ+fullMazeSize)%fullMazeSize;
+			var newI = (this.dungeon.i+deltaI+fullMazeSize+fullMazeSize)%fullMazeSize;
+			var newJ = (this.dungeon.j+deltaJ+fullMazeSize+fullMazeSize)%fullMazeSize;
 			if (model.dungeon.currentMaze.map[newI][newJ] != 1){
 				var tileIndex = model.dungeon.currentMaze.map[newI][newJ];
 				var cornerFound = false;
@@ -510,7 +510,7 @@ game.draw = function(){
 			for (var j=-2;j<11;j++){
 				context.drawImage(
 					dungeonSprites,
-					model.dungeon.currentMaze.map[(i+fullWidth+model.player.dungeon.i-8)%fullWidth][(j+fullHeight+model.player.dungeon.j-4)%fullHeight]*graphical.dungeon.tiles.width,
+					model.dungeon.currentMaze.map[(((i+fullWidth+model.player.dungeon.i-8)%fullWidth)+fullWidth)%fullWidth][(((j+fullHeight+model.player.dungeon.j-4)%fullHeight)+fullHeight)%fullHeight]*graphical.dungeon.tiles.width,
 					0,
 					graphical.dungeon.tiles.width,
 					graphical.dungeon.tiles.height,
