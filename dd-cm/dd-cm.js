@@ -297,8 +297,8 @@ var model = {
 		},
 		startMovingOnDungeonIfPossible(deltaI, deltaJ){
 			var fullMazeSize = mazeGeneratorConfiguration.size*mazeGeneratorConfiguration.bits.tiles.width;
-			var newI = (this.dungeon.i+deltaI+fullMazeSize+fullMazeSize)%fullMazeSize;
-			var newJ = (this.dungeon.j+deltaJ+fullMazeSize+fullMazeSize)%fullMazeSize;
+			var newI = (((this.dungeon.i+deltaI+fullMazeSize)%fullMazeSize)+fullMazeSize)%fullMazeSize;
+			var newJ = (((this.dungeon.j+deltaJ+fullMazeSize)%fullMazeSize)+fullMazeSize)%fullMazeSize;
 			if (model.dungeon.currentMaze.map[newI][newJ] != 1){
 				var tileIndex = model.dungeon.currentMaze.map[newI][newJ];
 				var cornerFound = false;
