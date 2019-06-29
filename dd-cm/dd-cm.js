@@ -349,6 +349,7 @@ var model = {
 	
 	update: function(){
 		if (game.state == STATES.world){
+			//update player team
 			if (keyMap.d){
 				this.player.moveOnWorldIfPossible(1,0);
 			}
@@ -382,8 +383,15 @@ var model = {
 				}
 				if (shouldStopStepAnimation){
 					this.player.dungeon.walkPart = 0;
-				}	
+				}
+				//TODO: managing picking stuff
+				//TODO: update for arrows
 			}
+			//TODO: update for mobs...
+			//...moving
+			//...searching
+
+
 		}
 	},
 };
