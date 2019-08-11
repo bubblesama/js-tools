@@ -7,8 +7,6 @@ var crypto = require('crypto');
 //global vars
 //database link
 var database;
-//socket for users
-var socketsByUser = new Map();
 
 // chargement du fichier HTML affiche au client
 var server = http.createServer(function(req, res) {
@@ -37,8 +35,11 @@ io.on('connection', function (socket) {
 	*/
 	socket.on('log-get', function(day, clientSideCallback){
 		console.log("socket#log-get day="+day);
-		//TODO: recuperation des activites du jour
-		clientSideCallback("OK");
+		//TODO: controle du format des donnees
+		//TODO: recuperation des activites du jour en BDD
+		//TODO: fourniture des infos
+		activities = [];
+		clientSideCallback("OK", activities);
 	});
  
 	/** ajout d'une activite
@@ -50,7 +51,9 @@ io.on('connection', function (socket) {
 	*/
 	socket.on('activity-put', function(day, type, start, clientSideCallback){
 		console.log("socket#activity-put day="+day);
-		//TODO: entree des données de l'activité
+		//TODO: controle du format des donnees
+		//TODO: insertion BDD
+		//TODO: entree des donnees de l'activite
 		clientSideCallback("OK");
 	});
 
