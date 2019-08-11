@@ -14,18 +14,38 @@
 		</style>
 	</head>
 	<body>
+		<h1>bébé</h1>
+		<!-- zone d'affichage des warnings et autres-->
+		<div id="warnings"></div>
 		<!--TODO: gestion du statut de connexion au serveur-->
 		<div id="connection">connexion: <span id="connection-status">?</span></div>
-		<div id="navigation">
-			<p id="navigation-title">navigation</p>
-			<!--TODO: boutons de navigation: jours avant/apres pour commencer-->
+		<div id="passive">attente des infos</p>
+		<div id="active" ><!-- style="display: none"-->
+			<div id="navigation">
+				<h2 id="navigation-title">navigation</h2>
+				<!--TODO: boutons de navigation: jours avant/apres pour commencer-->
+				<ul>
+					<li>TODO avant</li>
+					<li>TODO apres</li>
+				</ul>
+			</div>
+			<!--TODO: les actions disponible-->
+			<div id="actions">
+				<h2 id="actions-list-title">actions</h2>
+				<ul>
+					<!--TODO:biberon now-->
+					<li id="actions-boire" onclick="addActivityNow('boire');">boire</li>	
+				</ul>
+			</div>
+			<div id="log" >
+				<h2 id="log-title">activités de la journée du <span id="log-title-day">?</span></h2>
+				<ul id="log-activities">
+				<!--TODO: affichage des activites de la journée-->
+				<!--TODO: exemple statique-->
+				</ul>
+			</div>
 		</div>
-		<div id="log">
-			<p id="log-title">activités de la journée du <span id="log-title-day">?</span></p>
-			<!--TODO: affichage des activites de la journée-->
-			<!--TODO exemple statique-->
-
-		</div>
+		
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
 		<script>
 			//SOCKET IO
@@ -38,6 +58,38 @@
 				console.log("socket#connection-status message="+ message.content);
 				document.getElementById("connection-status").innerHTML = "OK";
 			});
+
+			function changeDate(newDate){
+				//TODO: warning du traitement de la demande
+				//TODO: blocage des activites de rafraichissement
+				//TODO: appel serveur pour obtenir les activites de ce jour-là
+				//TODO: puis affichage (date, activités, boutons)
+			};
+
+			function addActivityNow(type, infos){
+				addActivityNow(type,"");
+			};
+
+			function addActivityNow(type, infos){
+				console.log("addActivityNow IN: type="+type);
+				//TODO: ajout d'une activite immediate
+				socket.emit(
+					"activity-put",
+					"20190811",
+					type,
+					function(status){
+						if (status != OK){
+							//TODO: affichage d'un warning
+						}else{
+							//TODO: refresh des activités du jour
+						}
+					}
+				);
+			};
+
+			function appendWarning(warning){
+				//TODO: affichage des warnings
+			};
 		</script>
 	</body>
 </html>
