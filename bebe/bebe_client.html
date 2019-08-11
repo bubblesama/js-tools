@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>bébé</title>
+		<!-- internal style sheet-->
+		<style>
+			ul {
+				list-style-type: none;
+				margin: 0;
+				padding: 0;
+			}
+
+		</style>
+	</head>
+	<body>
+		<!--TODO: gestion du statut de connexion au serveur-->
+		<div id="connection">connexion: <span id="connection-status">?</span></div>
+		<div id="navigation">
+			<p id="navigation-title">navigation</p>
+			<!--TODO: boutons de navigation: jours avant/apres pour commencer-->
+		</div>
+		<div id="log">
+			<p id="log-title">activités de la journée du <span id="log-title-day">?</span></p>
+			<!--TODO: affichage des activites de la journée-->
+			<!--TODO exemple statique-->
+
+		</div>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+		<script>
+			//SOCKET IO
+			// init
+			console.log("#init connecting on socket");
+			//NOTE  var socket = io('https://lpr01.ddns.net/',{path: '/cyberscribe/socket.io'});
+			var socket = io('http://localhost:6080/');
+			//gestion des messages
+			socket.on('connection-status', function(message){
+				console.log("socket#connection-status message="+ message.content);
+				document.getElementById("connection-status").innerHTML = "OK";
+			});
+		</script>
+	</body>
+</html>
