@@ -89,6 +89,5 @@ database.loadDatabase(
 		console.log("#init server running on port "+serverPort);
     }
 );
-
 //BUSINESS CODE
 

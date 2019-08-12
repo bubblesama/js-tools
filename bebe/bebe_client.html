@@ -3,13 +3,16 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>bébé</title>
-		<!-- internal style sheet-->
+		<!-- style CSS embarqué
+			TODO: style compatible mobile
+		-->
 		<style>
 			ul {
 				list-style-type: none;
 				margin: 0;
 				padding: 0;
 			}
+			
 
 		</style>
 	</head>
@@ -64,6 +67,12 @@
 				//TODO: blocage des activites de rafraichissement
 				//TODO: appel serveur pour obtenir les activites de ce jour-là
 				//TODO: puis affichage (date, activités, boutons)
+			};
+
+			function refreshActivitiesView(activities){
+				//TODO: clean et reaffichage des valeurs d'activites
+				
+
 			};
 
 			function addActivityNow(type, infos){
