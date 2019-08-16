@@ -29,11 +29,16 @@ io.on('connection', function (socket) {
 	* 	day: format 20190811
 	* OUT: callback
 	*	status: OK ou KO
-	*	activities: cf. README.txt>contrat d'interface
+	* 	log
+	*		date
+	*		activities: cf. README.txt>contrat d'interface
 	*	TODO: le reste
 	*/
 	socket.on('log-get', function(date, clientSideCallback){
-		console.log("socket#log-get date="+date);
+		console.log("socket#log-get IN date="+date);
+		if (date == '?'){
+			date = moment().format("YYYYMMDD");
+		}
 		//TODO: controle du format des donnees
 		//TODO: recuperation des activites du jour en BDD
 		//TODO: fourniture des infos
@@ -43,7 +48,7 @@ io.on('connection', function (socket) {
 		if (dailyLog != null){
 			activities = dailyLog.activities;
 		}
-		clientSideCallback("OK", activities);
+		clientSideCallback("OK", date, activities);
 	});
  
 	/** ajout d'une activite

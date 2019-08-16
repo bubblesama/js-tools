@@ -8,7 +8,7 @@
 		-->
 		<style>
 			ul {
-				list-style-type: none;
+				/*list-style-type: none;*/
 				margin: 0;
 				padding: 0;
 			}
@@ -16,7 +16,7 @@
 
 		</style>
 	</head>
-	<body>
+	<body onload="babyStartup();">
 		<h1>bébé</h1>
 		<!-- zone d'affichage des warnings et autres-->
 		<div id="warnings"></div>
@@ -55,6 +55,9 @@
 			//SOCKET IO
 			// init
 			console.log("#init connecting on socket");
+			var currentDate = "?";
+
+
 			//NOTE  var socket = io('https://lpr01.ddns.net/',{path: '/cyberscribe/socket.io'});
 			var socket = io('http://localhost:6080/');
 			//gestion des messages
@@ -64,10 +67,12 @@
 			});
 
 			function changeDate(newDate){
+				currentDate = newDate;
 				//TODO: warning du traitement de la demande
 				//TODO: blocage des activites de rafraichissement
 				//TODO: appel serveur pour obtenir les activites de ce jour-là
 				//TODO: puis affichage (date, activités, boutons)
+				document.getElementById("log-title-day").innerHTML = currentDate;
 			};
 
 			function refreshActivitiesView(activities){
@@ -82,9 +87,10 @@
 			function getBabyLogForCurrentDate(){
 				socket.emit(
 					"log-get",
-					"20190812",
-					function(status, activities){
-						console.log("getBabyLogForCurrentDate return from socket; status="+status+" activities="+activities.length);
+					currentDate,
+					function(status, date, activities){
+						console.log("getBabyLogForCurrentDate return from socket; status="+status+" date="+date+" activities="+activities.length);
+						changeDate(date);
 						refreshActivitiesView(activities);
 					}
 				);
@@ -110,6 +116,11 @@
 					}
 				);
 			};
+
+			function babyStartup(){
+				console.log("#babyStartup IN");
+				//changeDate("20180812");
+			}
 
 			function appendWarning(warning){
 				//TODO: affichage des warnings
