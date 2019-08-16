@@ -1,4 +1,4 @@
-bébé
+﻿bébé
 
 date: été 2019
 
@@ -9,6 +9,12 @@ client serveur
 client: js vanilla?
 server: node + express + lokidb
 lien: socket.io
+
+packages npm à installer
+npm install moment --save 
+npm install socket.io --save 
+npm install lokijs --save 
+
 
 fonctionnalités
 

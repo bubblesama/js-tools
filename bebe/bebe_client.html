@@ -42,6 +42,7 @@
 			</div>
 			<div id="log" >
 				<h2 id="log-title">activités de la journée du <span id="log-title-day">?</span></h2>
+				<p id="log-refresh-action"><input type="button" value="maj" onclick="getBabyLogForCurrentDate();"></p>
 				<ul id="log-activities">
 				<!--TODO: affichage des activites de la journée-->
 				<!--TODO: exemple statique-->
@@ -71,9 +72,23 @@
 
 			function refreshActivitiesView(activities){
 				//TODO: clean et reaffichage des valeurs d'activites
-				
-
+				var activitiesHtml = "";
+				for (var i=0; i<activities.length; i++){
+					activitiesHtml += "<li>"+activities[i].start+": "+activities[i].type+"</li>";
+				}
+				document.getElementById("log-activities").innerHTML = activitiesHtml;
 			};
+
+			function getBabyLogForCurrentDate(){
+				socket.emit(
+					"log-get",
+					"20190812",
+					function(status, activities){
+						console.log("getBabyLogForCurrentDate return from socket; status="+status+" activities="+activities.length);
+						refreshActivitiesView(activities);
+					}
+				);
+			}
 
 			function addActivityNow(type, infos){
 				addActivityNow(type,"");

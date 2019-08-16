@@ -2,7 +2,6 @@ var http = require('http');
 var fs = require('fs');
 var moment = require('moment');
 var loki = require('lokijs');
-var crypto = require('crypto');
 
 //global vars
 //database link
@@ -33,12 +32,17 @@ io.on('connection', function (socket) {
 	*	activities: cf. README.txt>contrat d'interface
 	*	TODO: le reste
 	*/
-	socket.on('log-get', function(day, clientSideCallback){
-		console.log("socket#log-get day="+day);
+	socket.on('log-get', function(date, clientSideCallback){
+		console.log("socket#log-get date="+date);
 		//TODO: controle du format des donnees
 		//TODO: recuperation des activites du jour en BDD
 		//TODO: fourniture des infos
-		activities = [];
+		var babyLogs = database.addCollection("log");
+		var dailyLog = babyLogs.findOne({date: date});
+		var activities = [];
+		if (dailyLog != null){
+			activities = dailyLog.activities;
+		}
 		clientSideCallback("OK", activities);
 	});
  
@@ -73,14 +77,14 @@ database.loadDatabase(
     {},
     function(err){
 		console.log("#init loki database loaded, checking intialization");
-		var logs = database.addCollection("log");
-		if (logs.count() < 1){
+		var babyLogs = database.addCollection("log");
+		if (babyLogs.count() < 1){
 			//TODO elements de test de base
-			console.log("#init no log, creating the default admin user");
-			logs.insert("");
-			logs.insert("");
+			console.log("#init no babylog, creating the default admin user");
+			babyLogs.insert({date:"20190812", activities:[{type: "boire", start: "07:56", infos: "gauche"}]});
+
 		}else{
-			console.log("#init users database loaded");
+			console.log("#init babylogs database loaded, logs="+babyLogs.count());
 		}
 		database.saveDatabase();
 		console.log("#init launching 'bebe' server");
