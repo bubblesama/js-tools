@@ -18,8 +18,6 @@
 			<div id="status">
 				<h2>statut</h2>
 				<div id="connection">connexion: <span id="connection-status">?</span></div>
-				<div id="passive">attente des infos</p>
-				<div id="active" ><!-- style="display: none"-->
 			</div>
 				<div id="navigation">
 					<!--TODO: boutons de navigation: jours avant/apres pour commencer-->
@@ -44,7 +42,7 @@
 				</div>
 				<div id="log" >
 					<h2 id="log-title">activités de la journée du <span id="log-title-day">?</span></h2>
-					<p id="log-refresh-action"><input type="button" value="maj" onclick="getBabyLogForCurrentDate();"></p>
+					<p id="log-refresh-action"><input type="button" value="maj" onclick="showBabyLogForToday();"></p>
 					<ul id="log-activities">
 					<!--TODO: affichage des activites de la journée-->
 					<!--TODO: exemple statique-->
@@ -86,12 +84,20 @@
 				document.getElementById("log-activities").innerHTML = activitiesHtml;
 			};
 
-			function getBabyLogForCurrentDate(){
+			/**
+			 * Appel back pour recupérer la date et les activités
+			 * Si la currentDate n'ets pas definie, recuperation de celle cote serveur
+			 * */
+			function showBabyLogForToday(){
+				showBabyLogForDate("?");
+			}
+
+			function showBabyLogForDate(date){
 				socket.emit(
 					"log-get",
-					currentDate,
+					date,
 					function(status, date, activities){
-						console.log("getBabyLogForCurrentDate return from socket; status="+status+" date="+date+" activities="+activities.length);
+						console.log("showBabyLogForDate return from socket; status="+status+" date="+date+" activities="+activities.length);
 						changeDate(date);
 						refreshActivitiesView(activities);
 					}
@@ -122,6 +128,7 @@
 			function babyStartup(){
 				console.log("#babyStartup IN");
 				//changeDate("20180812");
+				showBabyLogForToday();
 			}
 
 			function appendWarning(warning){
