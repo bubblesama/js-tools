@@ -1,55 +1,57 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="fr">
 	<head>
 		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 		<title>bébé</title>
 		<!-- style CSS embarqué
 			TODO: style compatible mobile
 		-->
-		<style>
-			ul {
-				/*list-style-type: none;*/
-				margin: 0;
-				padding: 0;
-			}
-			
-
-		</style>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 	</head>
 	<body onload="babyStartup();">
-		<h1>bébé</h1>
-		<!-- zone d'affichage des warnings et autres-->
-		<div id="warnings"></div>
-		<!--TODO: gestion du statut de connexion au serveur-->
-		<div id="connection">connexion: <span id="connection-status">?</span></div>
-		<div id="passive">attente des infos</p>
-		<div id="active" ><!-- style="display: none"-->
-			<div id="navigation">
-				<h2 id="navigation-title">navigation</h2>
-				<!--TODO: boutons de navigation: jours avant/apres pour commencer-->
-				<ul>
-					<li>TODO avant</li>
-					<li>TODO apres</li>
-				</ul>
+		<div id="app" class="container">
+			<h1>bébé</h1>
+			<!-- zone d'affichage des warnings et autres-->
+			<div id="warnings"></div>
+			<!--TODO: gestion du statut de connexion au serveur-->
+			<div id="status">
+				<h2>statut</h2>
+				<div id="connection">connexion: <span id="connection-status">?</span></div>
+				<div id="passive">attente des infos</p>
+				<div id="active" ><!-- style="display: none"-->
 			</div>
-			<!--TODO: les actions disponible-->
-			<div id="actions">
-				<h2 id="actions-list-title">actions</h2>
-				<ul>
-					<!--TODO:biberon now-->
-					<li id="actions-boire" onclick="addActivityNow('boire');">boire</li>	
-				</ul>
-			</div>
-			<div id="log" >
-				<h2 id="log-title">activités de la journée du <span id="log-title-day">?</span></h2>
-				<p id="log-refresh-action"><input type="button" value="maj" onclick="getBabyLogForCurrentDate();"></p>
-				<ul id="log-activities">
-				<!--TODO: affichage des activites de la journée-->
-				<!--TODO: exemple statique-->
-				</ul>
+				<div id="navigation">
+					<!--TODO: boutons de navigation: jours avant/apres pour commencer-->
+					<div id="navigation">
+						<h2 id="navigation-title">navigation</h2>
+						<div id="navigation-buttons" class="btn-group" role="group" aria-label="Navigation buttons">
+							<button type="button" class="btn btn-outline-secondary" >avant</button>
+							<button type="button" class="btn btn-outline-secondary" >après</button>
+							<button type="button" class="btn btn-outline-secondary" >maintenant</button>
+						</div>
+					</div>
+				</div>
+				<!--TODO: les actions disponible-->
+				<div id="actions">
+					<h2 id="actions-list-title">actions</h2>
+					<div id="actions-buttons" class="btn-group" role="group" aria-label="Actions buttons">
+						<button type="button" class="btn btn-danger" onclick="addActivityNow('boire');">boire</button>
+						<button type="button" class="btn btn-success" onclick="addActivityNow('couche');">couche</button>
+						<button type="button" class="btn btn-secondary" onclick="addActivityNow('dodo');">dodo</button>
+						<button type="button" class="btn btn-primary" onclick="addActivityNow('bain');">bain</button>
+					</div>
+				</div>
+				<div id="log" >
+					<h2 id="log-title">activités de la journée du <span id="log-title-day">?</span></h2>
+					<p id="log-refresh-action"><input type="button" value="maj" onclick="getBabyLogForCurrentDate();"></p>
+					<ul id="log-activities">
+					<!--TODO: affichage des activites de la journée-->
+					<!--TODO: exemple statique-->
+					</ul>
+				</div>
 			</div>
 		</div>
-		
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
 		<script>
 			//SOCKET IO
@@ -126,5 +128,8 @@
 				//TODO: affichage des warnings
 			};
 		</script>
+		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 	</body>
 </html>
