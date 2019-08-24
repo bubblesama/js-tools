@@ -20,9 +20,6 @@ var server = http.createServer(function(req, res) {
 });
 
 // socket.io conf
-//NOTE local 
-//var io = require('socket.io')(server);
-//NOTE lpr01 
 var io = require('socket.io')(server);
 // connection management by logging
 io.on('connection', function (socket) {
@@ -63,10 +60,25 @@ io.on('connection', function (socket) {
 	* OUT: callback
 	*	status: OK ou KO
 	*/
-	socket.on('activity-put', function(day, type, start, clientSideCallback){
-		console.log("socket#activity-put day="+day);
+	socket.on('activity-put', function(date, type, start, clientSideCallback){
+		console.log("socket#activity-put date="+date+" type="+type+" start="+start);
 		//TODO: controle du format des donnees
-		//TODO: insertion BDD
+		if (date == '?'){
+			date = moment().format("YYYYMMDD");
+		}
+		if (start == '?'){
+			start = moment().format("HH:mm");
+		}
+		console.log("socket#activity-put filled date="+date+" type="+type+" filled start="+start);
+		//insertion BDD
+		var babyLogs = database.addCollection("log");
+		var dailyLog = babyLogs.findOne({date: date});
+		if (dailyLog == null){
+			babyLogs.insert({date:date, activities:[{type: type, start: start, infos: ""}]});
+		}else{
+			dailyLog.activities.push({type: type, start: start, infos: ""});
+			babyLogs.update(dailyLog);
+		}
 		//TODO: entree des donnees de l'activite
 		clientSideCallback("OK");
 	});

@@ -11,7 +11,7 @@
 	</head>
 	<body onload="babyStartup();">
 		<div id="app" class="container">
-			<h1>bébé</h1>
+			<h1>bébé beta v0.1</h1>
 			<!-- zone d'affichage des warnings et autres-->
 			<div id="warnings"></div>
 			<!--TODO: gestion du statut de connexion au serveur-->
@@ -105,21 +105,19 @@
 			}
 
 			function addActivityNow(type, infos){
-				addActivityNow(type,"");
-			};
-
-			function addActivityNow(type, infos){
 				console.log("addActivityNow IN: type="+type);
 				//TODO: ajout d'une activite immediate
 				socket.emit(
 					"activity-put",
-					"20190811",
+					currentDate,//date
 					type,
+					"?",//start
 					function(status){
-						if (status != OK){
+						if (status != "OK"){
 							//TODO: affichage d'un warning
 						}else{
-							//TODO: refresh des activités du jour
+							//refresh des activités du jour
+							showBabyLogForDate(currentDate);
 						}
 					}
 				);
