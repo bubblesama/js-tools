@@ -10,15 +10,20 @@ var database;
 // chargement du fichier HTML affiche au client
 var server = http.createServer(function(req, res) {
     fs.readFile('./bebe_client.html', 'utf-8', function(error, content) {
-        res.writeHead(200, {"Content-Type": "text/html"});
-        res.end(content);
+		if (error){
+			console.log("bebe#request error while reading file");
+		}else{
+			res.writeHead(200, {"Content-Type": "text/html"});
+			res.end(content);
+		}
     });
 });
 
 // socket.io conf
 //NOTE local 
+//var io = require('socket.io')(server);
+//NOTE lpr01 
 var io = require('socket.io')(server);
-//NOTE lpr01 var io = require('socket.io')(server,{path: '/cyberscribe/socket.io'});
 // connection management by logging
 io.on('connection', function (socket) {
 	console.log('socket#connection new client connected');
@@ -93,7 +98,7 @@ database.loadDatabase(
 		}
 		database.saveDatabase();
 		console.log("#init launching 'bebe' server");
-		var serverPort = 6080;
+		var serverPort = 4080;
 		server.listen(serverPort);
 		console.log("#init server running on port "+serverPort);
     }
