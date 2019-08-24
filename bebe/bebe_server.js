@@ -3,9 +3,15 @@ var fs = require('fs');
 var moment = require('moment');
 var loki = require('lokijs');
 
+
+const DATE_FORMAT = "YYYYMMDD";
+
 //global vars
 //database link
 var database;
+
+
+
 
 // chargement du fichier HTML affiche au client
 var server = http.createServer(function(req, res) {
@@ -39,7 +45,7 @@ io.on('connection', function (socket) {
 	socket.on('log-get', function(date, clientSideCallback){
 		console.log("socket#log-get IN date="+date);
 		if (date == '?'){
-			date = moment().format("YYYYMMDD");
+			date = moment().format(DATE_FORMAT);
 		}
 		//TODO: controle du format des donnees
 		//TODO: recuperation des activites du jour en BDD
@@ -64,7 +70,7 @@ io.on('connection', function (socket) {
 		console.log("socket#activity-put date="+date+" type="+type+" start="+start);
 		//TODO: controle du format des donnees
 		if (date == '?'){
-			date = moment().format("YYYYMMDD");
+			date = moment().format(DATE_FORMAT);
 		}
 		if (start == '?'){
 			start = moment().format("HH:mm");
@@ -83,7 +89,32 @@ io.on('connection', function (socket) {
 		clientSideCallback("OK");
 	});
 
+	socket.on('date-next', function(date,clientSideCallback){
+		refreshDate(date,"next",clientSideCallback);
+	});
+
+	socket.on('date-previous', function(date,clientSideCallback){
+		refreshDate(date,"previous",clientSideCallback);
+	});
+
+	socket.on('date-now', function(date,clientSideCallback){
+		clientSideCallback(moment().format(DATE_FORMAT));
+	});
+
+
 });
+
+
+function refreshDate(date, change, clientSideCallback){
+	if (date == '?'){
+		date = moment().format(DATE_FORMAT);
+	}
+	var tmp = moment(date,DATE_FORMAT);
+	var newDate = ((change == "next")?tmp.add(1,'days'):tmp.subtract(1,'days')).format(DATE_FORMAT);
+	clientSideCallback(newDate);
+}
+
+
 
 //database and server startup
 console.log("starting loki database");
@@ -115,5 +146,4 @@ database.loadDatabase(
 		console.log("#init server running on port "+serverPort);
     }
 );
-//BUSINESS CODE
 

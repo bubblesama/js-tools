@@ -24,9 +24,9 @@
 					<div id="navigation">
 						<h2 id="navigation-title">navigation</h2>
 						<div id="navigation-buttons" class="btn-group" role="group" aria-label="Navigation buttons">
-							<button type="button" class="btn btn-outline-secondary" >avant</button>
-							<button type="button" class="btn btn-outline-secondary" >après</button>
-							<button type="button" class="btn btn-outline-secondary" >maintenant</button>
+							<button type="button" class="btn btn-outline-secondary" onclick="askNewDate('previous');">avant</button>
+							<button type="button" class="btn btn-outline-secondary" onclick="askNewDate('next');">après</button>
+							<button type="button" class="btn btn-outline-secondary" onclick="askNewDate('now');">maintenant</button>
 						</div>
 					</div>
 				</div>
@@ -86,7 +86,7 @@
 
 			/**
 			 * Appel back pour recupérer la date et les activités
-			 * Si la currentDate n'ets pas definie, recuperation de celle cote serveur
+			 * Si la currentDate n'est pas definie, recuperation de celle cote serveur
 			 * */
 			function showBabyLogForToday(){
 				showBabyLogForDate("?");
@@ -122,6 +122,23 @@
 					}
 				);
 			};
+
+			/**
+			 * 
+			 * change: next, previous ou now
+			 * */
+			function askNewDate(change){
+				console.log("dateNext IN: change="+change+" currentDate="+currentDate);
+				socket.emit(
+					"date-"+change,
+					currentDate,//date
+					function(newDate){
+						currentDate = newDate;
+						showBabyLogForDate(currentDate);
+					}
+				);
+
+			}
 
 			function babyStartup(){
 				console.log("#babyStartup IN");
