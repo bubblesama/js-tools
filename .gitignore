@@ -7,5 +7,7 @@ miettes/node_modules/
 cyberscribe/node_modules/
 advent2018/node_modules/
 games/node_modules/
-
 cyberscribe/cyberscribe-lokidb\.json
+bebe/node_modules/
+
+bebe/package-lock.json
