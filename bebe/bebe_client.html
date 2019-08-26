@@ -39,7 +39,10 @@
 				</div>
 				<div id="log" >
 					<h2 id="log-title">activités de la journée du <span id="log-title-day">?</span></h2>
-					<p id="log-refresh-action"><input type="button" class="btn btn-outline-secondary" value="maj" onclick="showBabyLogForToday();"></p>
+					<div id="log-action" class="btn-group" role="group" aria-label="Actions buttons for debug">
+						<input type="button" class="btn btn-outline-secondary" value="maj" onclick="showBabyLogForToday();">
+						<input type="button" class="btn btn-outline-secondary" value="clean" onclick="cleanBabyLogForToday();">
+					</div>
 					<table id="log-activities-table" class="table table-bordered">
 						<thead> <tr><th scope="col" style="width: 20%">horaire</th><th scope="col">activité</th></tr></thead>
 						<tbody id="log-activities"></tbody>
@@ -57,7 +60,7 @@
 
 			//NOTE lpr01
 			//var socket = io('https://lpr01.ddns.net/',{path: '/bebe/socket.io'});
-			var socket = io('http://localhost:6080/');
+			var socket = io('http://localhost:4080/');
 			//gestion des messages
 			socket.on('connection-status', function(message){
 				console.log("socket#connection-status message="+ message.content);
@@ -78,7 +81,14 @@
 				var activitiesHtml = "";
 
 				for (var i=0; i<activities.length; i++){
-					activitiesHtml += "<tr scope='row' style='width: 10px;'><td>"+activities[i].start+"</td><td>"+activities[i].type+"</td></tr>";
+					activitiesHtml += "<tr scope='row' style='width: 10px;'><td>"+activities[i].start+"</td><td>"+activities[i].type;
+					if (activities[i].infos != null && activities[i].infos.constructor === Array ){
+						activitiesHtml +=" -";
+						for (var j=0; j<activities[i].infos.length; j++){
+							activitiesHtml +=" "+activities[i].infos[j];
+						}
+					}
+					activitiesHtml += "</td></tr>";
 				}
 				document.getElementById("log-activities").innerHTML = activitiesHtml;
 			};
@@ -103,6 +113,22 @@
 				);
 			}
 
+			function cleanBabyLogForToday(){
+				cleanBabyLogForDate("?");
+			}
+
+			function cleanBabyLogForDate(date){
+				socket.emit(
+					"log-clean",
+					date,
+					function(status, date, activities){
+						console.log("cleanBabyLogForDate return from socket; status="+status+" date="+date+" activities="+activities.length);
+						changeDate(date);
+						refreshActivitiesView(activities);
+					}
+				);
+			}
+
 			function addActivityNow(type, infos){
 				console.log("addActivityNow IN: type="+type);
 				//TODO: ajout d'une activite immediate
@@ -111,6 +137,7 @@
 					currentDate,//date
 					type,
 					"?",//start
+					infos,
 					function(status){
 						if (status != "OK"){
 							//TODO: affichage d'un warning

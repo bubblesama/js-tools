@@ -58,6 +58,26 @@ io.on('connection', function (socket) {
 		}
 		clientSideCallback("OK", date, activities);
 	});
+
+	socket.on('log-clean', function(date, clientSideCallback){
+		console.log("socket#log-get IN date="+date);
+		if (date == '?'){
+			date = moment().format(DATE_FORMAT);
+		}
+		//TODO: controle du format des donnees
+		//TODO: recuperation des activites du jour en BDD
+		//TODO: fourniture des infos
+		var babyLogs = database.addCollection("log");
+		var dailyLog = babyLogs.findOne({date: date});
+		var activities = [];
+		if (dailyLog == null){
+			babyLogs.insert({date:date, activities:[]});
+		}else{
+			dailyLog.activities = [];
+			babyLogs.update(dailyLog);
+		}
+		clientSideCallback("OK", date, activities);
+	});
  
 	/** ajout d'une activite
 	* IN
@@ -66,7 +86,7 @@ io.on('connection', function (socket) {
 	* OUT: callback
 	*	status: OK ou KO
 	*/
-	socket.on('activity-put', function(date, type, start, clientSideCallback){
+	socket.on('activity-put', function(date, type, start, infos, clientSideCallback){
 		console.log("socket#activity-put date="+date+" type="+type+" start="+start);
 		//TODO: controle du format des donnees
 		if (date == '?'){
@@ -75,14 +95,20 @@ io.on('connection', function (socket) {
 		if (start == '?'){
 			start = moment().format("HH:mm");
 		}
-		console.log("socket#activity-put filled date="+date+" type="+type+" filled start="+start);
+		if (infos != null && infos.constructor === Array){
+			console.log("socket#activity-put infos passed as Array");
+			for (var i=0;i<infos.length;i++){
+				console.log("socket#activity-put infos["+i+"]="+infos[i]);
+			}
+		}
+		console.log("socket#activity-put filledDate="+date+" type="+type+" filledStart="+start);
 		//insertion BDD
 		var babyLogs = database.addCollection("log");
 		var dailyLog = babyLogs.findOne({date: date});
 		if (dailyLog == null){
-			babyLogs.insert({date:date, activities:[{type: type, start: start, infos: ""}]});
+			babyLogs.insert({date:date, activities:[{type: type, start: start, infos: infos}]});
 		}else{
-			dailyLog.activities.push({type: type, start: start, infos: ""});
+			dailyLog.activities.push({type: type, start: start, infos: infos});
 			babyLogs.update(dailyLog);
 		}
 		//TODO: entree des donnees de l'activite
