@@ -26,13 +26,13 @@
 				<div id="actions">
 					<h2 id="actions-list-title">actions</h2>
 					<div id="actions-buttons-boire" class="btn-group" role="group" aria-label="Actions buttons for boire">
-						<button type="button" class="btn btn-outline-danger" onclick="addActivityNow('boire');">gauche</button>
-						<button type="button" class="btn btn-outline-danger" onclick="addActivityNow('boire');">droite</button>
-						<button type="button" class="btn btn-outline-danger" onclick="addActivityNow('boire');">biberon</button>
+						<button type="button" class="btn btn-outline-danger" onclick="addActivityNow('boire',['gauche']);">gauche</button>
+						<button type="button" class="btn btn-outline-danger" onclick="addActivityNow('boire',['droite']);">droite</button>
+						<button type="button" class="btn btn-outline-danger" onclick="addActivityNow('boire',['biberon']);">biberon</button>
 					</div>
 					<div id="actions-buttons-couche" class="btn-group" role="group" aria-label="Actions buttons for couche">
-						<button type="button" class="btn btn-outline-success" onclick="addActivityNow('couche');">caca</button>
-						<button type="button" class="btn btn-outline-success" onclick="addActivityNow('couche');">pipi</button>
+						<button type="button" class="btn btn-outline-success" onclick="addActivityNow('couche',['caca']);">caca</button>
+						<button type="button" class="btn btn-outline-success" onclick="addActivityNow('couche',['pipi']);">pipi</button>
 					</div>
 					<button type="button" class="btn btn-outline-secondary" onclick="addActivityNow('dodo');">dodo</button>
 					<button type="button" class="btn btn-outline-primary" onclick="addActivityNow('bain');">bain</button>
@@ -40,9 +40,11 @@
 				<div id="log" >
 					<h2 id="log-title">activités de la journée du <span id="log-title-day">?</span></h2>
 					<p id="log-refresh-action"><input type="button" class="btn btn-outline-secondary" value="maj" onclick="showBabyLogForToday();"></p>
-					<ul id="log-activities">
+					<table id="log-activities-table" class="table table-bordered">
+						<thead> <tr><th scope="col" style="width: 20%">horaire</th><th scope="col">activité</th></tr></thead>
+						<tbody id="log-activities"></tbody>
 					<!--TODO: affichage des activites de la journée-->
-					</ul>
+					</table>
 				</div>
 			</div>
 		</div>
@@ -74,8 +76,9 @@
 			function refreshActivitiesView(activities){
 				//TODO: clean et reaffichage des valeurs d'activites
 				var activitiesHtml = "";
+
 				for (var i=0; i<activities.length; i++){
-					activitiesHtml += "<li>"+activities[i].start+": "+activities[i].type+"</li>";
+					activitiesHtml += "<tr scope='row' style='width: 10px;'><td>"+activities[i].start+"</td><td>"+activities[i].type+"</td></tr>";
 				}
 				document.getElementById("log-activities").innerHTML = activitiesHtml;
 			};
