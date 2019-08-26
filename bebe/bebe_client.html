@@ -44,7 +44,7 @@
 						<input type="button" class="btn btn-outline-secondary" value="clean" onclick="cleanBabyLogForToday();">
 					</div>
 					<table id="log-activities-table" class="table table-bordered">
-						<thead> <tr><th scope="col" style="width: 20%">horaire</th><th scope="col">activité</th></tr></thead>
+						<thead> <tr><th scope="col" style="width: 20%">horaire</th><th scope="col">activité</th><th style="width: 15%">actions</th></tr></thead>
 						<tbody id="log-activities"></tbody>
 					<!--TODO: affichage des activites de la journée-->
 					</table>
@@ -88,7 +88,7 @@
 							activitiesHtml +=" "+activities[i].infos[j];
 						}
 					}
-					activitiesHtml += "</td></tr>";
+					activitiesHtml += "</td><td></td></tr>";
 				}
 				document.getElementById("log-activities").innerHTML = activitiesHtml;
 			};
