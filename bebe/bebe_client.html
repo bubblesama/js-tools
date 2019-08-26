@@ -4,23 +4,15 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 		<title>bébé</title>
-		<!-- style CSS embarqué
-			TODO: style compatible mobile
-		-->
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 	</head>
 	<body onload="babyStartup();">
-		<div id="app" class="container">
-			<h1>bébé beta v0.1</h1>
+		<div id="app" class="container border rounded">
+			<h1>bébé beta v0.1 (<span id="connection-status">?</span>)</h1>
 			<!-- zone d'affichage des warnings et autres-->
 			<div id="warnings"></div>
-			<!--TODO: gestion du statut de connexion au serveur-->
-			<div id="status">
-				<h2>statut</h2>
-				<div id="connection">connexion: <span id="connection-status">?</span></div>
-			</div>
 				<div id="navigation">
-					<!--TODO: boutons de navigation: jours avant/apres pour commencer-->
+					<!--boutons de navigation: jours avant/apres pour commencer-->
 					<div id="navigation">
 						<h2 id="navigation-title">navigation</h2>
 						<div id="navigation-buttons" class="btn-group" role="group" aria-label="Navigation buttons">
@@ -30,22 +22,26 @@
 						</div>
 					</div>
 				</div>
-				<!--TODO: les actions disponible-->
+				<!--les actions disponible-->
 				<div id="actions">
 					<h2 id="actions-list-title">actions</h2>
-					<div id="actions-buttons" class="btn-group" role="group" aria-label="Actions buttons">
-						<button type="button" class="btn btn-danger" onclick="addActivityNow('boire');">boire</button>
-						<button type="button" class="btn btn-success" onclick="addActivityNow('couche');">couche</button>
-						<button type="button" class="btn btn-secondary" onclick="addActivityNow('dodo');">dodo</button>
-						<button type="button" class="btn btn-primary" onclick="addActivityNow('bain');">bain</button>
+					<div id="actions-buttons-boire" class="btn-group" role="group" aria-label="Actions buttons for boire">
+						<button type="button" class="btn btn-outline-danger" onclick="addActivityNow('boire');">gauche</button>
+						<button type="button" class="btn btn-outline-danger" onclick="addActivityNow('boire');">droite</button>
+						<button type="button" class="btn btn-outline-danger" onclick="addActivityNow('boire');">biberon</button>
 					</div>
+					<div id="actions-buttons-couche" class="btn-group" role="group" aria-label="Actions buttons for couche">
+						<button type="button" class="btn btn-outline-success" onclick="addActivityNow('couche');">caca</button>
+						<button type="button" class="btn btn-outline-success" onclick="addActivityNow('couche');">pipi</button>
+					</div>
+					<button type="button" class="btn btn-outline-secondary" onclick="addActivityNow('dodo');">dodo</button>
+					<button type="button" class="btn btn-outline-primary" onclick="addActivityNow('bain');">bain</button>
 				</div>
 				<div id="log" >
 					<h2 id="log-title">activités de la journée du <span id="log-title-day">?</span></h2>
-					<p id="log-refresh-action"><input type="button" value="maj" onclick="showBabyLogForToday();"></p>
+					<p id="log-refresh-action"><input type="button" class="btn btn-outline-secondary" value="maj" onclick="showBabyLogForToday();"></p>
 					<ul id="log-activities">
 					<!--TODO: affichage des activites de la journée-->
-					<!--TODO: exemple statique-->
 					</ul>
 				</div>
 			</div>
@@ -58,12 +54,12 @@
 			var currentDate = "?";
 
 			//NOTE lpr01
-			var socket = io('https://lpr01.ddns.net/',{path: '/bebe/socket.io'});
-			//var socket = io('http://localhost:6080/');
+			//var socket = io('https://lpr01.ddns.net/',{path: '/bebe/socket.io'});
+			var socket = io('http://localhost:6080/');
 			//gestion des messages
 			socket.on('connection-status', function(message){
 				console.log("socket#connection-status message="+ message.content);
-				document.getElementById("connection-status").innerHTML = "OK";
+				document.getElementById("connection-status").innerHTML = "connecté";
 			});
 
 			function changeDate(newDate){
