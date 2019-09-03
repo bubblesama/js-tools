@@ -42,6 +42,7 @@
 					<div id="log-action" class="btn-group" role="group" aria-label="Actions buttons for debug">
 						<input type="button" class="btn btn-outline-secondary" value="maj" onclick="showBabyLogForToday();">
 						<input type="button" class="btn btn-outline-secondary" value="clean" onclick="cleanBabyLogForToday();">
+						<input type="button" class="btn btn-outline-secondary" value="end" onclick="endLastActivityNow();">
 					</div>
 					<table id="log-activities-table" class="table table-bordered">
 						<thead> <tr><th scope="col" style="width: 5%">d&eacute;but</th><th scope="col" style="width: 5%">fin</th><th scope="col">activité</th><th style="width: 15%">actions</th></tr></thead>
@@ -148,6 +149,25 @@
 					}
 				);
 			};
+
+			function endLastActivityNow(){
+				console.log("endLastActivityNow IN");
+				//TODO: ajout d'une activite immediate
+				socket.emit(
+					"activity-end-last",
+					currentDate,//date
+					"?",//start
+					function(status){
+						if (status != "OK"){
+							//TODO: affichage d'un warning
+						}else{
+							//refresh des activités du jour
+							showBabyLogForDate(currentDate);
+						}
+					}
+				);
+			};
+
 
 			/**
 			 * 

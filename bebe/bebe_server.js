@@ -125,6 +125,45 @@ io.on('connection', function (socket) {
 		clientSideCallback("OK");
 	});
 
+	/** terminaison de l'activité en cours
+	* IN
+	* 	day: format 20190811
+	*	end: horaire de fin
+	* OUT: callback
+	*	status: OK ou KO
+	*/
+	socket.on('activity-end-last', function(date, end, clientSideCallback){
+		console.log("socket#activity-end-last date="+date+" end="+end);
+		//TODO: controle du format des donnees
+		if (date == '?'){
+			date = moment().format(DATE_FORMAT);
+		}
+		if (end == '?'){
+			end = moment().format("HH:mm");
+		}
+		console.log("socket#activity-end-last filledDate="+date+" filledEnd="+end);
+		//insertion BDD
+		var babyLogs = database.addCollection("log");
+		var dailyLog = babyLogs.findOne({date: date});
+		if (dailyLog == null){
+			clientSideCallback("KO: pas d'activité à terminer");
+		}else{
+			//récupération de la dernière activité
+			var lastActivityIndex = -1;
+			var lastActivityTempTime = "00:00";
+			for (var i=0;i<dailyLog.activities.length;i++){
+				if (dailyLog.activities[i].start > lastActivityTempTime){
+					lastActivityIndex = i;
+					lastActivityTempTime = dailyLog.activities[i].start;
+				}
+			}
+			dailyLog.activities[lastActivityIndex].end = end;
+			babyLogs.update(dailyLog);
+			clientSideCallback("OK");
+		}
+		//TODO: entree des donnees de l'activite
+	});
+
 	socket.on('date-next', function(date,clientSideCallback){
 		refreshDate(date,"next",clientSideCallback);
 	});
