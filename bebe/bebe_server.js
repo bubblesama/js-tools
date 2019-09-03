@@ -108,7 +108,17 @@ io.on('connection', function (socket) {
 		if (dailyLog == null){
 			babyLogs.insert({date:date, activities:[{type: type, start: start, infos: infos}]});
 		}else{
-			dailyLog.activities.push({type: type, start: start, infos: infos});
+			//contrôle de la présence de la date
+			var activityOverwrite = false;
+			for (var i=0;i<dailyLog.activities.length;i++){
+				if (dailyLog.activities[i].start == start){
+					activityOverwrite = true;
+					dailyLog.activities[i] = {type: type, start: start, infos: infos};
+				}
+			}
+			if (!activityOverwrite){
+				dailyLog.activities.push({type: type, start: start, infos: infos});
+			}
 			babyLogs.update(dailyLog);
 		}
 		//TODO: entree des donnees de l'activite
