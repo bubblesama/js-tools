@@ -22,8 +22,8 @@ activites supportees
 biberon, boire, couche, dodo, bain
 
 todo list
-- affichage des activités d'une journée
-- sauvegarde en bdd des activités
+x affichage des activités d'une journée
+x sauvegarde en bdd des activités
 
 versioning
 v0.1
