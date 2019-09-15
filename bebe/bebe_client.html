@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="fr">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<title>bébé</title>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	</head>
+	<body onload="babyStartup();">
+		<div id="app" class="container border rounded">
+			<h1>bébé beta v0.2 (<span id="connection-status">?</span>)</h1>
+			<!-- zone d'affichage des warnings et autres-->
+			<div id="warnings"></div>
+				<div id="navigation">
+					<!--boutons de navigation: jours avant/apres pour commencer-->
+					<div id="navigation">
+						<h2 id="navigation-title">navigation</h2>
+						<div id="navigation-buttons" class="btn-group" role="group" aria-label="Navigation buttons">
+							<button type="button" class="btn btn-outline-secondary" onclick="askNewDate('previous');">avant</button>
+							<button type="button" class="btn btn-outline-secondary" onclick="askNewDate('next');">après</button>
+							<button type="button" class="btn btn-outline-secondary" onclick="askNewDate('now');">maintenant</button>
+						</div>
+					</div>
+				</div>
+				<!--les actions disponible-->
+				<div id="actions">
+					<h2 id="actions-list-title">actions</h2>
+					<div id="actions-buttons-boire" class="btn-group" role="group" aria-label="Actions buttons for boire">
+						<button type="button" class="btn btn-outline-danger" onclick="addActivityNow('boire',['gauche']);">gauche</button>
+						<button type="button" class="btn btn-outline-danger" onclick="addActivityNow('boire',['droite']);">droite</button>
+						<button type="button" class="btn btn-outline-danger" onclick="addActivityNow('boire',['biberon']);">biberon</button>
+					</div>
+					<div id="actions-buttons-couche" class="btn-group" role="group" aria-label="Actions buttons for couche">
+						<button type="button" class="btn btn-outline-success" onclick="addActivityNow('couche',['caca']);">caca</button>
+						<button type="button" class="btn btn-outline-success" onclick="addActivityNow('couche',['pipi']);">pipi</button>
+					</div>
+					<button type="button" class="btn btn-outline-secondary" onclick="addActivityNow('dodo');">dodo</button>
+					<button type="button" class="btn btn-outline-primary" onclick="addActivityNow('bain');">bain</button>
+				</div>
+				<div id="log" >
+					<h2 id="log-title">activités de la journée du <span id="log-title-day">?</span></h2>
+					<div id="log-action" class="btn-group" role="group" aria-label="Actions buttons for debug">
+						<input type="button" class="btn btn-outline-secondary" value="maj" onclick="showBabyLogForToday();">
+						<input type="button" class="btn btn-outline-secondary" value="clean" onclick="cleanBabyLogForToday();">
+						<input type="button" class="btn btn-outline-secondary" value="end" onclick="endLastActivityNow();">
+					</div>
+					<table id="log-activities-table" class="table table-bordered">
+						<thead> <tr><th scope="col" style="width: 5%">d&eacute;but</th><th scope="col" style="width: 5%">fin</th><th scope="col">activité</th><th style="width: 15%">actions</th></tr></thead>
+						<tbody id="log-activities"></tbody>
+					<!--TODO: affichage des activites de la journée-->
+					</table>
+				</div>
+			</div>
+		</div>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+		<script>
+			//SOCKET IO
+			// init
+			console.log("#init connecting on socket");
+			var currentDate = "?";
+
+			//NOTE lpr01
+			//var socket = io('https://lpr01.ddns.net/',{path: '/bebe/socket.io'});
+			var socket = io('http://localhost:4080/');
+			//gestion des messages
+			socket.on('connection-status', function(message){
+				console.log("socket#connection-status message="+ message.content);
+				document.getElementById("connection-status").innerHTML = "connecté";
+			});
+
+			function changeDate(newDate){
+				currentDate = newDate;
+				//TODO: warning du traitement de la demande
+				//TODO: blocage des activites de rafraichissement
+				//TODO: appel serveur pour obtenir les activites de ce jour-là
+				//TODO: puis affichage (date, activités, boutons)
+				document.getElementById("log-title-day").innerHTML = currentDate;
+			};
+
+			function refreshActivitiesView(activities){
+				//TODO: clean et reaffichage des valeurs d'activites
+				var activitiesHtml = "";
+
+				for (var i=0; i<activities.length; i++){
+					activitiesHtml += "<tr scope='row' ><td>"+activities[i].start+"</td><td>"+(activities[i].end!=null?activities[i].end:" ")+"</td><td>"+activities[i].type;
+					if (activities[i].infos != null && activities[i].infos.constructor === Array ){
+						activitiesHtml +=" -";
+						for (var j=0; j<activities[i].infos.length; j++){
+							activitiesHtml +=" "+activities[i].infos[j];
+						}
+					}
+					activitiesHtml += "</td><td></td></tr>";
+				}
+				document.getElementById("log-activities").innerHTML = activitiesHtml;
+			};
+
+			/**
+			 * Appel back pour recupérer la date et les activités
+			 * Si la currentDate n'est pas definie, recuperation de celle cote serveur
+			 * */
+			function showBabyLogForToday(){
+				showBabyLogForDate("?");
+			}
+
+			function showBabyLogForDate(date){
+				socket.emit(
+					"log-get",
+					date,
+					function(status, date, activities){
+						console.log("showBabyLogForDate return from socket; status="+status+" date="+date+" activities="+activities.length);
+						changeDate(date);
+						refreshActivitiesView(activities);
+					}
+				);
+			}
+
+			function cleanBabyLogForToday(){
+				cleanBabyLogForDate("?");
+			}
+
+			function cleanBabyLogForDate(date){
+				socket.emit(
+					"log-clean",
+					date,
+					function(status, date, activities){
+						console.log("cleanBabyLogForDate return from socket; status="+status+" date="+date+" activities="+activities.length);
+						changeDate(date);
+						refreshActivitiesView(activities);
+					}
+				);
+			}
+
+			function addActivityNow(type, infos){
+				console.log("addActivityNow IN: type="+type);
+				//TODO: ajout d'une activite immediate
+				socket.emit(
+					"activity-put",
+					currentDate,//date
+					type,
+					"?",//start
+					infos,
+					function(status){
+						if (status != "OK"){
+							//TODO: affichage d'un warning
+						}else{
+							//refresh des activités du jour
+							showBabyLogForDate(currentDate);
+						}
+					}
+				);
+			};
+
+			function endLastActivityNow(){
+				console.log("endLastActivityNow IN");
+				//TODO: ajout d'une activite immediate
+				socket.emit(
+					"activity-end-last",
+					currentDate,//date
+					"?",//start
+					function(status){
+						if (status != "OK"){
+							//TODO: affichage d'un warning
+						}else{
+							//refresh des activités du jour
+							showBabyLogForDate(currentDate);
+						}
+					}
+				);
+			};
+
+
+			/**
+			 * 
+			 * change: next, previous ou now
+			 * */
+			function askNewDate(change){
+				console.log("dateNext IN: change="+change+" currentDate="+currentDate);
+				socket.emit(
+					"date-"+change,
+					currentDate,//date
+					function(newDate){
+						currentDate = newDate;
+						showBabyLogForDate(currentDate);
+					}
+				);
+
+			}
+
+			function babyStartup(){
+				console.log("#babyStartup IN");
+				//changeDate("20180812");
+				showBabyLogForToday();
+			}
+
+			function appendWarning(warning){
+				//TODO: affichage des warnings
+			};
+		</script>
+		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+	</body>
+</html>
