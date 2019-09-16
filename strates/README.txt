@@ -12,4 +12,9 @@ todo list
 * obstacles sur la carte
 * rotation de la vue
 
+feature
+toutes les coordonées en float
+étalon: taille de l'unité de base: 1.0
+
+
 versioning

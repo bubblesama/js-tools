@@ -32,7 +32,28 @@ var game = {};
 game.ticker = 0;
 game.lastFpsCountDate = Date.now();
 game.fps = 0;
-//declaration des composants du ju
+//declaration des composants du jeu
+
+
+game.model = {
+	map: {
+		WIDTH: 200.0,
+		HEIGHT: 100.0
+	},
+	update: function(){
+
+	}
+};
+
+
+
+
+
+
+
+
+
+
 
 
 game.draw = function(){
