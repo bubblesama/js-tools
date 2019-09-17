@@ -38,13 +38,25 @@ game.fps = 0;
 game.model = {
 	map: {
 		WIDTH: 200.0,
-		HEIGHT: 100.0
+		HEIGHT: 100.0,
+		elements: [
+			{type: "tree", x: 10.0, y: 10.0, size: 2.0}
+		]
 	},
-	update: function(){
+
+	_update: function(){
 
 	}
+
 };
 
+game.display = {
+	map: {
+		pixels_per_unit: 10
+	}
+
+
+};
 
 
 
@@ -62,8 +74,17 @@ game.draw = function(){
 	context.fillRect(0,0,800,600);
 	context.fillStyle = "rgb(0,0,0)";
 	context.fillText("FPS: "+this.fps,10,20);
-	
-}
+	//map
+	context.fillStyle = "rgb(128,255,255)";
+	for (var i=0;i < game.model.map.elements.length;i++){
+		context.fillRect(
+			game.display.map.pixels_per_unit*(game.model.map.elements[i].x-game.model.map.elements[i].size/2),
+			game.display.map.pixels_per_unit*(game.model.map.elements[i].y-game.model.map.elements[i].size/2),
+			game.display.map.pixels_per_unit*game.model.map.elements[i].size,
+			game.display.map.pixels_per_unit*game.model.map.elements[i].size
+		);
+	}
+};
 
 game.update = function(){
 	// fps
