@@ -27,20 +27,21 @@ document.addEventListener('keyup', (event) => {
 	keyMap[event.key] = false;
 }, false);
 
-
 var game = {};
+//données de base
 game.ticker = 0;
 game.lastFpsCountDate = Date.now();
 game.fps = 0;
-//declaration des composants du jeu
 
 
+//COMPOSANTS DU JEU
 game.model = {
 	map: {
 		WIDTH: 200.0,
 		HEIGHT: 100.0,
 		elements: [
-			{type: "tree", x: 10.0, y: 10.0, size: 2.0}
+			{type: "tree", x: 10.0, y: 10.0, size: 2.0},
+			{type: "tree", x: 18.0, y: 12.0, size: 3.0}
 		]
 	},
 
@@ -58,16 +59,7 @@ game.display = {
 
 };
 
-
-
-
-
-
-
-
-
-
-
+// METHODE DE DESSIN
 game.draw = function(){
 	//clean
 	context.fillStyle = "rgb(128,128,128)";
@@ -75,7 +67,7 @@ game.draw = function(){
 	context.fillStyle = "rgb(0,0,0)";
 	context.fillText("FPS: "+this.fps,10,20);
 	//map
-	context.fillStyle = "rgb(128,255,255)";
+	context.fillStyle = "rgb(60,120,60)";
 	for (var i=0;i < game.model.map.elements.length;i++){
 		context.fillRect(
 			game.display.map.pixels_per_unit*(game.model.map.elements[i].x-game.model.map.elements[i].size/2),
@@ -86,6 +78,7 @@ game.draw = function(){
 	}
 };
 
+// METHODE DE MaJ
 game.update = function(){
 	// fps
 	if (Date.now()-this.lastFpsCountDate > 1000){
@@ -95,6 +88,8 @@ game.update = function(){
 	}else{
 		this.ticker++;
 	}
+	// rendu du modele
+	game.model._update();
 };
 
 
