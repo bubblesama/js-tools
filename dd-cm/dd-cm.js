@@ -4,28 +4,22 @@ var context = canvas.getContext("2d");
 //******* init control *******
 var keyMap ={};
 
-document.addEventListener('keydown', (event) => {
-	keyMap[event.key] = true;
-  /*
-  if (keyName === 'Control') {
-    // not alert when only Control key is pressed.
-    return;
-  }
+document.addEventListener(
+	'keydown', 
+	(event) => {
+		keyMap[event.key] = true;
+		//console.log("keydown, event.key="+event.key);
+	}, 
+	false
+);
 
-  if (event.ctrlKey) {
-    // Even though event.key is not 'Control' (i.e. 'a' is pressed),
-    // event.ctrlKey may be true if Ctrl key is pressed at the time.
-    alert(`Combination of ctrlKey + ${keyName}`);
-  } else {
-    alert(`Key pressed ${keyName}`);
-  }
-  
-  */
-}, false);
-
-document.addEventListener('keyup', (event) => {
-	keyMap[event.key] = false;
-}, false);
+document.addEventListener(
+	'keyup',
+	(event) => {
+		keyMap[event.key] = false;
+	}, 
+	false
+);
 
 
 //******************* CLASSES **********************************************************
