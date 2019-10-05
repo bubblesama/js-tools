@@ -208,6 +208,9 @@ var graphical = {
 		tiles: {
 			width: 9,
 			height: 13
+		},
+		items:{
+			ladder: {i:3,j:5}
 		}
 	}
 };
@@ -311,7 +314,6 @@ var model = {
 				if (!cornerFound){
 					this.dungeon.stepDi = deltaI;
 					this.dungeon.stepDj = deltaJ;
-	
 				}
 				if (deltaI > 0){
 					this.dungeon.faceRight = true;
@@ -334,6 +336,11 @@ var model = {
 			if (this.dungeon.walkPart >= this.dungeon.walkCycle){
 				this.dungeon.walkPart = 0;
 			}
+		},
+		tryPickingUpStuff(){
+			console.log("try picking stuff");
+
+
 		}
 	},
 	
@@ -379,6 +386,9 @@ var model = {
 					this.player.dungeon.walkPart = 0;
 				}
 				//TODO: managing picking stuff
+				if (keyMap.a){
+					this.player.tryPickingUpStuff();
+				}
 				//TODO: update for arrows
 			}
 			//TODO: update for mobs...
@@ -504,7 +514,7 @@ game.draw = function(){
 		context.fillStyle = "rgb(117,204,128)";
 		context.fillRect(0,0,618,490);
 		context.fillStyle = "rgb(0,0,0)";
-		context.fillText("DUNGEON",10,90);
+		//context.fillText("DUNGEON",10,90);
 		//display for full maze
 		var fullWidth = mazeGeneratorConfiguration.size * mazeGeneratorConfiguration.bits.tiles.width;
 		var fullHeight = mazeGeneratorConfiguration.size * mazeGeneratorConfiguration.bits.tiles.height;
@@ -523,11 +533,25 @@ game.draw = function(){
 				);
 			}
 		}
+		//display items
+		for (var i=0;i<model.dungeon.currentMaze.items.length;i++){
+			context.drawImage(
+				dungeonSprites,
+				3*graphical.dungeon.tiles.width,
+				5*graphical.dungeon.tiles.height,		
+				graphical.dungeon.tiles.width,
+				graphical.dungeon.tiles.height,
+				3+(8+model.dungeon.currentMaze.items[i].i-model.player.dungeon.i)*graphical.dungeon.tiles.width*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDx*model.player.dungeon.stepDi*graphical.dungeon.zoom,
+				10+(4+model.dungeon.currentMaze.items[i].j-model.player.dungeon.j)*graphical.dungeon.tiles.height*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDy*model.player.dungeon.stepDj*graphical.dungeon.zoom,
+				graphical.dungeon.tiles.width*graphical.dungeon.zoom,
+				graphical.dungeon.tiles.height*graphical.dungeon.zoom
+			);
+		}
+		//display player
 		var playerPicI = 0;
 		playerPicI += model.player.dungeon.walkPart;
 		var playerPicJ = 1;
 		if (!model.player.dungeon.faceRight){playerPicJ++;}
-		// display player
 		context.drawImage(
 			dungeonSprites,
 			playerPicI*graphical.dungeon.tiles.width,
@@ -539,7 +563,6 @@ game.draw = function(){
 			graphical.dungeon.tiles.width*graphical.dungeon.zoom,
 			graphical.dungeon.tiles.height*graphical.dungeon.zoom
 		);
-
 	}
 }
 

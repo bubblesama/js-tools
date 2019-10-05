@@ -1,6 +1,7 @@
 var mazeGeneratorConfiguration = {
 	
-	size: 6,
+	//TODO: back to 6
+	size: 4,
 	bits: {
 		tiles :{
 			width: 9, //number of tiles in a bit
@@ -147,6 +148,7 @@ var mazeGeneratorConfiguration = {
 //********************************** MAZE GENERATOR **********************************************
 function generateMaze(){
 	generateRotatedPatternsIfNeeded();
+	//map generation
 	var size = mazeGeneratorConfiguration.size;
 	var tries = 0;
 	var width = size;
@@ -227,10 +229,18 @@ function generateMaze(){
 			}
 		}
 	}
-	context.fillText("Tries: "+tries,300,300);
+	//items
+	var items = [];
+	//ladder
+	var ladderMazeBitI = Math.floor(Math.random()*size)*mazeGeneratorConfiguration.bits.tiles.width+Math.floor(mazeGeneratorConfiguration.bits.tiles.width/2);
+	var ladderMazeBitJ = Math.floor(Math.random()*size)*mazeGeneratorConfiguration.bits.tiles.height+Math.floor(mazeGeneratorConfiguration.bits.tiles.height/2);
+	items.push({type: "ladder", i: ladderMazeBitI, j: ladderMazeBitJ});
+	console.log("maze generator: ladderMazeBitI="+ladderMazeBitI+" ladderMazeBitJ="+ladderMazeBitJ);
+	//context.fillText("maze generation tries: "+tries,300,300);
 	var result = {
 		map: fullMaze,
-		start: {i: 4, j: 4}
+		start: {i: 4, j: 4},
+		items: items
 	};
 	return result;
 }
