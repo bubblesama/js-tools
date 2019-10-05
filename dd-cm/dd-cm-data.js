@@ -5,7 +5,7 @@ var worldMapData= {
 	bossTopLeft: {i:16,j:4},
 	tiles :
 " nllltv  y       ff"+
-" lnltvlo w  nq  fff"+
+" loltvlo w  nq  fff"+
 "  lnrlfl y llfffff "+
 "  ltv pllqpll  fff "+
 "  lrnlronffoll     "+
