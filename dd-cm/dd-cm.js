@@ -342,6 +342,9 @@ var model = {
 			var potentialItem = model.dungeon.currentMaze.getItem(this.dungeon.i, this.dungeon.j);
 			if (potentialItem != null){
 				console.log("#tryPickingUpStuff stuff picked: "+potentialItem.type);
+				if (potentialItem.type == "ladder"){
+					game.state = STATES.world;
+				}
 			}else{
 				console.log("#tryPickingUpStuff nothing to pick!");
 			}
@@ -419,6 +422,8 @@ game.state = STATES.world;
 
 game.draw = function(){
 	if (this.state == STATES.world){
+		context.fillStyle = "rgb(117,204,128)";
+		context.fillRect(0,0,618,490);
 		//map
 		for (var i=0;i<worldMapData.width;i++){
 			for (var j=0;j<worldMapData.height;j++){
