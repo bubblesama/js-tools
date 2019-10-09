@@ -236,6 +236,10 @@ function generateMaze(){
 	var ladderMazeBitJ = Math.floor(Math.random()*size)*mazeGeneratorConfiguration.bits.tiles.height+Math.floor(mazeGeneratorConfiguration.bits.tiles.height/2);
 	items.push({type: "ladder", i: ladderMazeBitI, j: ladderMazeBitJ});
 	items.push({type: "ladder", i: 4, j: 5});
+	items.push({type: "axe", i: 5, j: 5});
+	items.push({type: "boat", i: 3, j: 5});
+	items.push({type: "quiver", i: 3, j: 3});
+	items.push({type: "key", i: 3, j: 4});
 	console.log("maze generator: ladderMazeBitI="+ladderMazeBitI+" ladderMazeBitJ="+ladderMazeBitJ);
 	//context.fillText("maze generation tries: "+tries,300,300);
 	var result = {

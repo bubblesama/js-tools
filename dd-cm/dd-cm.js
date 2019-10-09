@@ -213,7 +213,11 @@ var graphical = {
 			height: 13
 		},
 		items:{
-			ladder: {i:3,j:5}
+			ladder: {i:3,j:5},
+			quiver: {i:0,j:5},
+			axe: {i:2,j:5},
+			boat: {i:5,j:5},
+			key: {i:4,j:5}
 		}
 	}
 };
