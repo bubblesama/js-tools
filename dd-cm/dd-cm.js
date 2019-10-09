@@ -338,9 +338,13 @@ var model = {
 			}
 		},
 		tryPickingUpStuff(){
-			console.log("try picking stuff");
-
-
+			//console.log("try picking stuff");
+			var potentialItem = model.dungeon.currentMaze.getItem(this.dungeon.i, this.dungeon.j);
+			if (potentialItem != null){
+				console.log("#tryPickingUpStuff stuff picked: "+potentialItem.type);
+			}else{
+				console.log("#tryPickingUpStuff nothing to pick!");
+			}
 		}
 	},
 	

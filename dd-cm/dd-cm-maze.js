@@ -235,12 +235,23 @@ function generateMaze(){
 	var ladderMazeBitI = Math.floor(Math.random()*size)*mazeGeneratorConfiguration.bits.tiles.width+Math.floor(mazeGeneratorConfiguration.bits.tiles.width/2);
 	var ladderMazeBitJ = Math.floor(Math.random()*size)*mazeGeneratorConfiguration.bits.tiles.height+Math.floor(mazeGeneratorConfiguration.bits.tiles.height/2);
 	items.push({type: "ladder", i: ladderMazeBitI, j: ladderMazeBitJ});
+	items.push({type: "ladder", i: 4, j: 5});
 	console.log("maze generator: ladderMazeBitI="+ladderMazeBitI+" ladderMazeBitJ="+ladderMazeBitJ);
 	//context.fillText("maze generation tries: "+tries,300,300);
 	var result = {
 		map: fullMaze,
 		start: {i: 4, j: 4},
-		items: items
+		items: items,
+		getItem: function(i, j){
+			console.log("maze#getItem IN i="+i+" j="+j);
+			var result = null;
+			for (var k=0;k<items.length; k++){
+				if (i == items[k].i && j == items[k].j){
+					result = items[k];
+				}
+			}
+			return result;
+		}
 	};
 	return result;
 }
