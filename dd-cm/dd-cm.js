@@ -35,6 +35,7 @@ class WorldTile {
 		this.j = j;
 		this.type = type;
 		this.discovered = false;
+		this.entered = false;
 	}
 
 
@@ -49,35 +50,37 @@ class WorldTile {
 	/**
 	 * Indique si la case est un élément de donjon
 	 */
-	isDungeon(){
-		var result = false;
-		switch(this.type) {
-			case "MOUTAIN_GREY":
-			case "MOUTAIN_BLUE": 
-			case "MOUTAIN_RED": 
-			case "MOUTAIN_PURPLE":
-				result = true;
-				break;
-			case "EMPTY":
-			case "HOUSE":
-			case "RIVER_UP_DOWN":
-			case "RIVER_UP_DOWN": 
-			case "RIVER_UP_RIGHT":
-			case "RIVER_RIGHT_DOWN":
-			case "RIVER_DOWN_LEFT":
-			case "RIVER_LEFT_UP":
-			case "FOREST":
-			case "WALL_DOOR_UP_DOWN":
-			case "WALL_DOOR_LEFT_RIGHT":
-			case "MOUTAIN_BLACK": 
-			case "MOUTAIN_BLANK":
-			case "WALL_UP_DOWN":
-			case "WALL_LEFT_RIGHT":
-				break;
-			default:
-				result = false;
+	isNewDungeon(){
+		var result = this.entered;
+		if (!result){
+			switch(this.type) {
+				case "MOUTAIN_GREY":
+				case "MOUTAIN_BLUE": 
+				case "MOUTAIN_RED": 
+				case "MOUTAIN_PURPLE":
+					result = true;
+					break;
+				case "EMPTY":
+				case "HOUSE":
+				case "RIVER_UP_DOWN":
+				case "RIVER_UP_DOWN": 
+				case "RIVER_UP_RIGHT":
+				case "RIVER_RIGHT_DOWN":
+				case "RIVER_DOWN_LEFT":
+				case "RIVER_LEFT_UP":
+				case "FOREST":
+				case "WALL_DOOR_UP_DOWN":
+				case "WALL_DOOR_LEFT_RIGHT":
+				case "MOUTAIN_BLACK": 
+				case "MOUTAIN_BLANK":
+				case "WALL_UP_DOWN":
+				case "WALL_LEFT_RIGHT":
+					break;
+				default:
+					result = false;
+			}
 		}
-		return result;
+			return result;
 	}
 	
 	/**
@@ -279,9 +282,10 @@ var model = {
 						}
 					}
 					// entering a dungeon
-					if (worldMap[newI][newJ].isDungeon()){
+					if (worldMap[newI][newJ].isNewDungeon() && !worldMap[newI][newJ].entered){
 						console.log("DBG player#moveIfPossible entering a dungeon");
 						game.state = STATES.dungeon;
+						worldMap[newI][newJ].entered = true;
 						var newMaze = generateMaze();
 						model.dungeon.currentMaze = newMaze;
 						model.player.dungeon.i = newMaze.start.i;
