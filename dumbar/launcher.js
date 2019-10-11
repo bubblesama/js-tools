@@ -43,6 +43,7 @@ router.route("/dumbar/memories")
 
 
 // - CONTROLLER -----------------------------------------------------------
+var PERSON_CODE_REGEXP = /^@[a-z]([a-z_])*$/;
 var _displayDefault = function(request, response){
     response.writeHead(200, {"Content-Type": "text/html"});
     response.end("<html><head><title>dumbar</title></head><body><h1>dumbar</h1>"+
@@ -64,18 +65,23 @@ var _displayGui = function(request, response){
     );
 };
 var _listAllPersons = function(request, response){
-    response.json({message: "OK", persons: dbGetAllPersons()});
+    response.json({status: "OK", persons: dbGetAllPersons()});
 };
 var _createPerson = function(request, response){
-    dbCreatePerson(request.body.code, request.body.label);
-    response.json({message: "OK", code: request.body.code});
+    //parameter format check
+    if (!request.body.code.match(PERSON_CODE_REGEXP)){
+        response.json({status: "KO", message: "invalid format for @code value: "+request.body.code});
+    }else{
+        var bizStatus = bizCreatePerson(request.body.code, request.body.label);
+        response.json(bizStatus);
+    }
 };
 var _listAllMemories = function(request, response){
-    response.json({message: "OK", memories: dbGetAllMemories()});
+    response.json({status: "OK", memories: dbGetAllMemories()});
 };
 var _createMemory = function(request, response){
     dbCreateMemory(request.body.type, request.body.date, request.body.info);
-    response.json({message: "OK", name: request.body.name});
+    response.json({status: "OK", name: request.body.name});
 };
 // - /CONTROLLER ----------------------------------------------------------
 
@@ -99,7 +105,18 @@ class Memory {
 // - /OBJETS --------------------------------------------------------------
 // - BUSINESS -------------------------------------------------------------
 
-
+var bizCreatePerson = function(code, label){
+    var status = "OK";
+    var message = "done";
+    //check existing @code
+    if (dbIsPersonCodeAvailable(code)){
+        dbCreatePerson(code,label);
+    }else{
+        status = "KO";
+        message = "code "+code+" already used";
+    }
+    return {status: status, message: message};
+}
 // - /BUSINESS ------------------------------------------------------------
 // - DB -------------------------------------------------------------------
 var dbGetAllPersons = function(){
@@ -115,6 +132,15 @@ var dbGetAllPersons = function(){
 var dbCreatePerson = function(code, label){
     var personsDbCollection = database.addCollection("person");
     personsDbCollection.insertOne({code: code, label: label});
+};
+var dbIsPersonCodeAvailable = function(code){
+    var personsDbCollection = database.addCollection("person");
+    var personByCode = personsDbCollection.findOne({code: code});
+    if (personByCode != null){
+        return false
+    }else{
+        return true;
+    }
 };
 var dbGetAllMemories = function(){
     var memoriesDbCollection = database.addCollection("memory");
