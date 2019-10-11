@@ -44,6 +44,7 @@ router.route("/dumbar/memories")
 
 // - CONTROLLER -----------------------------------------------------------
 var PERSON_CODE_REGEXP = /^@[a-z]([a-z_])*$/;
+var PERSON_LABEL_REGEXP = /^[a-zA-Z]([a-zA-Z ])*$/;
 var _displayDefault = function(request, response){
     response.writeHead(200, {"Content-Type": "text/html"});
     response.end("<html><head><title>dumbar</title></head><body><h1>dumbar</h1>"+
@@ -71,7 +72,9 @@ var _createPerson = function(request, response){
     //parameter format check
     if (!request.body.code.match(PERSON_CODE_REGEXP)){
         response.json({status: "KO", message: "invalid format for @code value: "+request.body.code});
-    }else{
+    }else if (!request.body.label.match(PERSON_LABEL_REGEXP)){
+        response.json({status: "KO", message: "invalid format for label value: "+request.body.label});
+    }else {
         var bizStatus = bizCreatePerson(request.body.code, request.body.label);
         response.json(bizStatus);
     }
