@@ -26,6 +26,10 @@ router.route("/dumbar/persons")
 }).post(function(request, response){
     _createPerson(request,response);
 });
+router.route("/dumbar/person/:code")
+.get(function(request, response){
+    _getPersonByCode(request,response);
+});
 router.route("/dumbar/web/")
 .get(function(request, response){
     _displayGui(request,response);
@@ -67,6 +71,14 @@ var _displayGui = function(request, response){
 var _listAllPersons = function(request, response){
     response.json({status: "OK", persons: dbGetAllPersons()});
 };
+var _getPersonByCode = function(request, response){
+    //parameter format check
+    if (!request.params.code.match(PERSON_CODE_REGEXP)){
+        response.json({status: "KO", message: "invalid format for @code value: "+request.params.code});
+    }else{
+        response.json(bizGetPersonByCode(request.params.code));
+    }
+};
 var _createPerson = function(request, response){
     //parameter format check
     if (!request.body.code.match(PERSON_CODE_REGEXP)){
@@ -104,7 +116,6 @@ class Person {
         this.label = label;
 	}
 };
-
 class Memory {
 	constructor(type, date, infos, personCode){
         this.type = type;
@@ -113,7 +124,6 @@ class Memory {
         this.personCode = personCode;
 	}
 };
-
 // - /ENTITIES ------------------------------------------------------------
 // - BUSINESS -------------------------------------------------------------
 var bizCreatePerson = function(code, label){
@@ -127,6 +137,19 @@ var bizCreatePerson = function(code, label){
         message = "code "+code+" already used";
     }
     return {status: status, message: message};
+};
+var bizGetPersonByCode = function(code){
+    var status = "OK";
+    var message = "done";
+    var person = null;
+    //check existing @code
+    if (dbIsPersonCodeAvailable(code)){
+        status = "KO";
+        message = "code "+code+" not used";
+    }else{
+        person = dbGetPersonByCode(code);
+    }
+    return {status: status, message: message, person: person};
 };
 var bizCreateMemory = function(type, date, infos, personCode){
     var status = "OK";
@@ -163,6 +186,16 @@ var dbIsPersonCodeAvailable = function(code){
         return false;
     }else{
         return true;
+    }
+};
+var dbGetPersonByCode = function(code){
+    //console.log("dbGetPersonByCode IN code="+code);
+    var personsDbCollection = database.addCollection("person");
+    var personByCode = personsDbCollection.findOne({code: code});
+    if (personByCode != null){
+        return {code: personByCode.code, label: personByCode.label};
+    }else{
+        return null;
     }
 };
 var dbGetAllMemories = function(){
