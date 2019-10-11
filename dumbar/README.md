@@ -11,6 +11,20 @@ npm install lokijs --save
 
 
 TODO
+people: name (=label), code (public and technical)
+memory: type, date; infos
+people management
+    create
+    delete
+    check
+    check all
+memories management
+    create
+    delete
+attach memories to people (1/1)
+
+
+
 listing de personnes: nom (d'une personne ou d'un groupe)
 creation de personnes
 souvenir: type, date, remarques

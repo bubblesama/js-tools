@@ -56,33 +56,35 @@ var _displayGui = function(request, response){
         "<html><head><title>dumbar</title></head>"+
         "<body><h1>dumbar - add person</h1>"+
         "<form action='/dumbar/persons' method='post'>"+
-        "<p>name: <input type='text' name='name'></p>"+
+        "<p>code: <input type='text' name='code' value='@example'></p>"+
+        "<p>label: <input type='text' name='label'></p>"+
         "<p><input type='submit' value='create'></p>"+
         "</form>"+
         "</body></html>"
     );
 };
 var _listAllPersons = function(request, response){
-    response.json({message: "todo", persons: dbGetAllPersons()});
+    response.json({message: "OK", persons: dbGetAllPersons()});
 };
 var _createPerson = function(request, response){
-    dbCreatePerson(request.body.name);
-    response.json({message: "done", name: request.body.name});
+    dbCreatePerson(request.body.code, request.body.label);
+    response.json({message: "OK", code: request.body.code});
 };
 var _listAllMemories = function(request, response){
-    response.json({message: "todo", memories: dbGetAllMemories()});
+    response.json({message: "OK", memories: dbGetAllMemories()});
 };
 var _createMemory = function(request, response){
     dbCreateMemory(request.body.type, request.body.date, request.body.info);
-    response.json({message: "done", name: request.body.name});
+    response.json({message: "OK", name: request.body.name});
 };
 // - /CONTROLLER ----------------------------------------------------------
 
 
-// - OBJETS ---------------------------------------------------------------
+// - ENTITIES ---------------------------------------------------------------
 class Person {
-	constructor(name){
-		this.name = name;
+	constructor(code, label){
+        this.code = code;
+        this.label = label;
 	}
 };
 
@@ -95,8 +97,10 @@ class Memory {
 };
 
 // - /OBJETS --------------------------------------------------------------
+// - BUSINESS -------------------------------------------------------------
 
 
+// - /BUSINESS ------------------------------------------------------------
 // - DB -------------------------------------------------------------------
 var dbGetAllPersons = function(){
     var personsDbCollection = database.addCollection("person");
@@ -104,13 +108,13 @@ var dbGetAllPersons = function(){
     var result = [];
     //filter technical data
     for (var i=0;i<rawPersonList.length;i++){
-        result.push({name: rawPersonList[i].name});
+        result.push({code: rawPersonList[i].code, label: rawPersonList[i].label});
     }
     return result;
 };
-var dbCreatePerson = function(name){
+var dbCreatePerson = function(code, label){
     var personsDbCollection = database.addCollection("person");
-    personsDbCollection.insertOne({name: name});
+    personsDbCollection.insertOne({code: code, label: label});
 };
 var dbGetAllMemories = function(){
     var memoriesDbCollection = database.addCollection("memory");
