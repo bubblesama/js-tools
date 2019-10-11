@@ -15,8 +15,6 @@ var database = new loki(
     }
 );
 // - /INIT SERVER --------------------------------------------------------
-
-
 // - ROUTING --------------------------------------------------------------
 router.route("/")
 .get(function(request, response){
@@ -40,8 +38,6 @@ router.route("/dumbar/memories")
 });
 
 // - /ROUTING -------------------------------------------------------------
-
-
 // - CONTROLLER -----------------------------------------------------------
 var PERSON_CODE_REGEXP = /^@[a-z]([a-z_])*$/;
 var PERSON_LABEL_REGEXP = /^[a-zA-Z]([a-zA-Z ])*$/;
@@ -83,13 +79,11 @@ var _listAllMemories = function(request, response){
     response.json({status: "OK", memories: dbGetAllMemories()});
 };
 var _createMemory = function(request, response){
-    dbCreateMemory(request.body.type, request.body.date, request.body.info);
+    dbCreateMemory(request.body.type, request.body.date, request.body.info, request.body.personCode);
     response.json({status: "OK", name: request.body.name});
 };
 // - /CONTROLLER ----------------------------------------------------------
-
-
-// - ENTITIES ---------------------------------------------------------------
+// - ENTITIES -------------------------------------------------------------
 class Person {
 	constructor(code, label){
         this.code = code;
@@ -98,14 +92,15 @@ class Person {
 };
 
 class Memory {
-	constructor(type, date, info){
+	constructor(type, date, info, personCode){
         this.type = type;
         this.date = date;
         this.info = info;
+        this.personCode = personCode;
 	}
 };
 
-// - /OBJETS --------------------------------------------------------------
+// - /ENTITIES ------------------------------------------------------------
 // - BUSINESS -------------------------------------------------------------
 
 var bizCreatePerson = function(code, label){
@@ -140,7 +135,7 @@ var dbIsPersonCodeAvailable = function(code){
     var personsDbCollection = database.addCollection("person");
     var personByCode = personsDbCollection.findOne({code: code});
     if (personByCode != null){
-        return false
+        return false;
     }else{
         return true;
     }
@@ -151,17 +146,15 @@ var dbGetAllMemories = function(){
     var result = [];
     //filter technical data
     for (var i=0;i<rawMemoryList.length;i++){
-        result.push({type: rawMemoryList[i].type, date: rawMemoryList[i].date, info: rawMemoryList[i].info});
+        result.push({type: rawMemoryList[i].type, date: rawMemoryList[i].date, info: rawMemoryList[i].info, personCode: rawMemoryList[i].personCode});
     }
     return result;
 };
-var dbCreateMemory = function(type, date, info){
+var dbCreateMemory = function(type, date, info, personCode){
     var memoriesDbCollection = database.addCollection("memory");
-    memoriesDbCollection.insertOne({type: type, date: date, info: info});
+    memoriesDbCollection.insertOne({type: type, date: date, info: info, personCode: personCode});
 };
 // - /DB ------------------------------------------------------------------
-
-
 // - LAUNCHING SERVER -----------------------------------------------------
 app.use(router);
 database.loadDatabase(
