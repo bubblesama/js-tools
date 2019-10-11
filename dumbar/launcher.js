@@ -41,6 +41,9 @@ router.route("/dumbar/memories")
 // - CONTROLLER -----------------------------------------------------------
 var PERSON_CODE_REGEXP = /^@[a-z]([a-z_])*$/;
 var PERSON_LABEL_REGEXP = /^[a-zA-Z]([a-zA-Z ])*$/;
+var MEMORY_TYPE_REGEXP = /^[a-zA-Z]([a-zA-Z ])*$/;
+var MEMORY_DATE_REGEXP = /^20[1-2][0-9][0-1][0-9][0-3][0-9]$/;
+var MEMORY_INFOS_REGEXP = /^[a-zA-Z]([a-zA-Z ])*$/;
 var _displayDefault = function(request, response){
     response.writeHead(200, {"Content-Type": "text/html"});
     response.end("<html><head><title>dumbar</title></head><body><h1>dumbar</h1>"+
@@ -79,8 +82,19 @@ var _listAllMemories = function(request, response){
     response.json({status: "OK", memories: dbGetAllMemories()});
 };
 var _createMemory = function(request, response){
-    dbCreateMemory(request.body.type, request.body.date, request.body.info, request.body.personCode);
-    response.json({status: "OK", name: request.body.name});
+    //parameter format check
+    if (!request.body.personCode.match(PERSON_CODE_REGEXP)){
+        response.json({status: "KO", message: "invalid format for @personCode value: "+request.body.personCode});
+    }else if (!request.body.type.match(MEMORY_TYPE_REGEXP)){
+        response.json({status: "KO", message: "invalid format for type value: "+request.body.type});
+    }else if (!request.body.date.match(MEMORY_DATE_REGEXP)){
+        response.json({status: "KO", message: "invalid format for date value: "+request.body.date});
+    }else if (!request.body.infos.match(MEMORY_INFOS_REGEXP)){
+        response.json({status: "KO", message: "invalid format for infos value: "+request.body.infos});
+    }else{
+        bizCreateMemory(request.body.type, request.body.date, request.body.info, request.body.personCode);
+        response.json({status: "OK", name: request.body.name});
+    }
 };
 // - /CONTROLLER ----------------------------------------------------------
 // - ENTITIES -------------------------------------------------------------
@@ -92,17 +106,16 @@ class Person {
 };
 
 class Memory {
-	constructor(type, date, info, personCode){
+	constructor(type, date, infos, personCode){
         this.type = type;
         this.date = date;
-        this.info = info;
+        this.infos = infos;
         this.personCode = personCode;
 	}
 };
 
 // - /ENTITIES ------------------------------------------------------------
 // - BUSINESS -------------------------------------------------------------
-
 var bizCreatePerson = function(code, label){
     var status = "OK";
     var message = "done";
@@ -114,7 +127,19 @@ var bizCreatePerson = function(code, label){
         message = "code "+code+" already used";
     }
     return {status: status, message: message};
-}
+};
+var bizCreateMemory = function(type, date, infos, personCode){
+    var status = "OK";
+    var message = "done";
+    //check existing @code
+    if (dbIsPersonCodeAvailable(personCode)){
+        status = "KO";
+        message = "unknown person @code "+code;
+    }else{
+        dbCreateMemory(type, date, infos, personCode);
+    }
+    return {status: status, message: message};
+};
 // - /BUSINESS ------------------------------------------------------------
 // - DB -------------------------------------------------------------------
 var dbGetAllPersons = function(){
@@ -146,13 +171,13 @@ var dbGetAllMemories = function(){
     var result = [];
     //filter technical data
     for (var i=0;i<rawMemoryList.length;i++){
-        result.push({type: rawMemoryList[i].type, date: rawMemoryList[i].date, info: rawMemoryList[i].info, personCode: rawMemoryList[i].personCode});
+        result.push({type: rawMemoryList[i].type, date: rawMemoryList[i].date, infos: rawMemoryList[i].infos, personCode: rawMemoryList[i].personCode});
     }
     return result;
 };
-var dbCreateMemory = function(type, date, info, personCode){
+var dbCreateMemory = function(type, date, infos, personCode){
     var memoriesDbCollection = database.addCollection("memory");
-    memoriesDbCollection.insertOne({type: type, date: date, info: info, personCode: personCode});
+    memoriesDbCollection.insertOne({type: type, date: date, infos: infos, personCode: personCode});
 };
 // - /DB ------------------------------------------------------------------
 // - LAUNCHING SERVER -----------------------------------------------------
