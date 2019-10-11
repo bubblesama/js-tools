@@ -32,6 +32,13 @@ router.route("/dumbar/web/")
 .get(function(request, response){
     _displayGui(request,response);
 });
+router.route("/dumbar/memories")
+.get(function(request, response){
+    _listAllMemories(request,response);
+}).post(function(request, response){
+    _createMemory(request,response);
+});
+
 // - /ROUTING -------------------------------------------------------------
 
 
@@ -62,6 +69,13 @@ var _createPerson = function(request, response){
     dbCreatePerson(request.body.name);
     response.json({message: "done", name: request.body.name});
 };
+var _listAllMemories = function(request, response){
+    response.json({message: "todo", memories: dbGetAllMemories()});
+};
+var _createMemory = function(request, response){
+    dbCreateMemory(request.body.type, request.body.date, request.body.info);
+    response.json({message: "done", name: request.body.name});
+};
 // - /CONTROLLER ----------------------------------------------------------
 
 
@@ -71,6 +85,15 @@ class Person {
 		this.name = name;
 	}
 };
+
+class Memory {
+	constructor(type, date, info){
+        this.type = type;
+        this.date = date;
+        this.info = info;
+	}
+};
+
 // - /OBJETS --------------------------------------------------------------
 
 
@@ -79,7 +102,7 @@ var dbGetAllPersons = function(){
     var personsDbCollection = database.addCollection("person");
     var rawPersonList =  personsDbCollection.find();
     var result = [];
-    //filter set parameters
+    //filter technical data
     for (var i=0;i<rawPersonList.length;i++){
         result.push({name: rawPersonList[i].name});
     }
@@ -88,6 +111,20 @@ var dbGetAllPersons = function(){
 var dbCreatePerson = function(name){
     var personsDbCollection = database.addCollection("person");
     personsDbCollection.insertOne({name: name});
+};
+var dbGetAllMemories = function(){
+    var memoriesDbCollection = database.addCollection("memory");
+    var rawMemoryList =  memoriesDbCollection.find();
+    var result = [];
+    //filter technical data
+    for (var i=0;i<rawMemoryList.length;i++){
+        result.push({type: rawMemoryList[i].type, date: rawMemoryList[i].date, info: rawMemoryList[i].info});
+    }
+    return result;
+};
+var dbCreateMemory = function(type, date, info){
+    var memoriesDbCollection = database.addCollection("memory");
+    memoriesDbCollection.insertOne({type: type, date: date, info: info});
 };
 // - /DB ------------------------------------------------------------------
 
