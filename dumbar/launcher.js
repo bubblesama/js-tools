@@ -29,7 +29,10 @@ router.route("/dumbar/persons")
 router.route("/dumbar/person/:code")
 .get(function(request, response){
     _getPersonByCode(request,response);
+}).put(function(request, response){
+    _updatePersonByCode(request,response);
 });
+;
 router.route("/dumbar/web/")
 .get(function(request, response){
     _displayGui(request,response);
@@ -88,6 +91,15 @@ var _createPerson = function(request, response){
     }else {
         var bizStatus = bizCreatePerson(request.body.code, request.body.label);
         response.json(bizStatus);
+    }
+};
+var _updatePersonByCode = function(request, response){
+    //parameter format check
+    if (!request.params.code.match(PERSON_CODE_REGEXP)){
+        response.json({status: "KO", message: "invalid format for @code value: "+request.params.code});
+    }else{
+        //TODO
+        response.json(bizUpdatePersonByCode(request.params.code));
     }
 };
 var _listAllMemories = function(request, response){
