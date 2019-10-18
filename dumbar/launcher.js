@@ -32,7 +32,10 @@ router.route("/dumbar/person/:code")
 }).put(function(request, response){
     _updatePersonByCode(request,response);
 });
-;
+router.route("/dumbar/memories/:code")
+.get(function(request, response){
+    _getMemoriesByCode(request,response);
+});
 router.route("/dumbar/web/")
 .get(function(request, response){
     _displayGui(request,response);
@@ -80,6 +83,14 @@ var _getPersonByCode = function(request, response){
         response.json({status: "KO", message: "invalid format for @code value: "+request.params.code});
     }else{
         response.json(bizGetPersonByCode(request.params.code));
+    }
+};
+var _getMemoriesByCode = function(request, response){
+    //parameter format check
+    if (!request.params.code.match(PERSON_CODE_REGEXP)){
+        response.json({status: "KO", message: "invalid format for @code value: "+request.params.code});
+    }else{
+        response.json(bizGetMemoriesByCode(request.params.code));
     }
 };
 var _createPerson = function(request, response){
@@ -164,7 +175,7 @@ var bizUpdatePersonByCode = function(code, label){
     }
     return {status: status, message: message};
 };
-var bizGetPersonByCode = function(code){
+var bizGetMemoriesByCode = function(code){
     var status = "OK";
     var message = "done";
     var person = null;
@@ -173,7 +184,7 @@ var bizGetPersonByCode = function(code){
         status = "KO";
         message = "code "+code+" not used";
     }else{
-        person = dbGetPersonByCode(code);
+        person = dbGetMemoriesByCode(code);
     }
     return {status: status, message: message, person: person};
 };
@@ -240,6 +251,16 @@ var dbGetPersonByCode = function(code){
 var dbGetAllMemories = function(){
     var memoriesDbCollection = database.addCollection("memory");
     var rawMemoryList =  memoriesDbCollection.find();
+    var result = [];
+    //filter technical data
+    for (var i=0;i<rawMemoryList.length;i++){
+        result.push({type: rawMemoryList[i].type, date: rawMemoryList[i].date, infos: rawMemoryList[i].infos, personCode: rawMemoryList[i].personCode});
+    }
+    return result;
+};
+var dbGetMemoriesByCode = function(code){
+    var memoriesDbCollection = database.addCollection("memory");
+    var rawMemoryList =  memoriesDbCollection.find({personCode: code});
     var result = [];
     //filter technical data
     for (var i=0;i<rawMemoryList.length;i++){

@@ -227,6 +227,35 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "GET Memories @toto",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/x-www-form-urlencoded",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8000/dumbar/memories/@toto",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"dumbar",
+						"memories",
+						"@toto"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
