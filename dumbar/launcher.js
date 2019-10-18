@@ -97,9 +97,11 @@ var _updatePersonByCode = function(request, response){
     //parameter format check
     if (!request.params.code.match(PERSON_CODE_REGEXP)){
         response.json({status: "KO", message: "invalid format for @code value: "+request.params.code});
-    }else{
+    } else if (request.body.label != null && !request.body.label.match(PERSON_LABEL_REGEXP)){
+        response.json({status: "KO", message: "invalid format for label value: "+request.body.label});
+    } else{
         //TODO
-        response.json(bizUpdatePersonByCode(request.params.code));
+        response.json(bizUpdatePersonByCode(request.params.code, request.body.label));
     }
 };
 var _listAllMemories = function(request, response){
@@ -150,6 +152,18 @@ var bizCreatePerson = function(code, label){
     }
     return {status: status, message: message};
 };
+var bizUpdatePersonByCode = function(code, label){
+    var status = "OK";
+    var message = "done";
+    //check existing @code
+    if (dbIsPersonCodeAvailable(code)){
+        status = "KO";
+        message = "code "+code+" not used";
+    }else{
+        dbUpdatePersonByCode(code,label);
+    }
+    return {status: status, message: message};
+};
 var bizGetPersonByCode = function(code){
     var status = "OK";
     var message = "done";
@@ -190,6 +204,19 @@ var dbGetAllPersons = function(){
 var dbCreatePerson = function(code, label){
     var personsDbCollection = database.addCollection("person");
     personsDbCollection.insertOne({code: code, label: label});
+};
+var dbUpdatePersonByCode = function(code, label){
+    var personsDbCollection = database.addCollection("person");
+    var personByCode = personsDbCollection.findOne({code: code});
+    if (personByCode != null){
+        if (label != null){
+            personByCode.label = label;
+            personsDbCollection.update(personByCode);
+            return personByCode;
+        }
+    }else{
+        return null;
+    }
 };
 var dbIsPersonCodeAvailable = function(code){
     var personsDbCollection = database.addCollection("person");
