@@ -178,13 +178,26 @@ var bizUpdatePersonByCode = function(code, label){
 var bizGetMemoriesByCode = function(code){
     var status = "OK";
     var message = "done";
+    var memories = null;
+    //check existing @code
+    if (dbIsPersonCodeAvailable(code)){
+        status = "KO";
+        message = "code "+code+" not used";
+    }else{
+        memories = dbGetMemoriesByCode(code);
+    }
+    return {status: status, message: message, memories: memories};
+};
+var bizGetPersonByCode = function(code){
+    var status = "OK";
+    var message = "done";
     var person = null;
     //check existing @code
     if (dbIsPersonCodeAvailable(code)){
         status = "KO";
         message = "code "+code+" not used";
     }else{
-        person = dbGetMemoriesByCode(code);
+        person = dbGetPersonByCode(code);
     }
     return {status: status, message: message, person: person};
 };
@@ -194,7 +207,7 @@ var bizCreateMemory = function(type, date, infos, personCode){
     //check existing @code
     if (dbIsPersonCodeAvailable(personCode)){
         status = "KO";
-        message = "unknown person @code "+code;
+        message = "unknown person @code "+personCode;
     }else{
         dbCreateMemory(type, date, infos, personCode);
     }
@@ -202,8 +215,9 @@ var bizCreateMemory = function(type, date, infos, personCode){
 };
 // - /BUSINESS ------------------------------------------------------------
 // - DB -------------------------------------------------------------------
+var personsDbCollection;
+var memoriesDbCollection;
 var dbGetAllPersons = function(){
-    var personsDbCollection = database.addCollection("person");
     var rawPersonList =  personsDbCollection.find();
     var result = [];
     //filter technical data
@@ -213,11 +227,9 @@ var dbGetAllPersons = function(){
     return result;
 };
 var dbCreatePerson = function(code, label){
-    var personsDbCollection = database.addCollection("person");
     personsDbCollection.insertOne({code: code, label: label});
 };
 var dbUpdatePersonByCode = function(code, label){
-    var personsDbCollection = database.addCollection("person");
     var personByCode = personsDbCollection.findOne({code: code});
     if (personByCode != null){
         if (label != null){
@@ -230,7 +242,6 @@ var dbUpdatePersonByCode = function(code, label){
     }
 };
 var dbIsPersonCodeAvailable = function(code){
-    var personsDbCollection = database.addCollection("person");
     var personByCode = personsDbCollection.findOne({code: code});
     if (personByCode != null){
         return false;
@@ -240,7 +251,6 @@ var dbIsPersonCodeAvailable = function(code){
 };
 var dbGetPersonByCode = function(code){
     //console.log("dbGetPersonByCode IN code="+code);
-    var personsDbCollection = database.addCollection("person");
     var personByCode = personsDbCollection.findOne({code: code});
     if (personByCode != null){
         return {code: personByCode.code, label: personByCode.label};
@@ -249,7 +259,6 @@ var dbGetPersonByCode = function(code){
     }
 };
 var dbGetAllMemories = function(){
-    var memoriesDbCollection = database.addCollection("memory");
     var rawMemoryList =  memoriesDbCollection.find();
     var result = [];
     //filter technical data
@@ -259,7 +268,6 @@ var dbGetAllMemories = function(){
     return result;
 };
 var dbGetMemoriesByCode = function(code){
-    var memoriesDbCollection = database.addCollection("memory");
     var rawMemoryList =  memoriesDbCollection.find({personCode: code});
     var result = [];
     //filter technical data
@@ -269,7 +277,6 @@ var dbGetMemoriesByCode = function(code){
     return result;
 };
 var dbCreateMemory = function(type, date, infos, personCode){
-    var memoriesDbCollection = database.addCollection("memory");
     memoriesDbCollection.insertOne({type: type, date: date, infos: infos, personCode: personCode});
 };
 // - /DB ------------------------------------------------------------------
@@ -278,7 +285,8 @@ app.use(router);
 database.loadDatabase(
     {},
     function(err){
-        var logDbCollection = database.addCollection("log");
+        personsDbCollection = database.addCollection("person");
+        memoriesDbCollection = database.addCollection("memory");
         //dbCreatePerson("John");
         app.listen(port, hostname, function(){
             console.log("launching serveur on http://"+ hostname +":"+port); 
