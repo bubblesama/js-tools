@@ -255,6 +255,17 @@ function generateMaze(){
 				}
 			}
 			return result;
+		},
+		removeItem: function(i, j){
+			var foundIndex = -1;
+			for (var k=0;k<items.length; k++){
+				if (i == items[k].i && j == items[k].j){
+					foundIndex = k;
+				}
+			}
+			if (foundIndex != -1){
+				items.splice(foundIndex,1);
+			}
 		}
 	};
 	return result;

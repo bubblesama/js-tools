@@ -248,7 +248,7 @@ var model = {
 			walkCycle: 4
 		},
 		inventory:{
-			arrow: 4,
+			arrows: 4,
 			boat: 0,
 			axe: 0,
 			key: 0,
@@ -352,6 +352,15 @@ var model = {
 				console.log("#tryPickingUpStuff stuff picked: "+potentialItem.type);
 				if (potentialItem.type == "ladder"){
 					game.state = STATES.world;
+				}else{
+					//TODO
+					if (potentialItem.type == "quiver"){
+						this.inventory["arrows"]+=4;
+					}else{
+						this.inventory[""+potentialItem.type]+=1;
+					}
+					//delete item from maze
+					model.dungeon.currentMaze.removeItem(this.dungeon.i, this.dungeon.j);
 				}
 			}else{
 				console.log("#tryPickingUpStuff nothing to pick!");
