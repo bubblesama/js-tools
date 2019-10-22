@@ -34,6 +34,11 @@ router.route("/dumbar/person/:code")
 });
 router.route("/dumbar/memories/:code")
 .get(function(request, response){
+    _getMemoriesByPersonCode(request,response);
+});
+router.route("/dumbar/memory/:code")
+.get(function(request, response){
+    //TODO
     _getMemoriesByCode(request,response);
 });
 router.route("/dumbar/web/")
@@ -85,7 +90,7 @@ var _getPersonByCode = function(request, response){
         response.json(bizGetPersonByCode(request.params.code));
     }
 };
-var _getMemoriesByCode = function(request, response){
+var _getMemoriesByPersonCode = function(request, response){
     //parameter format check
     if (!request.params.code.match(PERSON_CODE_REGEXP)){
         response.json({status: "KO", message: "invalid format for @code value: "+request.params.code});
@@ -261,6 +266,7 @@ var dbGetPersonByCode = function(code){
 var dbGetAllMemories = function(){
     var rawMemoryList =  memoriesDbCollection.find();
     var result = [];
+    console.log(rawMemoryList[0]);
     //filter technical data
     for (var i=0;i<rawMemoryList.length;i++){
         result.push({type: rawMemoryList[i].type, date: rawMemoryList[i].date, infos: rawMemoryList[i].infos, personCode: rawMemoryList[i].personCode});
