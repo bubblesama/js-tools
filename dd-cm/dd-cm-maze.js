@@ -145,7 +145,7 @@ var mazeGeneratorConfiguration = {
 
 
 //********************************** MAZE GENERATOR **********************************************
-function generateMaze(){
+function generateMaze(dungeonType){
 	generateRotatedPatternsIfNeeded();
 	//map generation
 	var size = mazeGeneratorConfiguration.size;
@@ -234,22 +234,28 @@ function generateMaze(){
 	//fill itemSpots
 	for (var i=0; i< mazeGeneratorConfiguration.size; i++){
 		for (var j=0; j< mazeGeneratorConfiguration.size; j++){
-			itemSpots.push({i:i,j:j});
+			if (i != 4 && j != 4){
+				itemSpots.push({i:i,j:j});
+			}
 		}
 	}
 	itemSpots = shuffle(itemSpots);
 	// TODO add all items before placing them
 	items.push({type: "ladder"});
-	items.push({type: "axe"});
-	items.push({type: "boat"});
 	items.push({type: "quiver"});
-	items.push({type: "key"});
+	if (dungeonType != null){
+
+	}else{
+		items.push({type: "axe"});
+		items.push({type: "boat"});
+		items.push({type: "key"});
+	}
 	console.log("items to place: "+items.length);
 	//placing
 	for (var i=0; i<items.length; i++){
 		items[i].i = itemSpots[i].i*mazeGeneratorConfiguration.bits.tiles.width+Math.floor(mazeGeneratorConfiguration.bits.tiles.width/2);
 		items[i].j = itemSpots[i].j*mazeGeneratorConfiguration.bits.tiles.height+Math.floor(mazeGeneratorConfiguration.bits.tiles.height/2);
-		//console.log("item placed: "+items[i].type+" "+items[i].i+" "+items[i].j);
+		console.log("item placed: "+items[i].type+" "+items[i].i+" "+items[i].j);
 	}
 	var result = {
 		map: fullMaze,
