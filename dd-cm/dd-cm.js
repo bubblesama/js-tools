@@ -290,7 +290,7 @@ var model = {
 						console.log("DBG player#moveIfPossible entering a dungeon");
 						game.state = STATES.dungeon;
 						worldMap[newI][newJ].entered = true;
-						var newMaze = generateMaze();
+						var newMaze = generateMaze(worldMap[newI][newJ].type);
 						model.dungeon.currentMaze = newMaze;
 						model.player.dungeon.i = newMaze.start.i;
 						model.player.dungeon.j = newMaze.start.j;

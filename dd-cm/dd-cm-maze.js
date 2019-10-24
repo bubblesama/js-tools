@@ -145,7 +145,7 @@ var mazeGeneratorConfiguration = {
 
 
 //********************************** MAZE GENERATOR **********************************************
-function generateMaze(dungeonType){
+function generateMaze(mountainType){
 	generateRotatedPatternsIfNeeded();
 	//map generation
 	var size = mazeGeneratorConfiguration.size;
@@ -243,19 +243,28 @@ function generateMaze(dungeonType){
 	// TODO add all items before placing them
 	items.push({type: "ladder"});
 	items.push({type: "quiver"});
-	if (dungeonType != null){
-
+	if (mountainType != null){
+		console.log("#generateMaze mountainType="+mountainType);
+		if (mountainType = "MOUTAIN_GREY"){
+			items.push({type: "quiver"});
+		}else if (mountainType = "MOUTAIN_BLUE"){
+			items.push({type: "boat"});
+		}else if(mountainType = "MOUTAIN_RED"){
+			items.push({type: "axe"});
+		}else if(mountainType = "MOUTAIN_PURPLE"){
+			items.push({type: "key"});
+		}
 	}else{
 		items.push({type: "axe"});
 		items.push({type: "boat"});
 		items.push({type: "key"});
 	}
-	console.log("items to place: "+items.length);
+	console.log("#generateMaze items to place: "+items.length);
 	//placing
 	for (var i=0; i<items.length; i++){
 		items[i].i = itemSpots[i].i*mazeGeneratorConfiguration.bits.tiles.width+Math.floor(mazeGeneratorConfiguration.bits.tiles.width/2);
 		items[i].j = itemSpots[i].j*mazeGeneratorConfiguration.bits.tiles.height+Math.floor(mazeGeneratorConfiguration.bits.tiles.height/2);
-		console.log("item placed: "+items[i].type+" "+items[i].i+" "+items[i].j);
+		console.log("#generateMaze item placed: "+items[i].type+" "+items[i].i+" "+items[i].j);
 	}
 	var result = {
 		map: fullMaze,
