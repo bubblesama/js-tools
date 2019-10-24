@@ -1,0 +1,15 @@
+{
+  "name": "com.bbsama.dumbar",
+  "version": "0.0.1",
+  "description": "max out your dunbar number",
+  "main": "launcher.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "bbsama",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "lokijs": "^1.5.7"
+  }
+}

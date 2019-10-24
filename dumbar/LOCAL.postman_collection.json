@@ -1,0 +1,261 @@
+{
+	"info": {
+		"_postman_id": "b65110fe-ba8b-4f72-8f8f-c097ccda6e66",
+		"name": "LOCAL",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "CREATE Person",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "code",
+							"value": "@bubble",
+							"type": "text"
+						},
+						{
+							"key": "label",
+							"value": "Bubble John",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8000/dumbar/persons",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"dumbar",
+						"persons"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UPDATE Person @toto",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "code",
+							"value": "@bubble",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "label",
+							"value": " new name toto",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8000/dumbar/person/@toto",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"dumbar",
+						"person",
+						"@toto"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CREATE Memory",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "type",
+							"value": "postman type",
+							"type": "text"
+						},
+						{
+							"key": "date",
+							"value": "20190102",
+							"type": "text"
+						},
+						{
+							"key": "infos",
+							"value": "none",
+							"type": "text"
+						},
+						{
+							"key": "personCode",
+							"value": "@alm",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8000/dumbar/memories",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"dumbar",
+						"memories"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Persons",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8000/dumbar/persons",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"dumbar",
+						"persons"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Person @toto",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8000/dumbar/person/@toto",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"dumbar",
+						"person",
+						"@toto"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Memories",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/x-www-form-urlencoded",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8000/dumbar/memories",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"dumbar",
+						"memories"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Memories @toto",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/x-www-form-urlencoded",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8000/dumbar/memories/@toto",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"dumbar",
+						"memories",
+						"@toto"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
