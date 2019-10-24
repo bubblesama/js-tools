@@ -4,28 +4,22 @@ var context = canvas.getContext("2d");
 //******* init control *******
 var keyMap ={};
 
-document.addEventListener('keydown', (event) => {
-	keyMap[event.key] = true;
-  /*
-  if (keyName === 'Control') {
-    // not alert when only Control key is pressed.
-    return;
-  }
+document.addEventListener(
+	'keydown', 
+	(event) => {
+		keyMap[event.key] = true;
+		//console.log("keydown, event.key="+event.key);
+	}, 
+	false
+);
 
-  if (event.ctrlKey) {
-    // Even though event.key is not 'Control' (i.e. 'a' is pressed),
-    // event.ctrlKey may be true if Ctrl key is pressed at the time.
-    alert(`Combination of ctrlKey + ${keyName}`);
-  } else {
-    alert(`Key pressed ${keyName}`);
-  }
-  
-  */
-}, false);
-
-document.addEventListener('keyup', (event) => {
-	keyMap[event.key] = false;
-}, false);
+document.addEventListener(
+	'keyup',
+	(event) => {
+		keyMap[event.key] = false;
+	}, 
+	false
+);
 
 
 //******************* CLASSES **********************************************************
@@ -41,6 +35,7 @@ class WorldTile {
 		this.j = j;
 		this.type = type;
 		this.discovered = false;
+		this.entered = false;
 	}
 
 
@@ -55,35 +50,37 @@ class WorldTile {
 	/**
 	 * Indique si la case est un élément de donjon
 	 */
-	isDungeon(){
-		var result = false;
-		switch(this.type) {
-			case "MOUTAIN_GREY":
-			case "MOUTAIN_BLUE": 
-			case "MOUTAIN_RED": 
-			case "MOUTAIN_PURPLE":
-				result = true;
-				break;
-			case "EMPTY":
-			case "HOUSE":
-			case "RIVER_UP_DOWN":
-			case "RIVER_UP_DOWN": 
-			case "RIVER_UP_RIGHT":
-			case "RIVER_RIGHT_DOWN":
-			case "RIVER_DOWN_LEFT":
-			case "RIVER_LEFT_UP":
-			case "FOREST":
-			case "WALL_DOOR_UP_DOWN":
-			case "WALL_DOOR_LEFT_RIGHT":
-			case "MOUTAIN_BLACK": 
-			case "MOUTAIN_BLANK":
-			case "WALL_UP_DOWN":
-			case "WALL_LEFT_RIGHT":
-				break;
-			default:
-				result = false;
+	isNewDungeon(){
+		var result = this.entered;
+		if (!result){
+			switch(this.type) {
+				case "MOUTAIN_GREY":
+				case "MOUTAIN_BLUE": 
+				case "MOUTAIN_RED": 
+				case "MOUTAIN_PURPLE":
+					result = true;
+					break;
+				case "EMPTY":
+				case "HOUSE":
+				case "RIVER_UP_DOWN":
+				case "RIVER_UP_DOWN": 
+				case "RIVER_UP_RIGHT":
+				case "RIVER_RIGHT_DOWN":
+				case "RIVER_DOWN_LEFT":
+				case "RIVER_LEFT_UP":
+				case "FOREST":
+				case "WALL_DOOR_UP_DOWN":
+				case "WALL_DOOR_LEFT_RIGHT":
+				case "MOUTAIN_BLACK": 
+				case "MOUTAIN_BLANK":
+				case "WALL_UP_DOWN":
+				case "WALL_LEFT_RIGHT":
+					break;
+				default:
+					result = false;
+			}
 		}
-		return result;
+			return result;
 	}
 	
 	/**
@@ -214,6 +211,13 @@ var graphical = {
 		tiles: {
 			width: 9,
 			height: 13
+		},
+		items:{
+			ladder: {i:3,j:5},
+			quiver: {i:0,j:5},
+			axe: {i:2,j:5},
+			boat: {i:5,j:5},
+			key: {i:4,j:5}
 		}
 	}
 };
@@ -244,7 +248,7 @@ var model = {
 			walkCycle: 4
 		},
 		inventory:{
-			arrow: 4,
+			arrows: 4,
 			boat: 0,
 			axe: 0,
 			key: 0,
@@ -282,10 +286,11 @@ var model = {
 						}
 					}
 					// entering a dungeon
-					if (worldMap[newI][newJ].isDungeon()){
+					if (worldMap[newI][newJ].isNewDungeon() && !worldMap[newI][newJ].entered){
 						console.log("DBG player#moveIfPossible entering a dungeon");
 						game.state = STATES.dungeon;
-						var newMaze = generateMaze();
+						worldMap[newI][newJ].entered = true;
+						var newMaze = generateMaze(worldMap[newI][newJ].type);
 						model.dungeon.currentMaze = newMaze;
 						model.player.dungeon.i = newMaze.start.i;
 						model.player.dungeon.j = newMaze.start.j;
@@ -317,7 +322,6 @@ var model = {
 				if (!cornerFound){
 					this.dungeon.stepDi = deltaI;
 					this.dungeon.stepDj = deltaJ;
-	
 				}
 				if (deltaI > 0){
 					this.dungeon.faceRight = true;
@@ -339,6 +343,27 @@ var model = {
 			this.dungeon.walkPart++;
 			if (this.dungeon.walkPart >= this.dungeon.walkCycle){
 				this.dungeon.walkPart = 0;
+			}
+		},
+		tryPickingUpStuff(){
+			//console.log("try picking stuff");
+			var potentialItem = model.dungeon.currentMaze.getItem(this.dungeon.i, this.dungeon.j);
+			if (potentialItem != null){
+				console.log("#tryPickingUpStuff stuff picked: "+potentialItem.type);
+				if (potentialItem.type == "ladder"){
+					game.state = STATES.world;
+				}else{
+					//TODO
+					if (potentialItem.type == "quiver"){
+						this.inventory["arrows"]+=4;
+					}else{
+						this.inventory[""+potentialItem.type]+=1;
+					}
+					//delete item from maze
+					model.dungeon.currentMaze.removeItem(this.dungeon.i, this.dungeon.j);
+				}
+			}else{
+				console.log("#tryPickingUpStuff nothing to pick!");
 			}
 		}
 	},
@@ -385,6 +410,9 @@ var model = {
 					this.player.dungeon.walkPart = 0;
 				}
 				//TODO: managing picking stuff
+				if (keyMap.a){
+					this.player.tryPickingUpStuff();
+				}
 				//TODO: update for arrows
 			}
 			//TODO: update for mobs...
@@ -411,6 +439,8 @@ game.state = STATES.world;
 
 game.draw = function(){
 	if (this.state == STATES.world){
+		context.fillStyle = "rgb(117,204,128)";
+		context.fillRect(0,0,618,490);
 		//map
 		for (var i=0;i<worldMapData.width;i++){
 			for (var j=0;j<worldMapData.height;j++){
@@ -510,7 +540,7 @@ game.draw = function(){
 		context.fillStyle = "rgb(117,204,128)";
 		context.fillRect(0,0,618,490);
 		context.fillStyle = "rgb(0,0,0)";
-		context.fillText("DUNGEON",10,90);
+		//context.fillText("DUNGEON",10,90);
 		//display for full maze
 		var fullWidth = mazeGeneratorConfiguration.size * mazeGeneratorConfiguration.bits.tiles.width;
 		var fullHeight = mazeGeneratorConfiguration.size * mazeGeneratorConfiguration.bits.tiles.height;
@@ -529,11 +559,26 @@ game.draw = function(){
 				);
 			}
 		}
+		//display items
+		for (var i=0;i<model.dungeon.currentMaze.items.length;i++){
+			var item = model.dungeon.currentMaze.items[i];
+			context.drawImage(
+				dungeonSprites,
+				graphical.dungeon.items[""+item.type].i*graphical.dungeon.tiles.width,
+				graphical.dungeon.items[""+item.type].j*graphical.dungeon.tiles.height,
+				graphical.dungeon.tiles.width,
+				graphical.dungeon.tiles.height,
+				3+(8+item.i-model.player.dungeon.i)*graphical.dungeon.tiles.width*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDx*model.player.dungeon.stepDi*graphical.dungeon.zoom,
+				10+(4+item.j-model.player.dungeon.j)*graphical.dungeon.tiles.height*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDy*model.player.dungeon.stepDj*graphical.dungeon.zoom,
+				graphical.dungeon.tiles.width*graphical.dungeon.zoom,
+				graphical.dungeon.tiles.height*graphical.dungeon.zoom
+			);
+		}
+		//display player
 		var playerPicI = 0;
 		playerPicI += model.player.dungeon.walkPart;
 		var playerPicJ = 1;
 		if (!model.player.dungeon.faceRight){playerPicJ++;}
-		// display player
 		context.drawImage(
 			dungeonSprites,
 			playerPicI*graphical.dungeon.tiles.width,
@@ -545,7 +590,6 @@ game.draw = function(){
 			graphical.dungeon.tiles.width*graphical.dungeon.zoom,
 			graphical.dungeon.tiles.height*graphical.dungeon.zoom
 		);
-
 	}
 }
 

@@ -1,6 +1,153 @@
+var mazeGeneratorConfiguration = {
+	
+	size: 6,
+	bits: {
+		tiles :{
+			width: 9, //number of tiles in a bit
+			height: 9
+		},
+		/* maze bits patterns:
+		/	type: side closed
+		/	map: string representing tile types
+		*/
+		patterns: [
+			{
+				type: "left",
+				map: 	"111101111"+
+						"111101111"+
+						"111502111"+
+						"111000111"+
+						"111000000"+
+						"111000111"+
+						"111403111"+
+						"111101111"+
+						"111101111"
+			},
+			{
+				type: "down",
+				map: 	"111101111"+
+						"111000111"+
+						"115000211"+
+						"100000001"+
+						"000000000"+
+						"100000001"+
+						"114000311"+
+						"111111111"+
+						"111111111"
+			},
+			{
+				type: "left",
+				map: 	"111101111"+
+						"111101111"+
+						"111101111"+
+						"111502111"+
+						"111000000"+
+						"111403111"+
+						"111101111"+
+						"111101111"+
+						"111101111"
+			},
+			{
+				type: "left",
+				map: 	"111101111"+
+						"111101111"+
+						"111101111"+
+						"111502111"+
+						"100000000"+
+						"101403111"+
+						"102111111"+
+						"140021111"+
+						"111401111"
+			},
+			{
+				type: "down",
+				map: 	"111101111"+
+						"115001111"+
+						"110311111"+
+						"150250211"+
+						"000000000"+
+						"140340311"+
+						"110250111"+
+						"114003111"+
+						"111111111"
+			}
+		],
+		// for each type of maze bit by closed side, the list of available bit on each side (ex: for top-closed maze bit, available bits on the left side are left-closed, down-closed or top-closed bits)
+		list: {
+			top: {
+				i: 1,
+				availables: {
+					right: ["right","down","top"],
+					down: ["right","left","down"],
+					top: ["down"],
+					left: ["left","down","top"]
+				}
+			},
+			down: {
+				i: 3,
+				availables: {
+					right: ["right","down","top"],
+					down: ["top"],
+					top: ["left","right","top"],
+					left: ["left","down","top"]
+				}
+			},
+			left: {
+				i: 2,
+				availables: {
+					right: ["right","down","top"],
+					down: ["right","left","down"],
+					top: ["right","left","top"],
+					left: ["right"]
+				}
+			},
+			right: {
+				i: 0,
+				availables: {
+					right: ["left"],
+					down: ["right","left","down"],
+					top: ["right","left","top"],
+					left: ["left","down","top"]
+				}
+			},
+			todo: {
+				i: 4
+			}
+		}
+	},
+	//setup for a tile's neighbour: delta i and j from the tile, and side to check on the tile to match the neighbour (ex: the third available neighbour if on +1 for i and +0 for j and should be checked on the left side: opened-opened or closed-closed
+	neighbours: [
+		{
+			i: -1,
+			j: 0,
+			check: "right"
+		},
+		{
+			i: 0,
+			j: -1,
+			check: "down"
+		},
+		{
+			i: 1,
+			j: 0,
+			check: "left"
+		},
+			{
+			i: 0,
+			j: 1,
+			check: "top"
+		}
+	]
+};
+
+
+
+
+
 //********************************** MAZE GENERATOR **********************************************
-function generateMaze(){
-	generateRotatedPatterns();
+function generateMaze(mountainType){
+	generateRotatedPatternsIfNeeded();
+	//map generation
 	var size = mazeGeneratorConfiguration.size;
 	var tries = 0;
 	var width = size;
@@ -81,10 +228,69 @@ function generateMaze(){
 			}
 		}
 	}
-	context.fillText("Tries: "+tries,300,300);
+	//items
+	var items = [];
+	var itemSpots = [];
+	//fill itemSpots
+	for (var i=0; i< mazeGeneratorConfiguration.size; i++){
+		for (var j=0; j< mazeGeneratorConfiguration.size; j++){
+			if (i != 4 && j != 4){
+				itemSpots.push({i:i,j:j});
+			}
+		}
+	}
+	itemSpots = shuffle(itemSpots);
+	// TODO add all items before placing them
+	items.push({type: "ladder"});
+	items.push({type: "quiver"});
+	if (mountainType != null){
+		console.log("#generateMaze mountainType="+mountainType);
+		if (mountainType = "MOUTAIN_GREY"){
+			items.push({type: "quiver"});
+		}else if (mountainType = "MOUTAIN_BLUE"){
+			items.push({type: "boat"});
+		}else if(mountainType = "MOUTAIN_RED"){
+			items.push({type: "axe"});
+		}else if(mountainType = "MOUTAIN_PURPLE"){
+			items.push({type: "key"});
+		}
+	}else{
+		items.push({type: "axe"});
+		items.push({type: "boat"});
+		items.push({type: "key"});
+	}
+	console.log("#generateMaze items to place: "+items.length);
+	//placing
+	for (var i=0; i<items.length; i++){
+		items[i].i = itemSpots[i].i*mazeGeneratorConfiguration.bits.tiles.width+Math.floor(mazeGeneratorConfiguration.bits.tiles.width/2);
+		items[i].j = itemSpots[i].j*mazeGeneratorConfiguration.bits.tiles.height+Math.floor(mazeGeneratorConfiguration.bits.tiles.height/2);
+		console.log("#generateMaze item placed: "+items[i].type+" "+items[i].i+" "+items[i].j);
+	}
 	var result = {
 		map: fullMaze,
-		start: {i: 4, j: 4}
+		start: {i: 4, j: 4},
+		items: items,
+		getItem: function(i, j){
+			console.log("maze#getItem IN i="+i+" j="+j);
+			var result = null;
+			for (var k=0;k<items.length; k++){
+				if (i == items[k].i && j == items[k].j){
+					result = items[k];
+				}
+			}
+			return result;
+		},
+		removeItem: function(i, j){
+			var foundIndex = -1;
+			for (var k=0;k<items.length; k++){
+				if (i == items[k].i && j == items[k].j){
+					foundIndex = k;
+				}
+			}
+			if (foundIndex != -1){
+				items.splice(foundIndex,1);
+			}
+		}
 	};
 	return result;
 }
@@ -108,7 +314,7 @@ function shuffle(array) {
 
 // BEGIN - maze manipulations, bits flipping and rotation
 
-// pattern list for bits, generated from generateRotatedPatterns
+// pattern list for bits, generated from generateRotatedPatternsIfNeeded
 var availablePatternsMap = {
 	left: [],
 	right: [],
@@ -126,7 +332,7 @@ var rotationChange = {
 
 var generatedPatterns = false;
 
-function generateRotatedPatterns(){
+function generateRotatedPatternsIfNeeded(){
 	if (!generatedPatterns){
 		mazeGeneratorConfiguration.bits.patterns.forEach(function(pattern) {
 			availablePatternsMap[""+pattern.type].push(pattern.map);
