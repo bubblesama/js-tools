@@ -245,13 +245,13 @@ function generateMaze(mountainType){
 	items.push({type: "quiver"});
 	if (mountainType != null){
 		console.log("#generateMaze mountainType="+mountainType);
-		if (mountainType = "MOUTAIN_GREY"){
+		if (mountainType == "MOUNTAIN_GREY"){
 			items.push({type: "quiver"});
-		}else if (mountainType = "MOUTAIN_BLUE"){
+		}else if (mountainType == "MOUNTAIN_BLUE"){
 			items.push({type: "boat"});
-		}else if(mountainType = "MOUTAIN_RED"){
+		}else if(mountainType == "MOUNTAIN_RED"){
 			items.push({type: "axe"});
-		}else if(mountainType = "MOUTAIN_PURPLE"){
+		}else if(mountainType == "MOUNTAIN_PURPLE"){
 			items.push({type: "key"});
 		}
 	}else{

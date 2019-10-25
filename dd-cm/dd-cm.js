@@ -40,8 +40,8 @@ class WorldTile {
 
 
 	getTileToShowCoordinates(){
-		if (!this.discovered && (this.type == "MOUTAIN_GREY" || this.type == "MOUTAIN_RED" || this.type == "MOUTAIN_BLUE" ||this.type == "MOUTAIN_PURPLE")){
-			return WorldTile.worldSpritesCoordinatesByName()["MOUTAIN_BLACK"];
+		if (!this.discovered && (this.type == "MOUNTAIN_GREY" || this.type == "MOUNTAIN_RED" || this.type == "MOUNTAIN_BLUE" ||this.type == "MOUNTAIN_PURPLE")){
+			return WorldTile.worldSpritesCoordinatesByName()["MOUNTAIN_BLACK"];
 		}else{
 			return WorldTile.worldSpritesCoordinatesByName()[this.type];
 		}
@@ -54,10 +54,10 @@ class WorldTile {
 		var result = this.entered;
 		if (!result){
 			switch(this.type) {
-				case "MOUTAIN_GREY":
-				case "MOUTAIN_BLUE": 
-				case "MOUTAIN_RED": 
-				case "MOUTAIN_PURPLE":
+				case "MOUNTAIN_GREY":
+				case "MOUNTAIN_BLUE": 
+				case "MOUNTAIN_RED": 
+				case "MOUNTAIN_PURPLE":
 					result = true;
 					break;
 				case "EMPTY":
@@ -71,8 +71,8 @@ class WorldTile {
 				case "FOREST":
 				case "WALL_DOOR_UP_DOWN":
 				case "WALL_DOOR_LEFT_RIGHT":
-				case "MOUTAIN_BLACK": 
-				case "MOUTAIN_BLANK":
+				case "MOUNTAIN_BLACK": 
+				case "MOUNTAIN_BLANK":
 				case "WALL_UP_DOWN":
 				case "WALL_LEFT_RIGHT":
 					break;
@@ -92,10 +92,10 @@ class WorldTile {
 		switch(this.type) {
 			case "EMPTY":
 			case "HOUSE":
-			case "MOUTAIN_GREY":
-			case "MOUTAIN_BLUE": 
-			case "MOUTAIN_RED": 
-			case "MOUTAIN_PURPLE":
+			case "MOUNTAIN_GREY":
+			case "MOUNTAIN_BLUE": 
+			case "MOUNTAIN_RED": 
+			case "MOUNTAIN_PURPLE":
 				result = true;
 				break;
 			case "RIVER_UP_DOWN":
@@ -113,8 +113,8 @@ class WorldTile {
 			case "WALL_DOOR_LEFT_RIGHT":
 				result =  player.isPossessing("key");
 				break;
-			case "MOUTAIN_BLACK": 
-			case "MOUTAIN_BLANK":
+			case "MOUNTAIN_BLACK": 
+			case "MOUNTAIN_BLANK":
 			case "WALL_UP_DOWN":
 			case "WALL_LEFT_RIGHT":
 				result = false;
@@ -136,13 +136,13 @@ class WorldTile {
 			"RIVER_RIGHT_DOWN": [1,2],
 			"RIVER_DOWN_LEFT": [2,2],
 			"RIVER_LEFT_UP": [3,2],
-			"MOUTAIN_BLACK": [0,0],
-			"MOUTAIN_GREY": [2,0],
-			"MOUTAIN_BLUE": [3,0],
-			"MOUTAIN_RED": [4,0],
-			"MOUTAIN_PURPLE": [5,0],
-			"MOUTAIN_BLANK": [1,0],
-			"MOUTAIN_BIG": [5,1],
+			"MOUNTAIN_BLACK": [0,0],
+			"MOUNTAIN_GREY": [2,0],
+			"MOUNTAIN_BLUE": [3,0],
+			"MOUNTAIN_RED": [4,0],
+			"MOUNTAIN_PURPLE": [5,0],
+			"MOUNTAIN_BLANK": [1,0],
+			"MOUNTAIN_BIG": [5,1],
 			"WALL_DOOR_UP_DOWN": [0,3],
 			"WALL_DOOR_LEFT_RIGHT": [1,3],
 			"WALL_UP_DOWN": [3,3],
@@ -164,12 +164,12 @@ var worldTileByLetter = {
 	"t": "RIVER_RIGHT_DOWN",
 	"u": "RIVER_DOWN_LEFT",
 	"v": "RIVER_LEFT_UP",
-	"l": "MOUTAIN_BLANK",
-	"m": "MOUTAIN_BLACK",
-	"n": "MOUTAIN_GREY",
-	"o": "MOUTAIN_BLUE",
-	"p": "MOUTAIN_RED",
-	"q": "MOUTAIN_PURPLE",
+	"l": "MOUNTAIN_BLANK",
+	"m": "MOUNTAIN_BLACK",
+	"n": "MOUNTAIN_GREY",
+	"o": "MOUNTAIN_BLUE",
+	"p": "MOUNTAIN_RED",
+	"q": "MOUNTAIN_PURPLE",
 	"w": "WALL_DOOR_UP_DOWN",
 	"x": "WALL_DOOR_LEFT_RIGHT",
 	"y": "WALL_UP_DOWN",
@@ -375,17 +375,30 @@ var model = {
 	update: function(){
 		if (game.state == STATES.world){
 			//update player team
-			if (keyMap.d){
-				this.player.moveOnWorldIfPossible(1,0);
-			}
-			if (keyMap.q){
-				this.player.moveOnWorldIfPossible(-1,0);
-			}
-			if (keyMap.z){
+			if (keyMap.a){
+				this.player.moveOnWorldIfPossible(-1,-1);
+				shouldStopStepAnimation = false;
+			}else if (keyMap.z){
 				this.player.moveOnWorldIfPossible(0,-1);
-			}
-			if (keyMap.s){
+				shouldStopStepAnimation = false;
+			}else if (keyMap.e){
+				this.player.moveOnWorldIfPossible(1,-1);
+				shouldStopStepAnimation = false;
+			}else if (keyMap.q){
+				this.player.moveOnWorldIfPossible(-1,0);
+				shouldStopStepAnimation = false;
+			} else if (keyMap.d){
+				this.player.moveOnWorldIfPossible(1,0);
+				shouldStopStepAnimation = false;
+			}else if (keyMap.w){
+				this.player.moveOnWorldIfPossible(-1,1);
+				shouldStopStepAnimation = false;
+			}else if (keyMap.x){
 				this.player.moveOnWorldIfPossible(0,1);
+				shouldStopStepAnimation = false;
+			}else if (keyMap.c){
+				this.player.moveOnWorldIfPossible(1,1);
+				shouldStopStepAnimation = false;
 			}
 		}else if (game.state == STATES.dungeon){
 			//update for player
@@ -459,7 +472,7 @@ game.draw = function(){
 				
 			}
 		}
-		//moutain and clouds
+		//MOUNTAIN and clouds
 		context.drawImage(
 			worldSprites,
 			5*graphical.world.tile.width,
