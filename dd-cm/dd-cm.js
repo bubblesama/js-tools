@@ -227,6 +227,10 @@ var model = {
 		delay: 100,
 		last: Date.now()
 	},
+	splash : {
+		maxTick : 20,
+		currentTick : 0
+	},
 	player: {
 		lives: 3,
 		world: {
@@ -373,7 +377,13 @@ var model = {
 	},
 	
 	update: function(){
-		if (game.state == STATES.world){
+		if (game.state == STATES.splash){
+			if (this.splash.currentTick > this.splash.maxTick){
+				game.state == STATES.world;
+			}else{
+				this.splash.currentTick++;
+			}
+		} else if (game.state == STATES.world){
 			//update player team
 			if (keyMap.a){
 				this.player.moveOnWorldIfPossible(-1,-1);
@@ -447,13 +457,15 @@ game.ticker = 0;
 game.lastFpsCountDate = Date.now();
 game.fps = 0;
 
-const STATES = {world: "STATE_WORLD", dungeon: "STATE_DUNGEON"};
-game.state = STATES.world;
+const STATES = {splash: "STATE_SPLASH", world: "STATE_WORLD", dungeon: "STATE_DUNGEON"};
+game.state = STATES.splash;
 
 game.draw = function(){
-	if (this.state == STATES.world){
-		context.fillStyle = "rgb(117,204,128)";
+	if (this.state == STATES.splash){
+		context.fillStyle = "rgb(70,94,7)";
 		context.fillRect(0,0,618,490);
+	}else if (this.state == STATES.world){
+		context.fillStyle = "rgb(117,204,128)";
 		//map
 		for (var i=0;i<worldMapData.width;i++){
 			for (var j=0;j<worldMapData.height;j++){
