@@ -228,7 +228,7 @@ var model = {
 		last: Date.now()
 	},
 	splash : {
-		maxTick : 20,
+		maxTick : 10,
 		currentTick : 0
 	},
 	player: {
@@ -379,9 +379,10 @@ var model = {
 	update: function(){
 		if (game.state == STATES.splash){
 			if (this.splash.currentTick > this.splash.maxTick){
-				game.state == STATES.world;
+				game.state = STATES.world;
 			}else{
 				this.splash.currentTick++;
+				console.log("#update this.splash.currentTick = "+this.splash.currentTick);
 			}
 		} else if (game.state == STATES.world){
 			//update player team
@@ -466,6 +467,7 @@ game.draw = function(){
 		context.fillRect(0,0,618,490);
 	}else if (this.state == STATES.world){
 		context.fillStyle = "rgb(117,204,128)";
+		context.fillRect(0,0,618,490);
 		//map
 		for (var i=0;i<worldMapData.width;i++){
 			for (var j=0;j<worldMapData.height;j++){
