@@ -4,7 +4,7 @@ var worldMapData= {
 	start: {i:0, j:5},
 	bossTopLeft: {i:16,j:4},
 	tiles :
-" nllltv  y       ff"+
+" pllltv  y       ff"+
 " loltvlo w  nq  fff"+
 "  lnrlfl y llfffff "+
 "  ltv pllqpll  fff "+
@@ -13,8 +13,8 @@ var worldMapData= {
 "   l llrff  llln   "+
 "    lnqsuff  lnlxzz"+
 "  nlll tvfff  ll   "+
-"  ln ltvffff   lll "+
-" llnl rfff      l  "
+"  lo ltvffff   lll "+
+" llpl rfff      l  "
 };
 
 var dungeonTilesCornerMoves = {
