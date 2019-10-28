@@ -228,7 +228,7 @@ var model = {
 		last: Date.now()
 	},
 	splash : {
-		maxTick : 10,
+		maxTick : 6,
 		currentTick : 0
 	},
 	player: {
@@ -461,10 +461,26 @@ game.fps = 0;
 const STATES = {splash: "STATE_SPLASH", world: "STATE_WORLD", dungeon: "STATE_DUNGEON"};
 game.state = STATES.splash;
 
+const SPLASH_COLORS = [
+	"rgb(244,244,243)",
+	"rgb(232,204,53)",
+	"rgb(0,133,72)",
+	"rgb(30,83,43)",
+	"rgb(70,94,7)",
+	"rgb(177,190,143)",
+	"rgb(251,65,0)",
+	"rgb(0,36,237)",
+	"rgb(0,0,0)"
+];
+
 game.draw = function(){
 	if (this.state == STATES.splash){
 		context.fillStyle = "rgb(70,94,7)";
 		context.fillRect(0,0,618,490);
+		for (var i=0;i<SPLASH_COLORS.length;i++){
+			context.fillStyle = SPLASH_COLORS[i];
+			context.fillRect(50+65*i,60,12,32);
+		}
 	}else if (this.state == STATES.world){
 		context.fillStyle = "rgb(117,204,128)";
 		context.fillRect(0,0,618,490);
@@ -562,7 +578,7 @@ game.draw = function(){
 				);
 			}
 		}
-		context.fillText("FPS: "+this.fps,10,90);
+		//context.fillText("FPS: "+this.fps,10,90);
 	}else if (this.state == STATES.dungeon){
 		context.fillStyle = "rgb(117,204,128)";
 		context.fillRect(0,0,618,490);
