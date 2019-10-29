@@ -377,7 +377,7 @@ var model = {
 				if (model.dungeon.arrowsManager.canShootNow()){
 					//console.log("player#tryShootingArrow can shoot");
 					this.inventory.arrows -=1;
-					model.dungeon.arrowsManager.spawnArrow(this.dungeon.i+deltaI, this.dungeon.j+deltaJ,deltaI, deltaJ);
+					model.dungeon.arrowsManager.spawnArrow(this.dungeon.i, this.dungeon.j,deltaI, deltaJ);
 				}
 			}else{
 				//console.log("player#tryShootingArrow no arrow!");
@@ -397,6 +397,12 @@ var model = {
 			update: function(){
 				this.ticksSinceLast++;
 				//TODO: moving arrows
+				for (var i=0;i<this.arrows.length;i++){
+					var arrow = this.arrows[i]; 
+					arrow.ticks++;
+					arrow.i += arrow.di;
+					arrow.j += arrow.dj;
+				}
 			},
 			canShootNow: function(){
 				return this.ticksSinceLast > this.TICKS_TO_SHOOT;
@@ -406,7 +412,10 @@ var model = {
 				ticksSinceLast = 0;
 				var newArrow = {
 					i: spawnI,
-					j: spawnJ
+					j: spawnJ,
+					di: deltaI,
+					dj: deltaJ,
+					ticks: 0
 				};
 				this.arrows.push(newArrow);
 			}
@@ -696,9 +705,15 @@ game.draw = function(){
 		//display arrows
 		for (var i=0; i<model.dungeon.arrowsManager.arrows.length; i++){
 			var item = model.dungeon.arrowsManager.arrows[i];
+			var spriteI = 0;
+			if (item.di != 0){
+				spriteI = (item.di == -1)?3:2;
+			}else{
+				spriteI = (item.dj == -1)?0:1;
+			}
 			context.drawImage(
 				dungeonSprites,
-				0,
+				spriteI*graphical.dungeon.tiles.width,
 				4*graphical.dungeon.tiles.height,
 				graphical.dungeon.tiles.width,
 				graphical.dungeon.tiles.height,
