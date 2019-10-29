@@ -391,6 +391,9 @@ var model = {
 		arrowsManager: {
 			TICKS_TO_SHOOT: 10,
 			ticksSinceLast: 1000,
+			arrows:[
+
+			],
 			update: function(){
 				this.ticksSinceLast++;
 				//TODO: moving arrows
@@ -400,6 +403,12 @@ var model = {
 			},
 			spawnArrow: function(spawnI, spawnJ, deltaI, deltaJ){
 				console.log("arrowsManager#spawnArrow spawnI="+spawnI+", spawnJ="+spawnJ+", deltaI="+deltaI+", deltaJ="+deltaJ);
+				ticksSinceLast = 0;
+				var newArrow = {
+					i: spawnI,
+					j: spawnJ
+				};
+				this.arrows.push(newArrow);
 			}
 		} 
 	},
@@ -446,17 +455,23 @@ var model = {
 			}else{
 				if (keyMap.e){
 					var isOrderingShoot = false;
+					var di = 0;
+					var dj = 0;
 					if (keyMap.d){
 						isOrderingShoot = true;
+						di = 1;
 					}else if (keyMap.q){
 						isOrderingShoot = true;
+						di = -1;
 					}else if (keyMap.z){
 						isOrderingShoot = true;
+						dj = -1;
 					} else if (keyMap.s){
 						isOrderingShoot = true;
+						dj = 1;
 					}
 					if (isOrderingShoot){
-						this.player.tryShootingArrow(0,0);
+						this.player.tryShootingArrow(di,dj);
 					}
 				} else {
 					var shouldStopStepAnimation = true;
@@ -678,6 +693,21 @@ game.draw = function(){
 			graphical.dungeon.tiles.width*graphical.dungeon.zoom,
 			graphical.dungeon.tiles.height*graphical.dungeon.zoom
 		);
+		//display arrows
+		for (var i=0; i<model.dungeon.arrowsManager.arrows.length; i++){
+			var item = model.dungeon.arrowsManager.arrows[i];
+			context.drawImage(
+				dungeonSprites,
+				0,
+				4*graphical.dungeon.tiles.height,
+				graphical.dungeon.tiles.width,
+				graphical.dungeon.tiles.height,
+				3+(8+item.i-model.player.dungeon.i)*graphical.dungeon.tiles.width*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDx*model.player.dungeon.stepDi*graphical.dungeon.zoom,
+				10+(4+item.j-model.player.dungeon.j)*graphical.dungeon.tiles.height*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDy*model.player.dungeon.stepDj*graphical.dungeon.zoom,
+				graphical.dungeon.tiles.width*graphical.dungeon.zoom,
+				graphical.dungeon.tiles.height*graphical.dungeon.zoom
+			);
+		}
 	}
 }
 
