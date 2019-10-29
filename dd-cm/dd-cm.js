@@ -291,7 +291,7 @@ var model = {
 					}
 					// entering a dungeon
 					if (worldMap[newI][newJ].isNewDungeon() && !worldMap[newI][newJ].entered){
-						console.log("DBG player#moveIfPossible entering a dungeon");
+						//console.log("DBG player#moveIfPossible entering a dungeon");
 						game.state = STATES.dungeon;
 						worldMap[newI][newJ].entered = true;
 						var newMaze = generateMaze(worldMap[newI][newJ].type);
@@ -300,7 +300,7 @@ var model = {
 						model.player.dungeon.j = newMaze.start.j;
 					}
 				}else{
-					console.log("DBG player#moveIfPossible unpassable");
+					//console.log("DBG player#moveIfPossible unpassable");
 				}
 			}  
 		},
@@ -369,6 +369,11 @@ var model = {
 			}else{
 				console.log("#tryPickingUpStuff nothing to pick!");
 			}
+		},
+		tryShootingArrow(deltaI, deltaJ){
+			console.log("player#tryShootingArrow IN TODO");
+
+
 		}
 	},
 	
@@ -382,7 +387,7 @@ var model = {
 				game.state = STATES.world;
 			}else{
 				this.splash.currentTick++;
-				console.log("#update this.splash.currentTick = "+this.splash.currentTick);
+				//console.log("#update this.splash.currentTick = "+this.splash.currentTick);
 			}
 		} else if (game.state == STATES.world){
 			//update player team
@@ -416,28 +421,43 @@ var model = {
 			if (this.player.dungeon.isMoving){
 				this.player.stepInDungeon();
 			}else{
-				var shouldStopStepAnimation = true;
-				if (keyMap.d){
-					this.player.startMovingOnDungeonIfPossible(1,0);
-					shouldStopStepAnimation = false;
-				}else if (keyMap.q){
-					this.player.startMovingOnDungeonIfPossible(-1,0);
-					shouldStopStepAnimation = false;
-				}else if (keyMap.z){
-					this.player.startMovingOnDungeonIfPossible(0,-1);
-					shouldStopStepAnimation = false;
-				} else if (keyMap.s){
-					this.player.startMovingOnDungeonIfPossible(0,1);
-					shouldStopStepAnimation = false;
+				if (keyMap.e){
+					var isOrderingShoot = false;
+					if (keyMap.d){
+						isOrderingShoot = true;
+					}else if (keyMap.q){
+						isOrderingShoot = true;
+					}else if (keyMap.z){
+						isOrderingShoot = true;
+					} else if (keyMap.s){
+						isOrderingShoot = true;
+					}
+					if (isOrderingShoot){
+						this.player.tryShootingArrow();
+					}
+				} else {
+					var shouldStopStepAnimation = true;
+					if (keyMap.d){
+						this.player.startMovingOnDungeonIfPossible(1,0);
+						shouldStopStepAnimation = false;
+					}else if (keyMap.q){
+						this.player.startMovingOnDungeonIfPossible(-1,0);
+						shouldStopStepAnimation = false;
+					}else if (keyMap.z){
+						this.player.startMovingOnDungeonIfPossible(0,-1);
+						shouldStopStepAnimation = false;
+					} else if (keyMap.s){
+						this.player.startMovingOnDungeonIfPossible(0,1);
+						shouldStopStepAnimation = false;
+					}
+					if (shouldStopStepAnimation){
+						this.player.dungeon.walkPart = 0;
+					}
+					//TODO: managing picking stuff
+					if (keyMap.a){
+						this.player.tryPickingUpStuff();
+					} 
 				}
-				if (shouldStopStepAnimation){
-					this.player.dungeon.walkPart = 0;
-				}
-				//TODO: managing picking stuff
-				if (keyMap.a){
-					this.player.tryPickingUpStuff();
-				}
-				//TODO: update for arrows
 			}
 			//TODO: update for mobs...
 			//...moving
