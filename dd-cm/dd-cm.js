@@ -249,7 +249,7 @@ var model = {
 			stepDy: 4,
 			isMoving: false,
 			walkPart: 0,
-			walkCycle: 4
+			walkCycle: 4,
 		},
 		inventory:{
 			arrows: 4,
@@ -378,7 +378,16 @@ var model = {
 	},
 	
 	dungeon: {
-		currentMaze: null
+		currentMaze: null,
+		arrowsManager: {
+			ticksSinceLast: 1000,
+			update: function(){
+				this.ticksSinceLast++;
+				//TODO: moving arrows
+
+
+			}
+		} 
 	},
 	
 	update: function(){
@@ -459,6 +468,8 @@ var model = {
 					} 
 				}
 			}
+			//arrows
+			this.dungeon.arrowsManager.update();
 			//TODO: update for mobs...
 			//...moving
 			//...searching
