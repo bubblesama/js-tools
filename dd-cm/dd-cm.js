@@ -371,8 +371,17 @@ var model = {
 			}
 		},
 		tryShootingArrow(deltaI, deltaJ){
-			console.log("player#tryShootingArrow IN TODO");
-
+			//console.log("player#tryShootingArrow IN TODO");
+			if (this.isPossessing("arrows")){
+				//console.log("player#tryShootingArrow got arrow");
+				if (model.dungeon.arrowsManager.canShootNow()){
+					//console.log("player#tryShootingArrow can shoot");
+					this.inventory.arrows -=1;
+					model.dungeon.arrowsManager.spawnArrow(this.dungeon.i+deltaI, this.dungeon.j+deltaJ,deltaI, deltaJ);
+				}
+			}else{
+				//console.log("player#tryShootingArrow no arrow!");
+			}
 
 		}
 	},
@@ -380,12 +389,17 @@ var model = {
 	dungeon: {
 		currentMaze: null,
 		arrowsManager: {
+			TICKS_TO_SHOOT: 10,
 			ticksSinceLast: 1000,
 			update: function(){
 				this.ticksSinceLast++;
 				//TODO: moving arrows
-
-
+			},
+			canShootNow: function(){
+				return this.ticksSinceLast > this.TICKS_TO_SHOOT;
+			},
+			spawnArrow: function(spawnI, spawnJ, deltaI, deltaJ){
+				console.log("arrowsManager#spawnArrow spawnI="+spawnI+", spawnJ="+spawnJ+", deltaI="+deltaI+", deltaJ="+deltaJ);
 			}
 		} 
 	},
@@ -442,7 +456,7 @@ var model = {
 						isOrderingShoot = true;
 					}
 					if (isOrderingShoot){
-						this.player.tryShootingArrow();
+						this.player.tryShootingArrow(0,0);
 					}
 				} else {
 					var shouldStopStepAnimation = true;
