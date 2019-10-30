@@ -224,7 +224,7 @@ var graphical = {
 
 var model = {
 	refresh : {
-		delay: 100,
+		delay: 50,
 		last: Date.now()
 	},
 	splash : {
@@ -241,7 +241,7 @@ var model = {
 			i: -1,
 			j: -1,
 			faceRight: false,
-			maxStep: 2,
+			maxStep: 4,
 			currentStep: 0,
 			stepDi: 0,
 			stepDj: 0,
@@ -249,7 +249,7 @@ var model = {
 			stepDy: 4,
 			isMoving: false,
 			walkPart: 0,
-			walkCycle: 4,
+			walkCycle: 8,
 		},
 		inventory:{
 			arrows: 4,
@@ -343,6 +343,7 @@ var model = {
 				this.dungeon.isMoving = false;
 				this.dungeon.i = this.dungeon.i+this.dungeon.stepDi;
 				this.dungeon.j = this.dungeon.j+this.dungeon.stepDj;
+				
 			}
 			this.dungeon.walkPart++;
 			if (this.dungeon.walkPart >= this.dungeon.walkCycle){
@@ -389,7 +390,7 @@ var model = {
 	dungeon: {
 		currentMaze: null,
 		arrowsManager: {
-			TICKS_TO_SHOOT: 10,
+			TICKS_TO_SHOOT: 3,
 			ticksSinceLast: 1000,
 			arrows:[
 
@@ -409,7 +410,7 @@ var model = {
 			},
 			spawnArrow: function(spawnI, spawnJ, deltaI, deltaJ){
 				console.log("arrowsManager#spawnArrow spawnI="+spawnI+", spawnJ="+spawnJ+", deltaI="+deltaI+", deltaJ="+deltaJ);
-				ticksSinceLast = 0;
+				this.ticksSinceLast = 0;
 				var newArrow = {
 					i: spawnI,
 					j: spawnJ,
@@ -688,7 +689,7 @@ game.draw = function(){
 		}
 		//display player
 		var playerPicI = 0;
-		playerPicI += model.player.dungeon.walkPart;
+		playerPicI += Math.floor((model.player.dungeon.walkPart)/2);
 		var playerPicJ = 1;
 		if (!model.player.dungeon.faceRight){playerPicJ++;}
 		context.drawImage(
