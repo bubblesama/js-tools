@@ -391,18 +391,33 @@ var model = {
 		currentMaze: null,
 		arrowsManager: {
 			TICKS_TO_SHOOT: 3,
+			TICKS_TO_LIVE: 20,
 			ticksSinceLast: 1000,
-			arrows:[
-
-			],
+			arrows:[],
 			update: function(){
 				this.ticksSinceLast++;
 				//TODO: moving arrows
 				for (var i=0;i<this.arrows.length;i++){
 					var arrow = this.arrows[i]; 
 					arrow.ticks++;
-					arrow.i += arrow.di;
-					arrow.j += arrow.dj;
+					if (arrow.ticks < this.TICKS_TO_LIVE){
+						//TODO check wall collision
+						var fullMazeSize = mazeGeneratorConfiguration.size*mazeGeneratorConfiguration.bits.tiles.width;
+						var newI = (((arrow.i + arrow.di+fullMazeSize)%fullMazeSize)+fullMazeSize)%fullMazeSize;
+						var newJ = (((arrow.j + arrow.dj+fullMazeSize)%fullMazeSize)+fullMazeSize)%fullMazeSize;
+						var trajectoryTile = model.dungeon.currentMaze.map[newI][newJ];				
+						if (trajectoryTile == 1){
+							//hard wall
+							arrow.di = -arrow.di;
+							arrow.dj = -arrow.dj;
+						}else{
+							arrow.i += arrow.di;
+							arrow.j += arrow.dj;
+						}
+						//TODO: check mob collision		
+					}else{
+						//TODO: delete arrow
+					}
 				}
 			},
 			canShootNow: function(){
