@@ -391,7 +391,7 @@ var model = {
 		currentMaze: null,
 		arrowsManager: {
 			TICKS_TO_SHOOT: 3,
-			TICKS_TO_LIVE: 20,
+			TICKS_TO_LIVE: 40,
 			ticksSinceLast: 1000,
 			arrows:[],
 			update: function(){
@@ -406,17 +406,50 @@ var model = {
 						var newI = (((arrow.i + arrow.di+fullMazeSize)%fullMazeSize)+fullMazeSize)%fullMazeSize;
 						var newJ = (((arrow.j + arrow.dj+fullMazeSize)%fullMazeSize)+fullMazeSize)%fullMazeSize;
 						var trajectoryTile = model.dungeon.currentMaze.map[newI][newJ];				
-						if (trajectoryTile == 1){
+						if (trajectoryTile != 1){
+							arrow.i += arrow.di;
+							arrow.j += arrow.dj;
+							if (trajectoryTile == 2){
+								if (arrow.di == 1){
+									arrow.di = 0;
+									arrow.dj = 1;
+								}else{
+									arrow.di = -1;
+									arrow.dj = 0;
+								}
+							}else if (trajectoryTile == 3){
+								if (arrow.di == 1){
+									arrow.di = 0;
+									arrow.dj = -1;
+								}else{
+									arrow.di = -1;
+									arrow.dj = 0;
+								}
+							}else if (trajectoryTile == 4){
+								if (arrow.di == -1){
+									arrow.di = 0;
+									arrow.dj = -1;
+								}else{
+									arrow.di = 1;
+									arrow.dj = 0;
+								}
+							}else if (trajectoryTile == 5){
+								if (arrow.di == -1){
+									arrow.di = 0;
+									arrow.dj = 1;
+								}else{
+									arrow.di = 1;
+									arrow.dj = 0;
+								}
+							}
+						}else{
 							//hard wall
 							arrow.di = -arrow.di;
 							arrow.dj = -arrow.dj;
-						}else{
-							arrow.i += arrow.di;
-							arrow.j += arrow.dj;
 						}
-						//TODO: check mob collision		
+						//TODO: check mob collision	
 					}else{
-						//TODO: delete arrow
+					//TODO: delete arrow
 					}
 				}
 			},
