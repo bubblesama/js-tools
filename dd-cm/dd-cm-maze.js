@@ -290,10 +290,94 @@ function generateMaze(mountainType){
 			if (foundIndex != -1){
 				items.splice(foundIndex,1);
 			}
-		}
+		},
+		//TODO: get list of coords to go from a tile another, passing by walkable tiles, with a customized A* algorithm
+		getPath: function (fromI, fromJ, toI, toJ){
+			var getManatthan = function(nodeA, nodeB){
+				return Math.abs(nodeB.i-nodeA.i) + Math.abs(nodeB.j - nodeB.i);
+			};
+			var isSameNode = function (nodeA, nodeB){
+				return (nodeA.i == nodeB.i && nodeA.j == nodeB.toJ);
+			};
+			var neighbourDeltas = [
+				{di: -1, dj:  0},
+				{di:  0, dj: -1},
+				{di:  1, dj:  0},
+				{di:  0, dj:  1}
+			];
+			var endNode = {i:toI, j:toJ};
+			//TODO: init of lists
+			var startNode = {i:  fromI, f: fromJ, cost: 0};
+			startNode.guess = getManatthan(startNode,endNode);
+			var openList = new Array();
+			openList.push(startNode);
+			var closedList = [];
+			var finished = false;
+			var pathFound = false;
+			while (!finished){
+				//TODO find next "best" node by sorting the openlist and poping the node
+				openList.sort(function (nodeA, nodeB){
+					return (((nodeA.cost + nodeA.guess)<(nodeB.cost + nodeB.guess))?-1:(((nodeA.cost + nodeA.guess)>(nodeB.cost + nodeB.guess))?1:0));
+				});
+				var nextNode = openList.shift();
+				//end node reached
+				if (isSameNode(nextNode, endNode)){
+					finished = true;
+					pathFound = true;
+				}else{
+					//TODO: list of neighbours
+					var rawNeighbours = [];
+					for (var k=0;k<neighbourDeltas.length;k++){
+						var newNeighbourI = nextNode.i+neighbourDeltas.di;
+						var newNeighbourJ = nextNode.j+neighbourDeltas.dj;
+						//TODO: manage corner tiles
+						if (this.map[newNeighbourI][newNeighbourJ] == 0){
+							var newNeighbourNode = {i: newNeighbourI, j: newNeighbourJ, father: nextNode, cost: nextNode.cost+1};
+							newNeighbourNode.guess = getManatthan(newNeighbourNode,endNode);
+							rawNeighbours.push(newNeighbourNode);
+						}else{
+							//not walkable tile
+						}		
+					}
+					for (var i=0;i<rawNeighbours.length;i++){
+						//TODO: refresh closedList
+						var found = false;
+						for (var j=0;j<closedList.length;j++){
+							if (isSameNode(rawNeighbours[i],closedList[j])){
+								if (rawNeighbours[i].cost < closedList[j].cost){
+									closedList[j].cost = rawNeighbours[i].cost;
+									closedList[j].father = nextNode;
+									found = true;
+								}
+							}
+						}
+						if (!found){
+							openList.push(rawNeighbours[i]);
+						}
+					}
+				}
+				closedList.push(nextNode);
+				//TODO: finished condition
+				if (openList.length == 0){
+					finished = true;
+				}
+			}
+			//result construction from fathers
+			if (pathFound){
+				//TODO: find end node
+
+				//todo: iterate on fathers
+			}
+		},
+
 	};
 	return result;
 }
+
+
+
+
+
 
 //got it from the net, do the job
 function shuffle(array) {
