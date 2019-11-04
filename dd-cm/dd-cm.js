@@ -160,19 +160,22 @@ const mobType = {
 };
 
 class Mob {
-
 	constructor(type,i,j){
 		this.i = i;
 		this.j = j;
 		this.type = type;
-		this.faceRight = true;
+		this.faceRight = false;
+		this.life = 1;
 	}
-
+	wound(){
+		this.life--;
+	}
+	isDead(){
+		return (this.life <= 0);
+	}
 	update(){
 
-
 	}
-	
 };
 
 
@@ -331,6 +334,7 @@ var model = {
 						model.dungeon.arrowsManager.reset();
 						model.dungeon.mobsManager.reset();
 						model.dungeon.mobsManager.addMob("rat", 7,7);
+						model.dungeon.mobsManager.addMob("snake", 7,4);
 
 					}
 				}else{
@@ -482,13 +486,18 @@ var model = {
 							arrow.di = -arrow.di;
 							arrow.dj = -arrow.dj;
 						}
-						//TODO: check mob collision	
+						//TODO: check mob collision
+						var potentialMob = model.dungeon.mobsManager.getMobAt(arrow.i, arrow.j);
+						if (potentialMob != null){
+							potentialMob.wound();
+							arrowIndexesToDelete.push(i);
+						}
 					}else{
 						//TODO: delete arrow
 						arrowIndexesToDelete.push(i);
 					}
 				}
-				//delete timedout arrows
+				//delete timedout or hit arrows
 				for (var i=0;i<arrowIndexesToDelete.length;i++){
 					this.arrows.splice(arrowIndexesToDelete[i],1);
 				}
@@ -516,12 +525,29 @@ var model = {
 		} ,
 		mobsManager: {
 			mobs: [],
+			smokes: [],
 			reset(){
 				this.mobs.splice(0,this.mobs.length);
+				this.smokes.splice(0,this.smokes.length);
 			},
 			addMob(type, i, j){
 				this.mobs.push(new Mob(type, i, j));
+			},
+			getMobAt(i, j){
+				var result = null;
+				for  (var k=0;k<this.mobs.length;k++){
+					var mob = this.mobs[k];
+					if (mob.i == i && mob.j == j){
+						result = mob;
+					}
+				}
+				return result;
+			},
+			update(){
+			//TODO: clean dead mobs
+
 			}
+
 		}
 	},
 	
@@ -830,6 +856,7 @@ game.draw = function(){
 		for (var i=0; i<model.dungeon.mobsManager.mobs.length; i++){
 			var mob = model.dungeon.mobsManager.mobs[i];
 			var spriteI = graphical.dungeon.mobs[""+mob.type].i;
+			if (!mob.faceRight){spriteI += 2};
 			var spriteJ = graphical.dungeon.mobs[""+mob.type].j;
 			context.drawImage(
 				dungeonSprites,
