@@ -154,6 +154,23 @@ class WorldTile {
 	
 };
 
+const mobType = {
+	rat: "rat",
+	snake: "snake"
+};
+
+class Mob {
+
+	constructor(type,i,j){
+		this.i = i;
+		this.j = j;
+		this.type = type;
+	}
+	
+};
+
+
+
 //******************* fin CLASSES *******************************************************
 
 
@@ -218,6 +235,11 @@ var graphical = {
 			axe: {i:2,j:5},
 			boat: {i:5,j:5},
 			key: {i:4,j:5}
+		},
+		mobs:{
+			//first sprite place by type
+			rat: {i:8, j:1},
+			snake: {i:0, j:3}
 		}
 	}
 };
@@ -476,7 +498,11 @@ var model = {
 				};
 				this.arrows.push(newArrow);
 			}
-		} 
+		} ,
+		mobsManager: {
+			mobs: [{type: 'rat', i: 7, j: 7}]
+
+		}
 	},
 	
 	update: function(){
@@ -776,6 +802,23 @@ game.draw = function(){
 				graphical.dungeon.tiles.height,
 				3+(8+item.i-model.player.dungeon.i)*graphical.dungeon.tiles.width*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDx*model.player.dungeon.stepDi*graphical.dungeon.zoom,
 				10+(4+item.j-model.player.dungeon.j)*graphical.dungeon.tiles.height*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDy*model.player.dungeon.stepDj*graphical.dungeon.zoom,
+				graphical.dungeon.tiles.width*graphical.dungeon.zoom,
+				graphical.dungeon.tiles.height*graphical.dungeon.zoom
+			);
+		}
+		//display mobs
+		for (var i=0; i<model.dungeon.mobsManager.mobs.length; i++){
+			var mob = model.dungeon.mobsManager.mobs[i];
+			var spriteI = graphical.dungeon.mobs[""+mob.type].i;
+			var spriteJ = graphical.dungeon.mobs[""+mob.type].j;
+			context.drawImage(
+				dungeonSprites,
+				spriteI*graphical.dungeon.tiles.width,
+				spriteJ*graphical.dungeon.tiles.height,
+				graphical.dungeon.tiles.width,
+				graphical.dungeon.tiles.height,
+				3+(8+mob.i-model.player.dungeon.i)*graphical.dungeon.tiles.width*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDx*model.player.dungeon.stepDi*graphical.dungeon.zoom,
+				10+(4+mob.j-model.player.dungeon.j)*graphical.dungeon.tiles.height*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDy*model.player.dungeon.stepDj*graphical.dungeon.zoom,
 				graphical.dungeon.tiles.width*graphical.dungeon.zoom,
 				graphical.dungeon.tiles.height*graphical.dungeon.zoom
 			);
