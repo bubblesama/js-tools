@@ -396,6 +396,8 @@ var model = {
 			arrows:[],
 			update: function(){
 				this.ticksSinceLast++;
+
+				var arrowIndexesToDelete = [];
 				//TODO: moving arrows
 				for (var i=0;i<this.arrows.length;i++){
 					var arrow = this.arrows[i]; 
@@ -449,9 +451,15 @@ var model = {
 						}
 						//TODO: check mob collision	
 					}else{
-					//TODO: delete arrow
+						//TODO: delete arrow
+						arrowIndexesToDelete.push(i);
 					}
 				}
+				//delete timedout arrows
+				for (var i=0;i<arrowIndexesToDelete.length;i++){
+					this.arrows.splice(arrowIndexesToDelete[i],1);
+				}
+
 			},
 			canShootNow: function(){
 				return this.ticksSinceLast > this.TICKS_TO_SHOOT;
