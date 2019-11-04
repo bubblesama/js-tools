@@ -544,10 +544,31 @@ var model = {
 				return result;
 			},
 			update(){
-			//TODO: clean dead mobs
-
+				//clean dead mobs
+				var mobIndexesToClear = [];
+				for (var k=0;k<this.mobs.length;k++){
+					var mob = this.mobs[k];
+					if (mob.isDead()){
+						mobIndexesToClear.push(k);
+						this.smokes.push({i: mob.i, j:mob.j, ticks: 0});
+					}
+				}
+				for (var k=mobIndexesToClear.length-1;k>=0;k--){
+					this.mobs.splice(mobIndexesToClear[k],1);
+				}
+				//update and clean smokes
+				var smokeIndexesToClear = [];
+				for (var k=0;k<this.smokes.length;k++){
+					this.smokes[k].ticks++;
+					if (this.smokes[k].ticks > 12/*magic number!*/){
+						smokeIndexesToClear.push(k);
+					}
+				}
+				for (var k=smokeIndexesToClear.length-1;k>=0;k--){
+					this.smokes.splice(smokeIndexesToClear[k],1);
+				}
+				//TODO: move mobs
 			}
-
 		}
 	},
 	
@@ -878,6 +899,24 @@ game.draw = function(){
 			);
 		}
 		//display smoke
+		for (var i=0; i<model.dungeon.mobsManager.smokes.length; i++){
+			var smoke = model.dungeon.mobsManager.smokes[i];
+			context.drawImage(
+				dungeonSprites,
+				7*graphical.dungeon.tiles.width,
+				5*graphical.dungeon.tiles.height,
+				graphical.dungeon.tiles.width,
+				graphical.dungeon.tiles.height,
+				//3+(8+mob.i-model.player.dungeon.i)*graphical.dungeon.tiles.width*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDx*model.player.dungeon.stepDi*graphical.dungeon.zoom,
+				getXViewFromI(smoke.i),
+				//10+(4+mob.j-model.player.dungeon.j)*graphical.dungeon.tiles.height*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDy*model.player.dungeon.stepDj*graphical.dungeon.zoom,
+				getYViewFromJ(smoke.j),
+				graphical.dungeon.tiles.width*graphical.dungeon.zoom,
+				graphical.dungeon.tiles.height*graphical.dungeon.zoom
+			);
+		}
+
+
 	}
 };
 
