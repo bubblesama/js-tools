@@ -165,6 +165,12 @@ class Mob {
 		this.i = i;
 		this.j = j;
 		this.type = type;
+		this.faceRight = true;
+	}
+
+	update(){
+
+
 	}
 	
 };
@@ -316,10 +322,16 @@ var model = {
 						//console.log("DBG player#moveIfPossible entering a dungeon");
 						game.state = STATES.dungeon;
 						worldMap[newI][newJ].entered = true;
+						//dungeon maze and items
 						var newMaze = generateMaze(worldMap[newI][newJ].type);
 						model.dungeon.currentMaze = newMaze;
 						model.player.dungeon.i = newMaze.start.i;
 						model.player.dungeon.j = newMaze.start.j;
+						//managers
+						model.dungeon.arrowsManager.reset();
+						model.dungeon.mobsManager.reset();
+						model.dungeon.mobsManager.addMob("rat", 7,7);
+
 					}
 				}else{
 					//console.log("DBG player#moveIfPossible unpassable");
@@ -418,7 +430,6 @@ var model = {
 			arrows:[],
 			update: function(){
 				this.ticksSinceLast++;
-
 				var arrowIndexesToDelete = [];
 				//TODO: moving arrows
 				for (var i=0;i<this.arrows.length;i++){
@@ -483,6 +494,10 @@ var model = {
 				}
 
 			},
+			reset: function(){
+				this.arrows.splice(0,this.arrows.length);
+				this.ticksSinceLast = 1000;
+			},
 			canShootNow: function(){
 				return this.ticksSinceLast > this.TICKS_TO_SHOOT;
 			},
@@ -500,8 +515,13 @@ var model = {
 			}
 		} ,
 		mobsManager: {
-			mobs: [{type: 'rat', i: 7, j: 7}]
-
+			mobs: [],
+			reset(){
+				this.mobs.splice(0,this.mobs.length);
+			},
+			addMob(type, i, j){
+				this.mobs.push(new Mob(type, i, j));
+			}
 		}
 	},
 	
