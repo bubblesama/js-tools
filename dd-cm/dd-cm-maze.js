@@ -293,11 +293,12 @@ function generateMaze(mountainType){
 		},
 		//TODO: get list of coords to go from a tile another, passing by walkable tiles, with a customized A* algorithm
 		getPath: function (fromI, fromJ, toI, toJ){
+			console.log("#A* DBG IN: "+fromI+" "+fromJ+" "+toI+" "+toJ);
 			var getManatthan = function(nodeA, nodeB){
 				return Math.abs(nodeB.i-nodeA.i) + Math.abs(nodeB.j - nodeB.i);
 			};
 			var isSameNode = function (nodeA, nodeB){
-				return (nodeA.i == nodeB.i && nodeA.j == nodeB.toJ);
+				return (nodeA.i == nodeB.i && nodeA.j == nodeB.j);
 			};
 			var neighbourDeltas = [
 				{di: -1, dj:  0},
@@ -305,21 +306,24 @@ function generateMaze(mountainType){
 				{di:  1, dj:  0},
 				{di:  0, dj:  1}
 			];
+			//init special nodes and nodes list
 			var endNode = {i:toI, j:toJ};
-			//TODO: init of lists
-			var startNode = {i:  fromI, f: fromJ, cost: 0};
+			var startNode = {i:  fromI, j: fromJ, cost: 0};
 			startNode.guess = getManatthan(startNode,endNode);
 			var openList = new Array();
 			openList.push(startNode);
 			var closedList = [];
 			var finished = false;
 			var pathFound = false;
-			while (!finished){
+			var step = 0;
+			while (!finished && step <100){
+				step++;
 				//TODO find next "best" node by sorting the openlist and poping the node
 				openList.sort(function (nodeA, nodeB){
 					return (((nodeA.cost + nodeA.guess)<(nodeB.cost + nodeB.guess))?-1:(((nodeA.cost + nodeA.guess)>(nodeB.cost + nodeB.guess))?1:0));
 				});
 				var nextNode = openList.shift();
+				console.log("A* DBG: nextNode: "+nextNode.i +" "+nextNode.j);
 				//end node reached
 				if (isSameNode(nextNode, endNode)){
 					finished = true;
@@ -328,8 +332,9 @@ function generateMaze(mountainType){
 					//TODO: list of neighbours
 					var rawNeighbours = [];
 					for (var k=0;k<neighbourDeltas.length;k++){
-						var newNeighbourI = nextNode.i+neighbourDeltas.di;
-						var newNeighbourJ = nextNode.j+neighbourDeltas.dj;
+						var newNeighbourI = (nextNode.i+neighbourDeltas[k].di+fullWidth)%fullWidth;
+						var newNeighbourJ = (nextNode.j+neighbourDeltas[k].dj+fullHeight)%fullHeight;
+						console.log("A* DBG: newNeighbour: "+newNeighbourI+" "+newNeighbourJ);
 						//TODO: manage corner tiles
 						if (this.map[newNeighbourI][newNeighbourJ] == 0){
 							var newNeighbourNode = {i: newNeighbourI, j: newNeighbourJ, father: nextNode, cost: nextNode.cost+1};
@@ -341,17 +346,18 @@ function generateMaze(mountainType){
 					}
 					for (var i=0;i<rawNeighbours.length;i++){
 						//TODO: refresh closedList
-						var found = false;
+						var foundInClosedList = false;
 						for (var j=0;j<closedList.length;j++){
 							if (isSameNode(rawNeighbours[i],closedList[j])){
+								foundInClosedList = true;
+								console.log("A* DBG: neighbour in closed list: "+rawNeighbours[i].i+" "+rawNeighbours[i].j);
 								if (rawNeighbours[i].cost < closedList[j].cost){
 									closedList[j].cost = rawNeighbours[i].cost;
 									closedList[j].father = nextNode;
-									found = true;
 								}
 							}
 						}
-						if (!found){
+						if (!foundInClosedList){
 							openList.push(rawNeighbours[i]);
 						}
 					}
@@ -362,17 +368,44 @@ function generateMaze(mountainType){
 					finished = true;
 				}
 			}
+			console.log("A* DBG: steps: "+step);
 			//result construction from fathers
 			if (pathFound){
-				//TODO: find end node
-
-				//todo: iterate on fathers
+				var pathNodes = [];
+				var currentNode = null;
+				//find end node
+				for (var i=0;i<closedList.length;i++){
+					if (isSameNode(closedList[i],endNode)){
+						currentNode = closedList[i];
+					}
+				}
+				if (currentNode != null){
+					//todo: iterate on fathers
+					var pathCreationFinished = false;
+					var pathCount = 0;
+					while (!pathCreationFinished && pathCount<500){
+						pathNodes.unshift(currentNode);
+						currentNode = currentNode.father;
+						if (currentNode == null){
+							pathCreationFinished = true;
+						}
+						pathCount++;
+					}
+					if (!(isSameNode(pathNodes[0],startNode))){
+						console.log("A* error while constructing path: startNode is not the first path node");
+					}else{
+						return pathNodes;
+					}
+				}else{
+					console.log("A* error while constructing path, endNode not found in closed list");
+				}
+			}else{
+				console.log("A* no path found between ("+fromI+","+fromJ+") and ("+toI+","+toJ+")");
 			}
-		},
-
+		}
 	};
 	return result;
-}
+};
 
 
 
@@ -394,7 +427,7 @@ function shuffle(array) {
 		array[randomIndex] = temporaryValue;
 	}
 	return array;
-}
+};
 
 // BEGIN - maze manipulations, bits flipping and rotation
 
