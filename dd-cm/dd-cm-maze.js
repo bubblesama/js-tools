@@ -316,7 +316,7 @@ function generateMaze(mountainType){
 			var finished = false;
 			var pathFound = false;
 			var step = 0;
-			while (!finished && step <100){
+			while (!finished && step <500){
 				step++;
 				//TODO find next "best" node by sorting the openlist and poping the node
 				openList.sort(function (nodeA, nodeB){
@@ -336,7 +336,7 @@ function generateMaze(mountainType){
 						var newNeighbourJ = (nextNode.j+neighbourDeltas[k].dj+fullHeight)%fullHeight;
 						console.log("A* DBG: newNeighbour: "+newNeighbourI+" "+newNeighbourJ);
 						//TODO: manage corner tiles
-						if (this.map[newNeighbourI][newNeighbourJ] == 0){
+						if (this.map[newNeighbourI][newNeighbourJ] != 1){
 							var newNeighbourNode = {i: newNeighbourI, j: newNeighbourJ, father: nextNode, cost: nextNode.cost+1};
 							newNeighbourNode.guess = getManatthan(newNeighbourNode,endNode);
 							rawNeighbours.push(newNeighbourNode);

@@ -331,10 +331,13 @@ var model = {
 						model.player.dungeon.i = newMaze.start.i;
 						model.player.dungeon.j = newMaze.start.j;
 
-						var path = newMaze.getPath(newMaze.start.i, newMaze.start.j, 4,20);
-						for (var i=0;i<path.length; i++){
-							console.log("#path: "+path[i].i+" "+path[i].j);
+						var path = newMaze.getPath(newMaze.start.i, newMaze.start.j, 4,21);
+						if (path != null){
+							for (var i=0;i<path.length; i++){
+								console.log("#path: "+path[i].i+" "+path[i].j);
+							}
 						}
+						
 						//managers
 						model.dungeon.arrowsManager.reset();
 						model.dungeon.mobsManager.reset();
