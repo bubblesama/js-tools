@@ -316,14 +316,14 @@ function generateMaze(mountainType){
 			var finished = false;
 			var pathFound = false;
 			var step = 0;
-			while (!finished && step <500){
+			while (!finished && step <20000){
 				step++;
 				//TODO find next "best" node by sorting the openlist and poping the node
 				openList.sort(function (nodeA, nodeB){
 					return (((nodeA.cost + nodeA.guess)<(nodeB.cost + nodeB.guess))?-1:(((nodeA.cost + nodeA.guess)>(nodeB.cost + nodeB.guess))?1:0));
 				});
 				var nextNode = openList.shift();
-				console.log("A* DBG: nextNode: "+nextNode.i +" "+nextNode.j);
+				//console.log("A* DBG: nextNode: "+nextNode.i +" "+nextNode.j);
 				//end node reached
 				if (isSameNode(nextNode, endNode)){
 					finished = true;
@@ -334,7 +334,7 @@ function generateMaze(mountainType){
 					for (var k=0;k<neighbourDeltas.length;k++){
 						var newNeighbourI = (nextNode.i+neighbourDeltas[k].di+fullWidth)%fullWidth;
 						var newNeighbourJ = (nextNode.j+neighbourDeltas[k].dj+fullHeight)%fullHeight;
-						console.log("A* DBG: newNeighbour: "+newNeighbourI+" "+newNeighbourJ);
+						//console.log("A* DBG: newNeighbour: "+newNeighbourI+" "+newNeighbourJ);
 						//TODO: manage corner tiles
 						if (this.map[newNeighbourI][newNeighbourJ] != 1){
 							var newNeighbourNode = {i: newNeighbourI, j: newNeighbourJ, father: nextNode, cost: nextNode.cost+1};
@@ -350,7 +350,7 @@ function generateMaze(mountainType){
 						for (var j=0;j<closedList.length;j++){
 							if (isSameNode(rawNeighbours[i],closedList[j])){
 								foundInClosedList = true;
-								console.log("A* DBG: neighbour in closed list: "+rawNeighbours[i].i+" "+rawNeighbours[i].j);
+								//console.log("A* DBG: neighbour in closed list: "+rawNeighbours[i].i+" "+rawNeighbours[i].j);
 								if (rawNeighbours[i].cost < closedList[j].cost){
 									closedList[j].cost = rawNeighbours[i].cost;
 									closedList[j].father = nextNode;
