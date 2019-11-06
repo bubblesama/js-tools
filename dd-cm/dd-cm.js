@@ -168,6 +168,10 @@ class Mob {
 		this.life = 1;
 		this.ticksToMove = 5;
 		this.currentMovingTick = -1;
+		this.ticksToThink = 20;
+		this.currentThinkingTick = -1;
+		this.di = -1;
+		this.dj = 0;
 	}
 	wound(){
 		this.life--;
@@ -175,12 +179,28 @@ class Mob {
 	isDead(){
 		return (this.life <= 0);
 	}
+	update(){
+		this.updateMove();
+		this.updateThinking();
+	}
+	updateThinking(){
+		this.currentThinkingTick++;
+		if (this.currentThinkingTick> this.ticksToThink){
+			this.currentThinkingTick = 0;
+			//TODO: time to think
+			if (model.dungeon.currentMaze.getTileType(this.i+this.di,this.j+this.dj)!=0){
+				console.log("Mob#updateThinking: hitting a wall!");
+				this.di = -this.di;
+			}
+		}
+	}
 	updateMove(){
 		this.currentMovingTick++;
 		if (this.currentMovingTick> this.ticksToMove){
 			this.currentMovingTick = 0;
-			if (model.dungeon.currentMaze.getTileType(this.i-1,this.j)==0){
-				this.i -= 1;
+			if (model.dungeon.currentMaze.getTileType(this.i+this.di,this.j+this.dj)==0){
+				this.i += this.di;
+				this.j += this.dj;
 			}
 		}
 	}
@@ -568,7 +588,7 @@ var model = {
 						mobIndexesToClear.push(k);
 						this.smokes.push({i: mob.i, j:mob.j, ticks: 0});
 					}else{
-						mob.updateMove();
+						mob.update();
 					}
 				}
 				for (var k=mobIndexesToClear.length-1;k>=0;k--){

@@ -271,7 +271,7 @@ function generateMaze(mountainType){
 		start: {i: 4, j: 4},
 		items: items,
 		getTileType: function(i,j){
-			return fullMaze[(i+fullWidth)%fullWidth][(j+fullHeight)%fullHeight];
+			return fullMaze[(i+fullWidth+fullWidth)%fullWidth][(j+fullHeight+fullHeight)%fullHeight];
 		},
 		getItem: function(i, j){
 			console.log("maze#getItem IN i="+i+" j="+j);
