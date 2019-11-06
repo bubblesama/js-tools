@@ -166,6 +166,8 @@ class Mob {
 		this.type = type;
 		this.faceRight = false;
 		this.life = 1;
+		this.ticksToMove = 5;
+		this.currentMovingTick = -1;
 	}
 	wound(){
 		this.life--;
@@ -173,8 +175,14 @@ class Mob {
 	isDead(){
 		return (this.life <= 0);
 	}
-	update(){
-
+	updateMove(){
+		this.currentMovingTick++;
+		if (this.currentMovingTick> this.ticksToMove){
+			this.currentMovingTick = 0;
+			if (model.dungeon.currentMaze.getTileType(this.i-1,this.j)==0){
+				this.i -= 1;
+			}
+		}
 	}
 };
 
@@ -330,12 +338,14 @@ var model = {
 						model.dungeon.currentMaze = newMaze;
 						model.player.dungeon.i = newMaze.start.i;
 						model.player.dungeon.j = newMaze.start.j;
+						/*
 						var path = newMaze.getPath(newMaze.start.i, newMaze.start.j, 4,13, 10000);
 						if (path != null){
 							for (var i=0;i<path.length; i++){
 								console.log("#path: "+path[i].i+" "+path[i].j);
 							}
 						}
+						*/
 						//managers
 						model.dungeon.arrowsManager.reset();
 						model.dungeon.mobsManager.reset();
@@ -557,6 +567,8 @@ var model = {
 					if (mob.isDead()){
 						mobIndexesToClear.push(k);
 						this.smokes.push({i: mob.i, j:mob.j, ticks: 0});
+					}else{
+						mob.updateMove();
 					}
 				}
 				for (var k=mobIndexesToClear.length-1;k>=0;k--){
