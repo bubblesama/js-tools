@@ -304,7 +304,12 @@ function generateMaze(mountainType){
 				{di: -1, dj:  0},
 				{di:  0, dj: -1},
 				{di:  1, dj:  0},
-				{di:  0, dj:  1}
+				{di:  0, dj:  1},
+
+				{di: -1, dj: -1},
+				{di:  1, dj: -1},
+				{di:  1, dj:  1},
+				{di: -1, dj:  1}
 			];
 			//init special nodes and nodes list
 			var endNode = {i:toI, j:toJ};
@@ -318,7 +323,7 @@ function generateMaze(mountainType){
 			var step = 0;
 			while (!finished && step <maxSteps){
 				step++;
-				//TODO find next "best" node by sorting the openlist and poping the node
+				//find next "best" node by sorting the openlist and shifting the node
 				openList.sort(function (nodeA, nodeB){
 					return (((nodeA.cost + nodeA.guess)<(nodeB.cost + nodeB.guess))?-1:(((nodeA.cost + nodeA.guess)>(nodeB.cost + nodeB.guess))?1:0));
 				});
@@ -332,11 +337,28 @@ function generateMaze(mountainType){
 					//TODO: list of neighbours
 					var rawNeighbours = [];
 					for (var k=0;k<neighbourDeltas.length;k++){
-						var newNeighbourI = (nextNode.i+neighbourDeltas[k].di+fullWidth)%fullWidth;
-						var newNeighbourJ = (nextNode.j+neighbourDeltas[k].dj+fullHeight)%fullHeight;
+						var rawNewNeighbourI = (nextNode.i+neighbourDeltas[k].di+fullWidth)%fullWidth;
+						var rawNewNeighbourJ = (nextNode.j+neighbourDeltas[k].dj+fullHeight)%fullHeight;
+						//TODO: managing corner move to determine "true" movements
+						var rawNeighbourType = this.map[rawNewNeighbourI][rawNewNeighbourJ]
+						var realDi = neighbourDeltas[k].di;
+						var realDj = neighbourDeltas[k].dj;
+						//TODO check if tile is corner
+						for (var a=0;a<dungeonTilesCornerMoves.length;a++){
+							if (dungeonTilesCornerMoves[a].index == rawNeighbourType){
+								//tile type found, switching di and dj
+								for (var b=0;b<dungeonTilesCornerMoves[a].moves.length;b++){
+									if (dungeonTilesCornerMoves[a].moves[b].inDi == neighbourDeltas[k].di && dungeonTilesCornerMoves[a].moves[b].inDj == neighbourDeltas[k].dj){
+										realDi = dungeonTilesCornerMoves[a].moves[b].outDi;
+										realDj = dungeonTilesCornerMoves[a].moves[b].outDj;
+									}
+								}
+							}
+						}
+						var newNeighbourI = (nextNode.i+realDi+fullWidth)%fullWidth;
+						var newNeighbourJ = (nextNode.j+realDj+fullHeight)%fullHeight;
 						//console.log("A* DBG: newNeighbour: "+newNeighbourI+" "+newNeighbourJ);
-						//TODO: manage corner tiles
-						if (this.map[newNeighbourI][newNeighbourJ] != 1){
+						if (this.map[newNeighbourI][newNeighbourJ] == 0){
 							var newNeighbourNode = {i: newNeighbourI, j: newNeighbourJ, father: nextNode, cost: nextNode.cost+1};
 							newNeighbourNode.guess = getManatthan(newNeighbourNode,endNode);
 							rawNeighbours.push(newNeighbourNode);
