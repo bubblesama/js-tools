@@ -292,7 +292,7 @@ function generateMaze(mountainType){
 			}
 		},
 		//TODO: get list of coords to go from a tile another, passing by walkable tiles, with a customized A* algorithm
-		getPath: function (fromI, fromJ, toI, toJ){
+		getPath: function (fromI, fromJ, toI, toJ, maxSteps){
 			console.log("#A* DBG IN: "+fromI+" "+fromJ+" "+toI+" "+toJ);
 			var getManatthan = function(nodeA, nodeB){
 				return Math.abs(nodeB.i-nodeA.i) + Math.abs(nodeB.j - nodeB.i);
@@ -316,7 +316,7 @@ function generateMaze(mountainType){
 			var finished = false;
 			var pathFound = false;
 			var step = 0;
-			while (!finished && step <20000){
+			while (!finished && step <maxSteps){
 				step++;
 				//TODO find next "best" node by sorting the openlist and poping the node
 				openList.sort(function (nodeA, nodeB){
