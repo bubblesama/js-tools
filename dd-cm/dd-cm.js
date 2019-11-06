@@ -161,17 +161,22 @@ const mobType = {
 
 class Mob {
 	constructor(type,i,j){
+		this.type = type;
 		this.i = i;
 		this.j = j;
-		this.type = type;
-		this.faceRight = false;
-		this.life = 1;
-		this.ticksToMove = 5;
-		this.currentMovingTick = -1;
-		this.ticksToThink = 20;
-		this.currentThinkingTick = -1;
 		this.di = -1;
 		this.dj = 0;
+		this.faceRight = false;
+		this.life = 1;
+		this.legs = {
+			ticksToMove: 5,
+			currentMovingTick: -1
+		};
+		this.brain = {
+			ticksToThink: 20,
+			currentThinkingTick: -1,
+			maxChaseDistance: 20
+		};
 	}
 	wound(){
 		this.life--;
@@ -180,25 +185,40 @@ class Mob {
 		return (this.life <= 0);
 	}
 	update(){
-		this.updateMove();
-		this.updateThinking();
+		this.tryMoving();
+		this.tryThinking();
 	}
-	updateThinking(){
-		this.currentThinkingTick++;
-		if (this.currentThinkingTick> this.ticksToThink){
-			this.currentThinkingTick = 0;
-			//TODO: time to think
-			if (model.dungeon.currentMaze.getTileType(this.i+this.di,this.j+this.dj)!=0){
-				console.log("Mob#updateThinking: hitting a wall!");
-				this.di = -this.di;
+	tryThinking(){
+		this.brain.currentThinkingTick++;
+		if (this.brain.currentThinkingTick> this.brain.ticksToThink){
+			this.brain.currentThinkingTick = 0;
+			//time to think
+			if (model.dungeon.currentMaze.getManatthan(model.player.dungeon.i, model.player.dungeon.j, this.i, this.j)<this.brain.maxChaseDistance){
+				console.log("Mob#tryThinking: player not far!");
+				var pathToPlayer = model.dungeon.currentMaze.getPath(this.i, this.j, model.player.dungeon.i, model.player.dungeon.j,1000);
+				if (pathToPlayer != null){
+					this.di = (pathToPlayer[1].i - this.i);
+					this.dj = (pathToPlayer[1].j - this.j);
+				}else{
+					this.di = 0;
+					this.dj = 0;
+				}
+			}else{
+				this.di = 0;
+				this.dj = 0;
 			}
+			/*
+			if (model.dungeon.currentMaze.getTileType(this.i+this.di,this.j+this.dj)!=0){
+				//console.log("Mob#tryThinking: hitting a wall!");
+				this.di = -this.di;
+			}*/
 		}
 	}
-	updateMove(){
-		this.currentMovingTick++;
-		if (this.currentMovingTick> this.ticksToMove){
-			this.currentMovingTick = 0;
-			if (model.dungeon.currentMaze.getTileType(this.i+this.di,this.j+this.dj)==0){
+	tryMoving(){
+		this.legs.currentMovingTick++;
+		if (this.legs.currentMovingTick> this.legs.ticksToMove){
+			this.legs.currentMovingTick = 0;
+			if (model.dungeon.currentMaze.getTileType(this.i+this.di,this.j+this.dj)!=1){
 				this.i += this.di;
 				this.j += this.dj;
 			}
@@ -369,7 +389,7 @@ var model = {
 						//managers
 						model.dungeon.arrowsManager.reset();
 						model.dungeon.mobsManager.reset();
-						model.dungeon.mobsManager.addMob("rat", 7,7);
+						//model.dungeon.mobsManager.addMob("rat", 7,7);
 						model.dungeon.mobsManager.addMob("snake", 7,4);
 
 					}

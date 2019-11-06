@@ -270,6 +270,9 @@ function generateMaze(mountainType){
 		map: fullMaze,
 		start: {i: 4, j: 4},
 		items: items,
+		getManatthan: function(Ai, Aj, Bi, Bj){
+			return Math.abs(Bi-Ai) + Math.abs(Bj - Aj);
+		},
 		getTileType: function(i,j){
 			return fullMaze[(i+fullWidth+fullWidth)%fullWidth][(j+fullHeight+fullHeight)%fullHeight];
 		},
@@ -393,7 +396,7 @@ function generateMaze(mountainType){
 					finished = true;
 				}
 			}
-			console.log("A* DBG: steps: "+step);
+			//console.log("A* DBG: steps: "+step);
 			//result construction from fathers
 			if (pathFound){
 				var pathNodes = [];
@@ -417,12 +420,12 @@ function generateMaze(mountainType){
 						pathCount++;
 					}
 					if (!(isSameNode(pathNodes[0],startNode))){
-						console.log("A* error while constructing path: startNode is not the first path node");
+						//console.log("A* error while constructing path: startNode is not the first path node");
 					}else{
 						return pathNodes;
 					}
 				}else{
-					console.log("A* error while constructing path, endNode not found in closed list");
+					//console.log("A* error while constructing path, endNode not found in closed list");
 				}
 			}else{
 				console.log("A* no path found between ("+fromI+","+fromJ+") and ("+toI+","+toJ+")");
