@@ -169,13 +169,14 @@ class Mob {
 		this.faceRight = false;
 		this.life = 1;
 		this.legs = {
-			ticksToMove: 5,
+			ticksToMove: 3,
 			currentMovingTick: -1
 		};
 		this.brain = {
 			ticksToThink: 20,
 			currentThinkingTick: -1,
-			maxChaseDistance: 20
+			maxChaseDistance: 20,
+			currentPath: null
 		};
 	}
 	wound(){
@@ -192,35 +193,30 @@ class Mob {
 		this.brain.currentThinkingTick++;
 		if (this.brain.currentThinkingTick> this.brain.ticksToThink){
 			this.brain.currentThinkingTick = 0;
+			var shouldStopRunning = true;
 			//time to think
 			if (model.dungeon.currentMaze.getManatthan(model.player.dungeon.i, model.player.dungeon.j, this.i, this.j)<this.brain.maxChaseDistance){
-				console.log("Mob#tryThinking: player not far!");
-				var pathToPlayer = model.dungeon.currentMaze.getPath(this.i, this.j, model.player.dungeon.i, model.player.dungeon.j,1000);
-				if (pathToPlayer != null){
-					this.di = (pathToPlayer[1].i - this.i);
-					this.dj = (pathToPlayer[1].j - this.j);
-				}else{
-					this.di = 0;
-					this.dj = 0;
+				console.log("Mob#tryThinking: player not far!");			
+				this.brain.currentPath = model.dungeon.currentMaze.getPath(this.i, this.j, model.player.dungeon.i, model.player.dungeon.j,1000);
+				if (this.brain.currentPath != null){
+					this.brain.currentPath.shift();
+					shouldStopRunning = false;
 				}
-			}else{
+			}
+			if (shouldStopRunning){
 				this.di = 0;
 				this.dj = 0;
 			}
-			/*
-			if (model.dungeon.currentMaze.getTileType(this.i+this.di,this.j+this.dj)!=0){
-				//console.log("Mob#tryThinking: hitting a wall!");
-				this.di = -this.di;
-			}*/
 		}
 	}
 	tryMoving(){
 		this.legs.currentMovingTick++;
 		if (this.legs.currentMovingTick> this.legs.ticksToMove){
 			this.legs.currentMovingTick = 0;
-			if (model.dungeon.currentMaze.getTileType(this.i+this.di,this.j+this.dj)!=1){
-				this.i += this.di;
-				this.j += this.dj;
+			if (this.brain.currentPath != null && this.brain.currentPath.length > 0){
+				var nextNode = this.brain.currentPath.shift();
+				this.i = nextNode.i;
+				this.j = nextNode.j;
 			}
 		}
 	}
@@ -229,8 +225,6 @@ class Mob {
 
 
 //******************* fin CLASSES *******************************************************
-
-
 
 var worldTileByLetter = {
 	"r": "RIVER_UP_DOWN",
