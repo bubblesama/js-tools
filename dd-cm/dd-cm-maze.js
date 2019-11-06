@@ -373,7 +373,7 @@ function generateMaze(mountainType){
 						}		
 					}
 					for (var i=0;i<rawNeighbours.length;i++){
-						//TODO: refresh closedList
+						//refresh closedList
 						var foundInClosedList = false;
 						for (var j=0;j<closedList.length;j++){
 							if (isSameNode(rawNeighbours[i],closedList[j])){

@@ -196,7 +196,7 @@ class Mob {
 			var shouldStopRunning = true;
 			//time to think
 			if (model.dungeon.currentMaze.getManatthan(model.player.dungeon.i, model.player.dungeon.j, this.i, this.j)<this.brain.maxChaseDistance){
-				console.log("Mob#tryThinking: player not far!");			
+				//console.log("Mob#tryThinking: player not far!");			
 				this.brain.currentPath = model.dungeon.currentMaze.getPath(this.i, this.j, model.player.dungeon.i, model.player.dungeon.j,1000);
 				if (this.brain.currentPath != null){
 					this.brain.currentPath.shift();
@@ -325,7 +325,7 @@ var model = {
 			walkCycle: 8,
 		},
 		inventory:{
-			arrows: 4,
+			arrows: 200,
 			boat: 0,
 			axe: 0,
 			key: 0,
@@ -442,7 +442,7 @@ var model = {
 			//console.log("try picking stuff");
 			var potentialItem = model.dungeon.currentMaze.getItem(this.dungeon.i, this.dungeon.j);
 			if (potentialItem != null){
-				console.log("#tryPickingUpStuff stuff picked: "+potentialItem.type);
+				//console.log("#tryPickingUpStuff stuff picked: "+potentialItem.type);
 				if (potentialItem.type == "ladder"){
 					game.state = STATES.world;
 				}else{
@@ -456,7 +456,7 @@ var model = {
 					model.dungeon.currentMaze.removeItem(this.dungeon.i, this.dungeon.j);
 				}
 			}else{
-				console.log("#tryPickingUpStuff nothing to pick!");
+				//console.log("#tryPickingUpStuff nothing to pick!");
 			}
 		},
 		tryShootingArrow(deltaI, deltaJ){
@@ -561,7 +561,7 @@ var model = {
 				return this.ticksSinceLast > this.TICKS_TO_SHOOT;
 			},
 			spawnArrow: function(spawnI, spawnJ, deltaI, deltaJ){
-				console.log("arrowsManager#spawnArrow spawnI="+spawnI+", spawnJ="+spawnJ+", deltaI="+deltaI+", deltaJ="+deltaJ);
+				//console.log("arrowsManager#spawnArrow spawnI="+spawnI+", spawnJ="+spawnJ+", deltaI="+deltaI+", deltaJ="+deltaJ);
 				this.ticksSinceLast = 0;
 				var newArrow = {
 					i: spawnI,
