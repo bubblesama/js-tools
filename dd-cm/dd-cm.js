@@ -429,9 +429,8 @@ var model = {
 			if (this.dungeon.currentStep >= this.dungeon.maxStep){
 				this.dungeon.currentStep = 0;
 				this.dungeon.isMoving = false;
-				this.dungeon.i = this.dungeon.i+this.dungeon.stepDi;
-				this.dungeon.j = this.dungeon.j+this.dungeon.stepDj;
-				
+				this.dungeon.i = (this.dungeon.i+this.dungeon.stepDi+model.dungeon.currentMaze.fullWidth)%model.dungeon.currentMaze.fullWidth;
+				this.dungeon.j = (this.dungeon.j+this.dungeon.stepDj+model.dungeon.currentMaze.fullHeight)%model.dungeon.currentMaze.fullHeight;
 			}
 			this.dungeon.walkPart++;
 			if (this.dungeon.walkPart >= this.dungeon.walkCycle){
@@ -972,13 +971,12 @@ game.draw = function(){
 	}
 };
 
-
 getXViewFromI = function(i){
-	return 3+(8+i-model.player.dungeon.i)*graphical.dungeon.tiles.width*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDx*model.player.dungeon.stepDi*graphical.dungeon.zoom;	
+	return 3+(8+delta(model.player.dungeon.i,i,model.dungeon.currentMaze.fullWidth))*graphical.dungeon.tiles.width*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDx*model.player.dungeon.stepDi*graphical.dungeon.zoom;	
 };
 
 getYViewFromJ = function(j){
-	return 10+(4+j-model.player.dungeon.j)*graphical.dungeon.tiles.height*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDy*model.player.dungeon.stepDj*graphical.dungeon.zoom;
+	return 10+(4+delta(model.player.dungeon.j,j,model.dungeon.currentMaze.fullHeight))*graphical.dungeon.tiles.height*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDy*model.player.dungeon.stepDj*graphical.dungeon.zoom;
 };
 
 game.update = function(){
@@ -1030,6 +1028,11 @@ function start(){
 	//ressources loading
 	worldSprites = new Image();
 	worldSprites.src = "dd-world.png";
+
+	console.log("%1: "+((-3+8)%8));
+	console.log("%2: "+((-3)%8));
+	console.log("%3: "+(Math.abs((-3+8)%8)-((3+8)%8)));
+
 	worldSprites.onload = function(){
 		dungeonSprites = new Image();
 		dungeonSprites.src = "dd-dungeon.png";

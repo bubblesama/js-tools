@@ -1,3 +1,8 @@
+delta = function (a,b,mod){
+	var abs = Math.min((a-b+mod%mod),(b-a+mod)%mod);
+	return a<b?abs:-abs;
+};
+
 var mazeGeneratorConfiguration = {
 	
 	size: 6,
@@ -267,11 +272,13 @@ function generateMaze(mountainType){
 		console.log("#generateMaze item placed: "+items[i].type+" "+items[i].i+" "+items[i].j);
 	}
 	var result = {
+		fullWidth: fullWidth,
+		fullHeight: fullHeight,
 		map: fullMaze,
 		start: {i: 4, j: 4},
 		items: items,
 		getManatthan: function(Ai, Aj, Bi, Bj){
-			return Math.abs(Bi-Ai) + Math.abs(Bj - Aj);
+			return Math.abs(delta(Ai,Bi,fullWidth))+Math.abs(delta(Aj,Bj,fullHeight));
 		},
 		getTileType: function(i,j){
 			return fullMaze[(i+fullWidth+fullWidth)%fullWidth][(j+fullHeight+fullHeight)%fullHeight];
@@ -301,7 +308,7 @@ function generateMaze(mountainType){
 		getPath: function (fromI, fromJ, toI, toJ, maxSteps){
 			console.log("#A* DBG IN: "+fromI+" "+fromJ+" "+toI+" "+toJ);
 			var getManatthan = function(nodeA, nodeB){
-				return Math.abs(nodeB.i-nodeA.i) + Math.abs(nodeB.j - nodeB.i);
+				return Math.abs(delta(nodeA.i,nodeB.i,fullWidth))+Math.abs(delta(nodeA.j,nodeB.j,fullHeight));
 			};
 			var isSameNode = function (nodeA, nodeB){
 				return (nodeA.i == nodeB.i && nodeA.j == nodeB.j);
