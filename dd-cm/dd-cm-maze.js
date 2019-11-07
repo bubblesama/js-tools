@@ -1,6 +1,7 @@
 delta = function (a,b,mod){
-	var abs = Math.min((a-b+mod%mod),(b-a+mod)%mod);
-	return a<b?abs:-abs;
+	var positiveDistance = ((b-a)+mod)%mod;
+	var negativeDistance = ((a-b)+mod)%mod;
+	return positiveDistance<negativeDistance?positiveDistance:-negativeDistance;
 };
 
 var mazeGeneratorConfiguration = {
