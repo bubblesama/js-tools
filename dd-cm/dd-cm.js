@@ -156,7 +156,11 @@ class WorldTile {
 
 const mobType = {
 	rat: "rat",
-	snake: "snake"
+	snake: "snake",
+	troll: "troll",
+	ooze: "ooze",
+	dragon: "dragon",
+	spider: "spider"
 };
 
 class Mob {
@@ -290,7 +294,11 @@ var graphical = {
 		mobs:{
 			//first sprite place by type
 			rat: {i:8, j:1},
-			snake: {i:0, j:3}
+			snake: {i:0, j:3},
+			troll: {i:4, j:3},
+			ooze: {i:8, j:1},
+			dragon: {i:8, j:3},
+			spider: {i:8, j:2}
 		}
 	}
 };
@@ -384,7 +392,11 @@ var model = {
 						model.dungeon.arrowsManager.reset();
 						model.dungeon.mobsManager.reset();
 						//model.dungeon.mobsManager.addMob("rat", 7,7);
-						model.dungeon.mobsManager.addMob("snake", 7,4);
+						//model.dungeon.mobsManager.addMob("snake", 7,4);
+						model.dungeon.mobsManager.addMob("troll", 7,4);
+						//model.dungeon.mobsManager.addMob("ooze", 7,6);
+						//model.dungeon.mobsManager.addMob("dragon", 7,7);
+						//model.dungeon.mobsManager.addMob("spider", 7,7);
 
 					}
 				}else{
