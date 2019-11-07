@@ -219,6 +219,7 @@ class Mob {
 			this.legs.currentMovingTick = 0;
 			if (this.brain.currentPath != null && this.brain.currentPath.length > 0){
 				var nextNode = this.brain.currentPath.shift();
+				this.faceRight = this.i<nextNode.i;
 				this.i = nextNode.i;
 				this.j = nextNode.j;
 			}
@@ -392,8 +393,8 @@ var model = {
 						model.dungeon.arrowsManager.reset();
 						model.dungeon.mobsManager.reset();
 						//model.dungeon.mobsManager.addMob("rat", 7,7);
-						//model.dungeon.mobsManager.addMob("snake", 7,4);
-						model.dungeon.mobsManager.addMob("troll", 7,4);
+						model.dungeon.mobsManager.addMob("snake", 7,4);
+						//model.dungeon.mobsManager.addMob("troll", 7,4);
 						//model.dungeon.mobsManager.addMob("ooze", 7,6);
 						//model.dungeon.mobsManager.addMob("dragon", 7,7);
 						//model.dungeon.mobsManager.addMob("spider", 7,7);
