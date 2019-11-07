@@ -174,7 +174,10 @@ class Mob {
 		this.life = 1;
 		this.legs = {
 			ticksToMove: 3,
-			currentMovingTick: -1
+			currentMovingTick: -1,
+			ticksToWiggle: 2,
+			currentWigglingTick: -1,
+			wiggle: false
 		};
 		this.brain = {
 			ticksToThink: 20,
@@ -223,6 +226,11 @@ class Mob {
 				this.i = nextNode.i;
 				this.j = nextNode.j;
 			}
+		}
+		this.legs.currentWigglingTick++;
+		if (this.legs.currentWigglingTick> this.legs.ticksToWiggle){
+			this.legs.currentWigglingTick = 0;
+			this.legs.wiggle = !this.legs.wiggle;
 		}
 	}
 };
@@ -946,7 +954,8 @@ game.draw = function(){
 		for (var i=0; i<model.dungeon.mobsManager.mobs.length; i++){
 			var mob = model.dungeon.mobsManager.mobs[i];
 			var spriteI = graphical.dungeon.mobs[""+mob.type].i;
-			if (!mob.faceRight){spriteI += 2};
+			if (!mob.faceRight){spriteI += 2;}
+			if (mob.legs.wiggle){spriteI += 1;}
 			var spriteJ = graphical.dungeon.mobs[""+mob.type].j;
 			context.drawImage(
 				dungeonSprites,
@@ -1041,10 +1050,6 @@ function start(){
 	//ressources loading
 	worldSprites = new Image();
 	worldSprites.src = "dd-world.png";
-
-	console.log("%1: "+((-3+8)%8));
-	console.log("%2: "+((-3)%8));
-	console.log("%3: "+(Math.abs((-3+8)%8)-((3+8)%8)));
 
 	worldSprites.onload = function(){
 		dungeonSprites = new Image();
