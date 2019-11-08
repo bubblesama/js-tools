@@ -214,10 +214,13 @@ function generateMaze(mountainType){
 	var fullWidth = width * mazeGeneratorConfiguration.bits.tiles.width;
 	var fullHeight = height * mazeGeneratorConfiguration.bits.tiles.height;
 	var fullMaze = new Array(fullWidth);
+	var light = new Array(fullWidth);
 	for (var i=0;i<fullWidth;i++){
 		fullMaze[i]=new Array(fullHeight);
+		light[i]=new Array(fullHeight);
 		for (var j=0;j<fullHeight;j++){
 			fullMaze[i][j] = "todo";
+			light[i][j] = false;
 		}
 	}
 	for (var i=0;i<width;i++){
@@ -276,6 +279,7 @@ function generateMaze(mountainType){
 		fullWidth: fullWidth,
 		fullHeight: fullHeight,
 		map: fullMaze,
+		light: light,
 		start: {i: 4, j: 4},
 		items: items,
 		getManatthan: function(Ai, Aj, Bi, Bj){

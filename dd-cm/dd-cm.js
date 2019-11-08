@@ -452,6 +452,14 @@ var model = {
 				this.dungeon.isMoving = false;
 				this.dungeon.i = (this.dungeon.i+this.dungeon.stepDi+model.dungeon.currentMaze.fullWidth)%model.dungeon.currentMaze.fullWidth;
 				this.dungeon.j = (this.dungeon.j+this.dungeon.stepDj+model.dungeon.currentMaze.fullHeight)%model.dungeon.currentMaze.fullHeight;
+				//TODO lighting
+				for (var i=-3;i<3;i++){
+					var spotI = (i+this.dungeon.i+model.dungeon.currentMaze.fullWidth)%model.dungeon.currentMaze.fullWidth;
+					for (var j=-3;j<3;j++){
+						var spotJ = (j+this.dungeon.j+model.dungeon.currentMaze.fullHeight)%model.dungeon.currentMaze.fullHeight;
+						model.dungeon.currentMaze.light[spotI][spotJ] = true;
+					}
+				}
 			}
 			this.dungeon.walkPart++;
 			if (this.dungeon.walkPart >= this.dungeon.walkCycle){
@@ -505,12 +513,12 @@ var model = {
 			update: function(){
 				this.ticksSinceLast++;
 				var arrowIndexesToDelete = [];
-				//TODO: moving arrows
+				//moving arrows
 				for (var i=0;i<this.arrows.length;i++){
 					var arrow = this.arrows[i]; 
 					arrow.ticks++;
 					if (arrow.ticks < this.TICKS_TO_LIVE){
-						//TODO check wall collision
+						//check wall collision
 						var fullMazeSize = mazeGeneratorConfiguration.size*mazeGeneratorConfiguration.bits.tiles.width;
 						var newI = (((arrow.i + arrow.di+fullMazeSize)%fullMazeSize)+fullMazeSize)%fullMazeSize;
 						var newJ = (((arrow.j + arrow.dj+fullMazeSize)%fullMazeSize)+fullMazeSize)%fullMazeSize;
@@ -556,14 +564,14 @@ var model = {
 							arrow.di = -arrow.di;
 							arrow.dj = -arrow.dj;
 						}
-						//TODO: check mob collision
+						//check mob collision
 						var potentialMob = model.dungeon.mobsManager.getMobAt(arrow.i, arrow.j);
 						if (potentialMob != null){
 							potentialMob.wound();
 							arrowIndexesToDelete.push(i);
 						}
 					}else{
-						//TODO: delete arrow
+						//delete arrow
 						arrowIndexesToDelete.push(i);
 					}
 				}
@@ -875,15 +883,18 @@ game.draw = function(){
 		context.fillStyle = "rgb(117,204,128)";
 		context.fillRect(0,0,618,490);
 		context.fillStyle = "rgb(0,0,0)";
-		//context.fillText("DUNGEON",10,90);
 		//display for full maze
 		var fullWidth = mazeGeneratorConfiguration.size * mazeGeneratorConfiguration.bits.tiles.width;
 		var fullHeight = mazeGeneratorConfiguration.size * mazeGeneratorConfiguration.bits.tiles.height;
 		for (var i=-2;i<19;i++){
 			for (var j=-2;j<11;j++){
+				var spriteI = model.dungeon.currentMaze.map[(((i+fullWidth+model.player.dungeon.i-8)%fullWidth)+fullWidth)%fullWidth][(((j+fullHeight+model.player.dungeon.j-4)%fullHeight)+fullHeight)%fullHeight]*graphical.dungeon.tiles.width;
+				if (!model.dungeon.currentMaze.light[(((i+fullWidth+model.player.dungeon.i-8)%fullWidth)+fullWidth)%fullWidth][(((j+fullHeight+model.player.dungeon.j-4)%fullHeight)+fullHeight)%fullHeight]){
+					spriteI = graphical.dungeon.tiles.width;
+				}
 				context.drawImage(
 					dungeonSprites,
-					model.dungeon.currentMaze.map[(((i+fullWidth+model.player.dungeon.i-8)%fullWidth)+fullWidth)%fullWidth][(((j+fullHeight+model.player.dungeon.j-4)%fullHeight)+fullHeight)%fullHeight]*graphical.dungeon.tiles.width,
+					spriteI,
 					0,
 					graphical.dungeon.tiles.width,
 					graphical.dungeon.tiles.height,
