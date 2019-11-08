@@ -2,29 +2,30 @@ suivi de DD Cloudy Moutain en HTML
 
 liste des taches
 - POCs
- - x intégrer une feuille de sprites
- - x intégrer des appels de touches
- - x intégrer des fichiers de données
+ - x intÃ©grer une feuille de sprites
+ - x intÃ©grer des appels de touches
+ - x intÃ©grer des fichiers de donnÃ©es
  - x boucle de jeu (update,draw,repeat)
 - mecaniques
  - map
-  - x génération d'une carte à partir des donnees
-  - x déplacement sur la map
+  - x generation d'une carte Ã  partir des donnees
+  - x dÃ©placement sur la map
   - x affichage partiel de la map (montagnes voilees)
   - x decouverte de la map
   - x entree dans un donjon
  - donjon
-  - x génération de donjons aléatoires
+  - x gÃ©nÃ©ration de donjons alÃ©atoires
   - remplissage des donjons
+  - decouverte du donjon au fur et a mesure
   - heros
    - x sprite des heros
-   - déplacement des heros
-   - lancement de fleches
+   - x dÃ©placement des heros
+   - x lancement de fleches
   - monstres
-   - sprites des monstres
+   - x sprites des monstres
    - traces des monstres
-   - collision des fleches
-   - AI des monstres
+   - x collision des fleches
+   - x AI des monstres
   
 notes
 map tile: 8x8

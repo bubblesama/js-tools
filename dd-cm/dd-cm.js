@@ -154,9 +154,90 @@ class WorldTile {
 	
 };
 
+const mobType = {
+	rat: "rat",
+	snake: "snake",
+	troll: "troll",
+	ooze: "ooze",
+	dragon: "dragon",
+	spider: "spider"
+};
+
+class Mob {
+	constructor(type,i,j){
+		this.type = type;
+		this.i = i;
+		this.j = j;
+		this.di = -1;
+		this.dj = 0;
+		this.faceRight = false;
+		this.life = 1;
+		this.legs = {
+			ticksToMove: 3,
+			currentMovingTick: -1,
+			ticksToWiggle: 2,
+			currentWigglingTick: -1,
+			wiggle: false
+		};
+		this.brain = {
+			ticksToThink: 20,
+			currentThinkingTick: -1,
+			maxChaseDistance: 20,
+			currentPath: null
+		};
+	}
+	wound(){
+		this.life--;
+	}
+	isDead(){
+		return (this.life <= 0);
+	}
+	update(){
+		this.tryMoving();
+		this.tryThinking();
+	}
+	tryThinking(){
+		this.brain.currentThinkingTick++;
+		if (this.brain.currentThinkingTick> this.brain.ticksToThink){
+			this.brain.currentThinkingTick = 0;
+			var shouldStopRunning = true;
+			//time to think
+			if (model.dungeon.currentMaze.getManatthan(model.player.dungeon.i, model.player.dungeon.j, this.i, this.j)<this.brain.maxChaseDistance){
+				//console.log("Mob#tryThinking: player not far!");			
+				this.brain.currentPath = model.dungeon.currentMaze.getPath(this.i, this.j, model.player.dungeon.i, model.player.dungeon.j,1000);
+				if (this.brain.currentPath != null){
+					this.brain.currentPath.shift();
+					shouldStopRunning = false;
+				}
+			}
+			if (shouldStopRunning){
+				this.di = 0;
+				this.dj = 0;
+			}
+		}
+	}
+	tryMoving(){
+		this.legs.currentMovingTick++;
+		if (this.legs.currentMovingTick> this.legs.ticksToMove){
+			this.legs.currentMovingTick = 0;
+			if (this.brain.currentPath != null && this.brain.currentPath.length > 0){
+				var nextNode = this.brain.currentPath.shift();
+				this.faceRight = this.i<nextNode.i;
+				this.i = nextNode.i;
+				this.j = nextNode.j;
+			}
+		}
+		this.legs.currentWigglingTick++;
+		if (this.legs.currentWigglingTick> this.legs.ticksToWiggle){
+			this.legs.currentWigglingTick = 0;
+			this.legs.wiggle = !this.legs.wiggle;
+		}
+	}
+};
+
+
+
 //******************* fin CLASSES *******************************************************
-
-
 
 var worldTileByLetter = {
 	"r": "RIVER_UP_DOWN",
@@ -218,6 +299,15 @@ var graphical = {
 			axe: {i:2,j:5},
 			boat: {i:5,j:5},
 			key: {i:4,j:5}
+		},
+		mobs:{
+			//first sprite place by type
+			rat: {i:8, j:1},
+			snake: {i:0, j:3},
+			troll: {i:4, j:3},
+			ooze: {i:8, j:1},
+			dragon: {i:8, j:3},
+			spider: {i:8, j:2}
 		}
 	}
 };
@@ -252,7 +342,7 @@ var model = {
 			walkCycle: 8,
 		},
 		inventory:{
-			arrows: 4,
+			arrows: 200,
 			boat: 0,
 			axe: 0,
 			key: 0,
@@ -294,10 +384,29 @@ var model = {
 						//console.log("DBG player#moveIfPossible entering a dungeon");
 						game.state = STATES.dungeon;
 						worldMap[newI][newJ].entered = true;
+						//dungeon maze and items
 						var newMaze = generateMaze(worldMap[newI][newJ].type);
 						model.dungeon.currentMaze = newMaze;
 						model.player.dungeon.i = newMaze.start.i;
 						model.player.dungeon.j = newMaze.start.j;
+						/*
+						var path = newMaze.getPath(newMaze.start.i, newMaze.start.j, 4,13, 10000);
+						if (path != null){
+							for (var i=0;i<path.length; i++){
+								console.log("#path: "+path[i].i+" "+path[i].j);
+							}
+						}
+						*/
+						//managers
+						model.dungeon.arrowsManager.reset();
+						model.dungeon.mobsManager.reset();
+						//model.dungeon.mobsManager.addMob("rat", 7,7);
+						model.dungeon.mobsManager.addMob("snake", 7,4);
+						//model.dungeon.mobsManager.addMob("troll", 7,4);
+						//model.dungeon.mobsManager.addMob("ooze", 7,6);
+						//model.dungeon.mobsManager.addMob("dragon", 7,7);
+						//model.dungeon.mobsManager.addMob("spider", 7,7);
+
 					}
 				}else{
 					//console.log("DBG player#moveIfPossible unpassable");
@@ -341,9 +450,8 @@ var model = {
 			if (this.dungeon.currentStep >= this.dungeon.maxStep){
 				this.dungeon.currentStep = 0;
 				this.dungeon.isMoving = false;
-				this.dungeon.i = this.dungeon.i+this.dungeon.stepDi;
-				this.dungeon.j = this.dungeon.j+this.dungeon.stepDj;
-				
+				this.dungeon.i = (this.dungeon.i+this.dungeon.stepDi+model.dungeon.currentMaze.fullWidth)%model.dungeon.currentMaze.fullWidth;
+				this.dungeon.j = (this.dungeon.j+this.dungeon.stepDj+model.dungeon.currentMaze.fullHeight)%model.dungeon.currentMaze.fullHeight;
 			}
 			this.dungeon.walkPart++;
 			if (this.dungeon.walkPart >= this.dungeon.walkCycle){
@@ -354,7 +462,7 @@ var model = {
 			//console.log("try picking stuff");
 			var potentialItem = model.dungeon.currentMaze.getItem(this.dungeon.i, this.dungeon.j);
 			if (potentialItem != null){
-				console.log("#tryPickingUpStuff stuff picked: "+potentialItem.type);
+				//console.log("#tryPickingUpStuff stuff picked: "+potentialItem.type);
 				if (potentialItem.type == "ladder"){
 					game.state = STATES.world;
 				}else{
@@ -368,7 +476,7 @@ var model = {
 					model.dungeon.currentMaze.removeItem(this.dungeon.i, this.dungeon.j);
 				}
 			}else{
-				console.log("#tryPickingUpStuff nothing to pick!");
+				//console.log("#tryPickingUpStuff nothing to pick!");
 			}
 		},
 		tryShootingArrow(deltaI, deltaJ){
@@ -396,7 +504,6 @@ var model = {
 			arrows:[],
 			update: function(){
 				this.ticksSinceLast++;
-
 				var arrowIndexesToDelete = [];
 				//TODO: moving arrows
 				for (var i=0;i<this.arrows.length;i++){
@@ -449,23 +556,32 @@ var model = {
 							arrow.di = -arrow.di;
 							arrow.dj = -arrow.dj;
 						}
-						//TODO: check mob collision	
+						//TODO: check mob collision
+						var potentialMob = model.dungeon.mobsManager.getMobAt(arrow.i, arrow.j);
+						if (potentialMob != null){
+							potentialMob.wound();
+							arrowIndexesToDelete.push(i);
+						}
 					}else{
 						//TODO: delete arrow
 						arrowIndexesToDelete.push(i);
 					}
 				}
-				//delete timedout arrows
+				//delete timedout or hit arrows
 				for (var i=0;i<arrowIndexesToDelete.length;i++){
 					this.arrows.splice(arrowIndexesToDelete[i],1);
 				}
 
 			},
+			reset: function(){
+				this.arrows.splice(0,this.arrows.length);
+				this.ticksSinceLast = 1000;
+			},
 			canShootNow: function(){
 				return this.ticksSinceLast > this.TICKS_TO_SHOOT;
 			},
 			spawnArrow: function(spawnI, spawnJ, deltaI, deltaJ){
-				console.log("arrowsManager#spawnArrow spawnI="+spawnI+", spawnJ="+spawnJ+", deltaI="+deltaI+", deltaJ="+deltaJ);
+				//console.log("arrowsManager#spawnArrow spawnI="+spawnI+", spawnJ="+spawnJ+", deltaI="+deltaI+", deltaJ="+deltaJ);
 				this.ticksSinceLast = 0;
 				var newArrow = {
 					i: spawnI,
@@ -476,7 +592,56 @@ var model = {
 				};
 				this.arrows.push(newArrow);
 			}
-		} 
+		} ,
+		mobsManager: {
+			mobs: [],
+			smokes: [],
+			reset(){
+				this.mobs.splice(0,this.mobs.length);
+				this.smokes.splice(0,this.smokes.length);
+			},
+			addMob(type, i, j){
+				this.mobs.push(new Mob(type, i, j));
+			},
+			getMobAt(i, j){
+				var result = null;
+				for  (var k=0;k<this.mobs.length;k++){
+					var mob = this.mobs[k];
+					if (mob.i == i && mob.j == j){
+						result = mob;
+					}
+				}
+				return result;
+			},
+			update(){
+				//clean dead mobs
+				var mobIndexesToClear = [];
+				for (var k=0;k<this.mobs.length;k++){
+					var mob = this.mobs[k];
+					if (mob.isDead()){
+						mobIndexesToClear.push(k);
+						this.smokes.push({i: mob.i, j:mob.j, ticks: 0});
+					}else{
+						mob.update();
+					}
+				}
+				for (var k=mobIndexesToClear.length-1;k>=0;k--){
+					this.mobs.splice(mobIndexesToClear[k],1);
+				}
+				//update and clean smokes
+				var smokeIndexesToClear = [];
+				for (var k=0;k<this.smokes.length;k++){
+					this.smokes[k].ticks++;
+					if (this.smokes[k].ticks > 12/*magic number!*/){
+						smokeIndexesToClear.push(k);
+					}
+				}
+				for (var k=smokeIndexesToClear.length-1;k>=0;k--){
+					this.smokes.splice(smokeIndexesToClear[k],1);
+				}
+				//TODO: move mobs
+			}
+		}
 	},
 	
 	update: function(){
@@ -566,6 +731,7 @@ var model = {
 			//arrows
 			this.dungeon.arrowsManager.update();
 			//TODO: update for mobs...
+			this.dungeon.mobsManager.update();
 			//...moving
 			//...searching
 
@@ -737,8 +903,10 @@ game.draw = function(){
 				graphical.dungeon.items[""+item.type].j*graphical.dungeon.tiles.height,
 				graphical.dungeon.tiles.width,
 				graphical.dungeon.tiles.height,
-				3+(8+item.i-model.player.dungeon.i)*graphical.dungeon.tiles.width*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDx*model.player.dungeon.stepDi*graphical.dungeon.zoom,
-				10+(4+item.j-model.player.dungeon.j)*graphical.dungeon.tiles.height*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDy*model.player.dungeon.stepDj*graphical.dungeon.zoom,
+				//3+(8+item.i-model.player.dungeon.i)*graphical.dungeon.tiles.width*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDx*model.player.dungeon.stepDi*graphical.dungeon.zoom,
+				getXViewFromI(item.i),
+				//10+(4+item.j-model.player.dungeon.j)*graphical.dungeon.tiles.height*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDy*model.player.dungeon.stepDj*graphical.dungeon.zoom,
+				getYViewFromJ(item.j),
 				graphical.dungeon.tiles.width*graphical.dungeon.zoom,
 				graphical.dungeon.tiles.height*graphical.dungeon.zoom
 			);
@@ -774,14 +942,64 @@ game.draw = function(){
 				4*graphical.dungeon.tiles.height,
 				graphical.dungeon.tiles.width,
 				graphical.dungeon.tiles.height,
-				3+(8+item.i-model.player.dungeon.i)*graphical.dungeon.tiles.width*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDx*model.player.dungeon.stepDi*graphical.dungeon.zoom,
-				10+(4+item.j-model.player.dungeon.j)*graphical.dungeon.tiles.height*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDy*model.player.dungeon.stepDj*graphical.dungeon.zoom,
+				//3+(8+item.i-model.player.dungeon.i)*graphical.dungeon.tiles.width*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDx*model.player.dungeon.stepDi*graphical.dungeon.zoom,
+				getXViewFromI(item.i),
+				//10+(4+item.j-model.player.dungeon.j)*graphical.dungeon.tiles.height*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDy*model.player.dungeon.stepDj*graphical.dungeon.zoom,
+				getYViewFromJ(item.j),
 				graphical.dungeon.tiles.width*graphical.dungeon.zoom,
 				graphical.dungeon.tiles.height*graphical.dungeon.zoom
 			);
 		}
+		//display mobs
+		for (var i=0; i<model.dungeon.mobsManager.mobs.length; i++){
+			var mob = model.dungeon.mobsManager.mobs[i];
+			var spriteI = graphical.dungeon.mobs[""+mob.type].i;
+			if (!mob.faceRight){spriteI += 2;}
+			if (mob.legs.wiggle){spriteI += 1;}
+			var spriteJ = graphical.dungeon.mobs[""+mob.type].j;
+			context.drawImage(
+				dungeonSprites,
+				spriteI*graphical.dungeon.tiles.width,
+				spriteJ*graphical.dungeon.tiles.height,
+				graphical.dungeon.tiles.width,
+				graphical.dungeon.tiles.height,
+				//3+(8+mob.i-model.player.dungeon.i)*graphical.dungeon.tiles.width*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDx*model.player.dungeon.stepDi*graphical.dungeon.zoom,
+				getXViewFromI(mob.i),
+				//10+(4+mob.j-model.player.dungeon.j)*graphical.dungeon.tiles.height*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDy*model.player.dungeon.stepDj*graphical.dungeon.zoom,
+				getYViewFromJ(mob.j),
+				graphical.dungeon.tiles.width*graphical.dungeon.zoom,
+				graphical.dungeon.tiles.height*graphical.dungeon.zoom
+			);
+		}
+		//display smoke
+		for (var i=0; i<model.dungeon.mobsManager.smokes.length; i++){
+			var smoke = model.dungeon.mobsManager.smokes[i];
+			context.drawImage(
+				dungeonSprites,
+				7*graphical.dungeon.tiles.width,
+				5*graphical.dungeon.tiles.height,
+				graphical.dungeon.tiles.width,
+				graphical.dungeon.tiles.height,
+				//3+(8+mob.i-model.player.dungeon.i)*graphical.dungeon.tiles.width*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDx*model.player.dungeon.stepDi*graphical.dungeon.zoom,
+				getXViewFromI(smoke.i),
+				//10+(4+mob.j-model.player.dungeon.j)*graphical.dungeon.tiles.height*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDy*model.player.dungeon.stepDj*graphical.dungeon.zoom,
+				getYViewFromJ(smoke.j),
+				graphical.dungeon.tiles.width*graphical.dungeon.zoom,
+				graphical.dungeon.tiles.height*graphical.dungeon.zoom
+			);
+		}
+
+
 	}
-}
+};
+
+getXViewFromI = function(i){
+	return 3+(8+delta(model.player.dungeon.i,i,model.dungeon.currentMaze.fullWidth))*graphical.dungeon.tiles.width*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDx*model.player.dungeon.stepDi*graphical.dungeon.zoom;	
+};
+
+getYViewFromJ = function(j){
+	return 10+(4+delta(model.player.dungeon.j,j,model.dungeon.currentMaze.fullHeight))*graphical.dungeon.tiles.height*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDy*model.player.dungeon.stepDj*graphical.dungeon.zoom;
+};
 
 game.update = function(){
 	//model
@@ -832,6 +1050,7 @@ function start(){
 	//ressources loading
 	worldSprites = new Image();
 	worldSprites.src = "dd-world.png";
+
 	worldSprites.onload = function(){
 		dungeonSprites = new Image();
 		dungeonSprites.src = "dd-dungeon.png";

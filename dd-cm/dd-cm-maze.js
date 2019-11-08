@@ -1,3 +1,9 @@
+delta = function (a,b,mod){
+	var positiveDistance = ((b-a)+mod)%mod;
+	var negativeDistance = ((a-b)+mod)%mod;
+	return positiveDistance<negativeDistance?positiveDistance:-negativeDistance;
+};
+
 var mazeGeneratorConfiguration = {
 	
 	size: 6,
@@ -267,9 +273,17 @@ function generateMaze(mountainType){
 		console.log("#generateMaze item placed: "+items[i].type+" "+items[i].i+" "+items[i].j);
 	}
 	var result = {
+		fullWidth: fullWidth,
+		fullHeight: fullHeight,
 		map: fullMaze,
 		start: {i: 4, j: 4},
 		items: items,
+		getManatthan: function(Ai, Aj, Bi, Bj){
+			return Math.abs(delta(Ai,Bi,fullWidth))+Math.abs(delta(Aj,Bj,fullHeight));
+		},
+		getTileType: function(i,j){
+			return fullMaze[(i+fullWidth+fullWidth)%fullWidth][(j+fullHeight+fullHeight)%fullHeight];
+		},
 		getItem: function(i, j){
 			console.log("maze#getItem IN i="+i+" j="+j);
 			var result = null;
@@ -290,10 +304,149 @@ function generateMaze(mountainType){
 			if (foundIndex != -1){
 				items.splice(foundIndex,1);
 			}
+		},
+		//TODO: get list of coords to go from a tile another, passing by walkable tiles, with a customized A* algorithm
+		getPath: function (fromI, fromJ, toI, toJ, maxSteps){
+			console.log("#A* DBG IN: "+fromI+" "+fromJ+" "+toI+" "+toJ);
+			var getManatthan = function(nodeA, nodeB){
+				return Math.abs(delta(nodeA.i,nodeB.i,fullWidth))+Math.abs(delta(nodeA.j,nodeB.j,fullHeight));
+			};
+			var isSameNode = function (nodeA, nodeB){
+				return (nodeA.i == nodeB.i && nodeA.j == nodeB.j);
+			};
+			var neighbourDeltas = [
+				{di: -1, dj:  0},
+				{di:  0, dj: -1},
+				{di:  1, dj:  0},
+				{di:  0, dj:  1},
+
+				{di: -1, dj: -1},
+				{di:  1, dj: -1},
+				{di:  1, dj:  1},
+				{di: -1, dj:  1}
+			];
+			//init special nodes and nodes list
+			var endNode = {i:toI, j:toJ};
+			var startNode = {i:  fromI, j: fromJ, cost: 0};
+			startNode.guess = getManatthan(startNode,endNode);
+			var openList = new Array();
+			openList.push(startNode);
+			var closedList = [];
+			var finished = false;
+			var pathFound = false;
+			var step = 0;
+			while (!finished && step <maxSteps){
+				step++;
+				//find next "best" node by sorting the openlist and shifting the node
+				openList.sort(function (nodeA, nodeB){
+					return (((nodeA.cost + nodeA.guess)<(nodeB.cost + nodeB.guess))?-1:(((nodeA.cost + nodeA.guess)>(nodeB.cost + nodeB.guess))?1:0));
+				});
+				var nextNode = openList.shift();
+				//console.log("A* DBG: nextNode: "+nextNode.i +" "+nextNode.j);
+				//end node reached
+				if (isSameNode(nextNode, endNode)){
+					finished = true;
+					pathFound = true;
+				}else{
+					//TODO: list of neighbours
+					var rawNeighbours = [];
+					for (var k=0;k<neighbourDeltas.length;k++){
+						var rawNewNeighbourI = (nextNode.i+neighbourDeltas[k].di+fullWidth)%fullWidth;
+						var rawNewNeighbourJ = (nextNode.j+neighbourDeltas[k].dj+fullHeight)%fullHeight;
+						//TODO: managing corner move to determine "true" movements
+						var rawNeighbourType = this.map[rawNewNeighbourI][rawNewNeighbourJ]
+						var realDi = neighbourDeltas[k].di;
+						var realDj = neighbourDeltas[k].dj;
+						//TODO check if tile is corner
+						for (var a=0;a<dungeonTilesCornerMoves.length;a++){
+							if (dungeonTilesCornerMoves[a].index == rawNeighbourType){
+								//tile type found, switching di and dj
+								for (var b=0;b<dungeonTilesCornerMoves[a].moves.length;b++){
+									if (dungeonTilesCornerMoves[a].moves[b].inDi == neighbourDeltas[k].di && dungeonTilesCornerMoves[a].moves[b].inDj == neighbourDeltas[k].dj){
+										realDi = dungeonTilesCornerMoves[a].moves[b].outDi;
+										realDj = dungeonTilesCornerMoves[a].moves[b].outDj;
+									}
+								}
+							}
+						}
+						var newNeighbourI = (nextNode.i+realDi+fullWidth)%fullWidth;
+						var newNeighbourJ = (nextNode.j+realDj+fullHeight)%fullHeight;
+						//console.log("A* DBG: newNeighbour: "+newNeighbourI+" "+newNeighbourJ);
+						if (this.map[newNeighbourI][newNeighbourJ] == 0){
+							var newNeighbourNode = {i: newNeighbourI, j: newNeighbourJ, father: nextNode, cost: nextNode.cost+1};
+							newNeighbourNode.guess = getManatthan(newNeighbourNode,endNode);
+							rawNeighbours.push(newNeighbourNode);
+						}else{
+							//not walkable tile
+						}		
+					}
+					for (var i=0;i<rawNeighbours.length;i++){
+						//refresh closedList
+						var foundInClosedList = false;
+						for (var j=0;j<closedList.length;j++){
+							if (isSameNode(rawNeighbours[i],closedList[j])){
+								foundInClosedList = true;
+								//console.log("A* DBG: neighbour in closed list: "+rawNeighbours[i].i+" "+rawNeighbours[i].j);
+								if (rawNeighbours[i].cost < closedList[j].cost){
+									closedList[j].cost = rawNeighbours[i].cost;
+									closedList[j].father = nextNode;
+								}
+							}
+						}
+						if (!foundInClosedList){
+							openList.push(rawNeighbours[i]);
+						}
+					}
+				}
+				closedList.push(nextNode);
+				//TODO: finished condition
+				if (openList.length == 0){
+					finished = true;
+				}
+			}
+			//console.log("A* DBG: steps: "+step);
+			//result construction from fathers
+			if (pathFound){
+				var pathNodes = [];
+				var currentNode = null;
+				//find end node
+				for (var i=0;i<closedList.length;i++){
+					if (isSameNode(closedList[i],endNode)){
+						currentNode = closedList[i];
+					}
+				}
+				if (currentNode != null){
+					//todo: iterate on fathers
+					var pathCreationFinished = false;
+					var pathCount = 0;
+					while (!pathCreationFinished && pathCount<500){
+						pathNodes.unshift(currentNode);
+						currentNode = currentNode.father;
+						if (currentNode == null){
+							pathCreationFinished = true;
+						}
+						pathCount++;
+					}
+					if (!(isSameNode(pathNodes[0],startNode))){
+						//console.log("A* error while constructing path: startNode is not the first path node");
+					}else{
+						return pathNodes;
+					}
+				}else{
+					//console.log("A* error while constructing path, endNode not found in closed list");
+				}
+			}else{
+				console.log("A* no path found between ("+fromI+","+fromJ+") and ("+toI+","+toJ+")");
+			}
 		}
 	};
 	return result;
-}
+};
+
+
+
+
+
 
 //got it from the net, do the job
 function shuffle(array) {
@@ -310,7 +463,7 @@ function shuffle(array) {
 		array[randomIndex] = temporaryValue;
 	}
 	return array;
-}
+};
 
 // BEGIN - maze manipulations, bits flipping and rotation
 
