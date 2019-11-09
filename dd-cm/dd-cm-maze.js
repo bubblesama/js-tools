@@ -298,6 +298,12 @@ function generateMaze(mountainType){
 			}
 			return result;
 		},
+		isShown(i, j){
+			return light[(i+fullWidth)%fullWidth][(j+fullHeight)%fullHeight];
+		},
+		discover(i, j){
+			this.light[(i+fullWidth)%fullWidth][(j+fullHeight)%fullHeight] = true;
+		},
 		removeItem: function(i, j){
 			var foundIndex = -1;
 			for (var k=0;k<items.length; k++){

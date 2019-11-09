@@ -454,10 +454,8 @@ var model = {
 				this.dungeon.j = (this.dungeon.j+this.dungeon.stepDj+model.dungeon.currentMaze.fullHeight)%model.dungeon.currentMaze.fullHeight;
 				//TODO lighting
 				for (var i=-3;i<3;i++){
-					var spotI = (i+this.dungeon.i+model.dungeon.currentMaze.fullWidth)%model.dungeon.currentMaze.fullWidth;
 					for (var j=-3;j<3;j++){
-						var spotJ = (j+this.dungeon.j+model.dungeon.currentMaze.fullHeight)%model.dungeon.currentMaze.fullHeight;
-						model.dungeon.currentMaze.light[spotI][spotJ] = true;
+						model.dungeon.currentMaze.discover(i+this.dungeon.i,j+this.dungeon.j);
 					}
 				}
 			}
@@ -889,7 +887,7 @@ game.draw = function(){
 		for (var i=-2;i<19;i++){
 			for (var j=-2;j<11;j++){
 				var spriteI = model.dungeon.currentMaze.map[(((i+fullWidth+model.player.dungeon.i-8)%fullWidth)+fullWidth)%fullWidth][(((j+fullHeight+model.player.dungeon.j-4)%fullHeight)+fullHeight)%fullHeight]*graphical.dungeon.tiles.width;
-				if (!model.dungeon.currentMaze.light[(((i+fullWidth+model.player.dungeon.i-8)%fullWidth)+fullWidth)%fullWidth][(((j+fullHeight+model.player.dungeon.j-4)%fullHeight)+fullHeight)%fullHeight]){
+				if (!model.dungeon.currentMaze.isShown(i+model.player.dungeon.i-8,j+model.player.dungeon.j-4)){
 					spriteI = graphical.dungeon.tiles.width;
 				}
 				context.drawImage(
