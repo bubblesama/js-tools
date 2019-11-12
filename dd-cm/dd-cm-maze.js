@@ -156,6 +156,7 @@ function generateMaze(mountainType){
 	//map generation
 	var size = mazeGeneratorConfiguration.size;
 	var tries = 0;
+	//number of maps bits
 	var width = size;
 	var height = size;
 	var valid = false;
@@ -210,7 +211,7 @@ function generateMaze(mountainType){
 	}
 	var delay = Date.now() - firstTry;
 	console.log("generateMaze done, valid="+valid+" tries="+tries+" in "+delay+"ms");
-	//generate maze tiles from bit patterns
+	//generate maze tiles from bit patterns (paste each bit)
 	var fullWidth = width * mazeGeneratorConfiguration.bits.tiles.width;
 	var fullHeight = height * mazeGeneratorConfiguration.bits.tiles.height;
 	var fullMaze = new Array(fullWidth);
