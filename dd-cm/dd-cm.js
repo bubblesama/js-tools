@@ -906,19 +906,21 @@ game.draw = function(){
 		//display items
 		for (var i=0;i<model.dungeon.currentMaze.items.length;i++){
 			var item = model.dungeon.currentMaze.items[i];
-			context.drawImage(
-				dungeonSprites,
-				graphical.dungeon.items[""+item.type].i*graphical.dungeon.tiles.width,
-				graphical.dungeon.items[""+item.type].j*graphical.dungeon.tiles.height,
-				graphical.dungeon.tiles.width,
-				graphical.dungeon.tiles.height,
-				//3+(8+item.i-model.player.dungeon.i)*graphical.dungeon.tiles.width*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDx*model.player.dungeon.stepDi*graphical.dungeon.zoom,
-				getXViewFromI(item.i),
-				//10+(4+item.j-model.player.dungeon.j)*graphical.dungeon.tiles.height*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDy*model.player.dungeon.stepDj*graphical.dungeon.zoom,
-				getYViewFromJ(item.j),
-				graphical.dungeon.tiles.width*graphical.dungeon.zoom,
-				graphical.dungeon.tiles.height*graphical.dungeon.zoom
-			);
+			if (model.dungeon.currentMaze.isShown(item.i, item.j)){
+				context.drawImage(
+					dungeonSprites,
+					graphical.dungeon.items[""+item.type].i*graphical.dungeon.tiles.width,
+					graphical.dungeon.items[""+item.type].j*graphical.dungeon.tiles.height,
+					graphical.dungeon.tiles.width,
+					graphical.dungeon.tiles.height,
+					//3+(8+item.i-model.player.dungeon.i)*graphical.dungeon.tiles.width*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDx*model.player.dungeon.stepDi*graphical.dungeon.zoom,
+					getXViewFromI(item.i),
+					//10+(4+item.j-model.player.dungeon.j)*graphical.dungeon.tiles.height*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDy*model.player.dungeon.stepDj*graphical.dungeon.zoom,
+					getYViewFromJ(item.j),
+					graphical.dungeon.tiles.width*graphical.dungeon.zoom,
+					graphical.dungeon.tiles.height*graphical.dungeon.zoom
+				);
+			}
 		}
 		//display player
 		var playerPicI = 0;
@@ -962,23 +964,25 @@ game.draw = function(){
 		//display mobs
 		for (var i=0; i<model.dungeon.mobsManager.mobs.length; i++){
 			var mob = model.dungeon.mobsManager.mobs[i];
-			var spriteI = graphical.dungeon.mobs[""+mob.type].i;
-			if (!mob.faceRight){spriteI += 2;}
-			if (mob.legs.wiggle){spriteI += 1;}
-			var spriteJ = graphical.dungeon.mobs[""+mob.type].j;
-			context.drawImage(
-				dungeonSprites,
-				spriteI*graphical.dungeon.tiles.width,
-				spriteJ*graphical.dungeon.tiles.height,
-				graphical.dungeon.tiles.width,
-				graphical.dungeon.tiles.height,
-				//3+(8+mob.i-model.player.dungeon.i)*graphical.dungeon.tiles.width*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDx*model.player.dungeon.stepDi*graphical.dungeon.zoom,
-				getXViewFromI(mob.i),
-				//10+(4+mob.j-model.player.dungeon.j)*graphical.dungeon.tiles.height*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDy*model.player.dungeon.stepDj*graphical.dungeon.zoom,
-				getYViewFromJ(mob.j),
-				graphical.dungeon.tiles.width*graphical.dungeon.zoom,
-				graphical.dungeon.tiles.height*graphical.dungeon.zoom
-			);
+			if (model.dungeon.currentMaze.isShown(mob.i, mob.j)){
+				var spriteI = graphical.dungeon.mobs[""+mob.type].i;
+				if (!mob.faceRight){spriteI += 2;}
+				if (mob.legs.wiggle){spriteI += 1;}
+				var spriteJ = graphical.dungeon.mobs[""+mob.type].j;
+				context.drawImage(
+					dungeonSprites,
+					spriteI*graphical.dungeon.tiles.width,
+					spriteJ*graphical.dungeon.tiles.height,
+					graphical.dungeon.tiles.width,
+					graphical.dungeon.tiles.height,
+					//3+(8+mob.i-model.player.dungeon.i)*graphical.dungeon.tiles.width*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDx*model.player.dungeon.stepDi*graphical.dungeon.zoom,
+					getXViewFromI(mob.i),
+					//10+(4+mob.j-model.player.dungeon.j)*graphical.dungeon.tiles.height*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDy*model.player.dungeon.stepDj*graphical.dungeon.zoom,
+					getYViewFromJ(mob.j),
+					graphical.dungeon.tiles.width*graphical.dungeon.zoom,
+					graphical.dungeon.tiles.height*graphical.dungeon.zoom
+				);
+			}	
 		}
 		//display smoke
 		for (var i=0; i<model.dungeon.mobsManager.smokes.length; i++){
