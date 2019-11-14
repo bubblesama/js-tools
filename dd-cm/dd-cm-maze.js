@@ -276,6 +276,14 @@ function generateMaze(mountainType){
 		items[i].j = itemSpots[i].j*mazeGeneratorConfiguration.bits.tiles.height+Math.floor(mazeGeneratorConfiguration.bits.tiles.height/2);
 		console.log("#generateMaze item placed: "+items[i].type+" "+items[i].i+" "+items[i].j);
 	}
+	/**
+	 * Big maze result object, full of data and methods regarding:
+	 *  - the layout of the maze
+	 *  - how to navigate it
+	 *  - the items
+	 *  - the light
+	 *  - TODO: the mobs
+	 */
 	var result = {
 		fullWidth: fullWidth,
 		fullHeight: fullHeight,
@@ -316,7 +324,7 @@ function generateMaze(mountainType){
 				items.splice(foundIndex,1);
 			}
 		},
-		//TODO: get list of coords to go from a tile another, passing by walkable tiles, with a customized A* algorithm
+		//get list of coords to go from a tile to another, passing by walkable tiles, following A* algorithm
 		getPath: function (fromI, fromJ, toI, toJ, maxSteps){
 			console.log("#A* DBG IN: "+fromI+" "+fromJ+" "+toI+" "+toJ);
 			var getManatthan = function(nodeA, nodeB){
@@ -410,7 +418,7 @@ function generateMaze(mountainType){
 					}
 				}
 				closedList.push(nextNode);
-				//TODO: finished condition
+				//finish condition
 				if (openList.length == 0){
 					finished = true;
 				}
@@ -453,11 +461,6 @@ function generateMaze(mountainType){
 	};
 	return result;
 };
-
-
-
-
-
 
 //got it from the net, do the job
 function shuffle(array) {
