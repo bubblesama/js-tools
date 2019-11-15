@@ -7,7 +7,7 @@ liste des taches
  - x intégrer des fichiers de données
  - x boucle de jeu (update,draw,repeat)
 - mecaniques
- - map
+ - x map
   - x generation d'une carte à partir des donnees
   - x déplacement sur la map
   - x affichage partiel de la map (montagnes voilees)
