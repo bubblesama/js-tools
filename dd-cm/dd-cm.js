@@ -452,12 +452,7 @@ var model = {
 				this.dungeon.isMoving = false;
 				this.dungeon.i = (this.dungeon.i+this.dungeon.stepDi+model.dungeon.currentMaze.fullWidth)%model.dungeon.currentMaze.fullWidth;
 				this.dungeon.j = (this.dungeon.j+this.dungeon.stepDj+model.dungeon.currentMaze.fullHeight)%model.dungeon.currentMaze.fullHeight;
-				//TODO lighting
-				for (var i=-3;i<3;i++){
-					for (var j=-3;j<3;j++){
-						model.dungeon.currentMaze.discover(i+this.dungeon.i,j+this.dungeon.j);
-					}
-				}
+				model.dungeon.currentMaze.discover(this.dungeon.i,this.dungeon.j);
 			}
 			this.dungeon.walkPart++;
 			if (this.dungeon.walkPart >= this.dungeon.walkCycle){

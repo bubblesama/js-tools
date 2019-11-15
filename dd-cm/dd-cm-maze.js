@@ -215,13 +215,13 @@ function generateMaze(mountainType){
 	var fullWidth = width * mazeGeneratorConfiguration.bits.tiles.width;
 	var fullHeight = height * mazeGeneratorConfiguration.bits.tiles.height;
 	var fullMaze = new Array(fullWidth);
-	var light = new Array(fullWidth);
+	var lights = new Array(fullWidth);
 	for (var i=0;i<fullWidth;i++){
 		fullMaze[i]=new Array(fullHeight);
-		light[i]=new Array(fullHeight);
+		lights[i]=new Array(fullHeight);
 		for (var j=0;j<fullHeight;j++){
 			fullMaze[i][j] = "todo";
-			light[i][j] = false;
+			lights[i][j] = false;
 		}
 	}
 	for (var i=0;i<width;i++){
@@ -281,14 +281,14 @@ function generateMaze(mountainType){
 	 *  - the layout of the maze
 	 *  - how to navigate it
 	 *  - the items
-	 *  - the light
+	 *  - the lights
 	 *  - TODO: the mobs
 	 */
 	var result = {
 		fullWidth: fullWidth,
 		fullHeight: fullHeight,
 		map: fullMaze,
-		light: light,
+		lights: lights,
 		start: {i: 4, j: 4},
 		items: items,
 		getManatthan: function(Ai, Aj, Bi, Bj){
@@ -308,10 +308,49 @@ function generateMaze(mountainType){
 			return result;
 		},
 		isShown(i, j){
-			return light[(i+fullWidth)%fullWidth][(j+fullHeight)%fullHeight];
+			return lights[(i+fullWidth)%fullWidth][(j+fullHeight)%fullHeight];
+		},
+		light(i, j){
+			//console.log("#light "+i+" "+j);
+			this.lights[(i+fullWidth)%fullWidth][(j+fullHeight)%fullHeight] = true;
+		},
+		getNeighbourhood(i, j, distance){
+			var result = [];
+			for (var di=-distance;di<distance;di++){
+				for (var dj=-distance;dj<distance;dj++){
+					var scannedI = (i+di+fullWidth)%fullWidth;
+					var scannedJ = (j+dj+fullHeight)%fullHeight;
+					if (this.getManatthan(i,j,scannedI,scannedJ)<distance){
+						if (this.getTileType(scannedI,scannedJ)!=1){
+							result.push({i: scannedI, j:scannedJ});
+						}
+					}
+				}
+			}
+			return result;
 		},
 		discover(i, j){
-			this.light[(i+fullWidth)%fullWidth][(j+fullHeight)%fullHeight] = true;
+			//this.discoverWithinDistance(i, j, 4);
+			var neighbours = this.getNeighbourhood(i,j,6);
+			for (var k=0;k<neighbours.length;k++){
+				this.light(neighbours[k].i, neighbours[k].j);
+			}
+		},
+		discoverWithinDistance(i, j, lightDistance){
+			if (lightDistance > 0 && !this.isShown(i,j) && this.getTileType(i,j)!= 1){
+				this.light(i, j);
+				const neighbourDeltas = [
+					{di: -1, dj:  0},
+					{di:  0, dj: -1},
+					{di:  1, dj:  0},
+					{di:  0, dj:  1}
+				];
+				for (var k=0;k<neighbourDeltas.length;k++){
+					var neighbourI = (i+neighbourDeltas[k].di+fullWidth)%fullWidth;
+					var neighbourJ = (j+neighbourDeltas[k].dj+fullHeight)%fullHeight;
+					this.discoverWithinDistance(neighbourI,neighbourJ,lightDistance-1);
+				}
+			}
 		},
 		removeItem: function(i, j){
 			var foundIndex = -1;
