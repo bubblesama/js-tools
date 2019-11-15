@@ -156,6 +156,7 @@ function generateMaze(mountainType){
 	//map generation
 	var size = mazeGeneratorConfiguration.size;
 	var tries = 0;
+	//number of maps bits
 	var width = size;
 	var height = size;
 	var valid = false;
@@ -210,14 +211,17 @@ function generateMaze(mountainType){
 	}
 	var delay = Date.now() - firstTry;
 	console.log("generateMaze done, valid="+valid+" tries="+tries+" in "+delay+"ms");
-	//generate maze tiles from bit patterns
+	//generate maze tiles from bit patterns (paste each bit)
 	var fullWidth = width * mazeGeneratorConfiguration.bits.tiles.width;
 	var fullHeight = height * mazeGeneratorConfiguration.bits.tiles.height;
 	var fullMaze = new Array(fullWidth);
+	var lights = new Array(fullWidth);
 	for (var i=0;i<fullWidth;i++){
 		fullMaze[i]=new Array(fullHeight);
+		lights[i]=new Array(fullHeight);
 		for (var j=0;j<fullHeight;j++){
 			fullMaze[i][j] = "todo";
+			lights[i][j] = false;
 		}
 	}
 	for (var i=0;i<width;i++){
@@ -272,10 +276,19 @@ function generateMaze(mountainType){
 		items[i].j = itemSpots[i].j*mazeGeneratorConfiguration.bits.tiles.height+Math.floor(mazeGeneratorConfiguration.bits.tiles.height/2);
 		console.log("#generateMaze item placed: "+items[i].type+" "+items[i].i+" "+items[i].j);
 	}
+	/**
+	 * Big maze result object, full of data and methods regarding:
+	 *  - the layout of the maze
+	 *  - how to navigate it
+	 *  - the items
+	 *  - the lights
+	 *  - TODO: the mobs
+	 */
 	var result = {
 		fullWidth: fullWidth,
 		fullHeight: fullHeight,
 		map: fullMaze,
+		lights: lights,
 		start: {i: 4, j: 4},
 		items: items,
 		getManatthan: function(Ai, Aj, Bi, Bj){
@@ -294,6 +307,51 @@ function generateMaze(mountainType){
 			}
 			return result;
 		},
+		isShown(i, j){
+			return lights[(i+fullWidth)%fullWidth][(j+fullHeight)%fullHeight];
+		},
+		light(i, j){
+			//console.log("#light "+i+" "+j);
+			this.lights[(i+fullWidth)%fullWidth][(j+fullHeight)%fullHeight] = true;
+		},
+		getNeighbourhood(i, j, distance){
+			var result = [];
+			for (var di=-distance;di<distance;di++){
+				for (var dj=-distance;dj<distance;dj++){
+					var scannedI = (i+di+fullWidth)%fullWidth;
+					var scannedJ = (j+dj+fullHeight)%fullHeight;
+					if (this.getManatthan(i,j,scannedI,scannedJ)<distance){
+						if (this.getTileType(scannedI,scannedJ)!=1){
+							result.push({i: scannedI, j:scannedJ});
+						}
+					}
+				}
+			}
+			return result;
+		},
+		discover(i, j){
+			//this.discoverWithinDistance(i, j, 4);
+			var neighbours = this.getNeighbourhood(i,j,6);
+			for (var k=0;k<neighbours.length;k++){
+				this.light(neighbours[k].i, neighbours[k].j);
+			}
+		},
+		discoverWithinDistance(i, j, lightDistance){
+			if (lightDistance > 0 && !this.isShown(i,j) && this.getTileType(i,j)!= 1){
+				this.light(i, j);
+				const neighbourDeltas = [
+					{di: -1, dj:  0},
+					{di:  0, dj: -1},
+					{di:  1, dj:  0},
+					{di:  0, dj:  1}
+				];
+				for (var k=0;k<neighbourDeltas.length;k++){
+					var neighbourI = (i+neighbourDeltas[k].di+fullWidth)%fullWidth;
+					var neighbourJ = (j+neighbourDeltas[k].dj+fullHeight)%fullHeight;
+					this.discoverWithinDistance(neighbourI,neighbourJ,lightDistance-1);
+				}
+			}
+		},
 		removeItem: function(i, j){
 			var foundIndex = -1;
 			for (var k=0;k<items.length; k++){
@@ -305,7 +363,7 @@ function generateMaze(mountainType){
 				items.splice(foundIndex,1);
 			}
 		},
-		//TODO: get list of coords to go from a tile another, passing by walkable tiles, with a customized A* algorithm
+		//get list of coords to go from a tile to another, passing by walkable tiles, following A* algorithm
 		getPath: function (fromI, fromJ, toI, toJ, maxSteps){
 			console.log("#A* DBG IN: "+fromI+" "+fromJ+" "+toI+" "+toJ);
 			var getManatthan = function(nodeA, nodeB){
@@ -399,7 +457,7 @@ function generateMaze(mountainType){
 					}
 				}
 				closedList.push(nextNode);
-				//TODO: finished condition
+				//finish condition
 				if (openList.length == 0){
 					finished = true;
 				}
@@ -442,11 +500,6 @@ function generateMaze(mountainType){
 	};
 	return result;
 };
-
-
-
-
-
 
 //got it from the net, do the job
 function shuffle(array) {
