@@ -626,7 +626,7 @@ var model = {
 				var smokeIndexesToClear = [];
 				for (var k=0;k<this.smokes.length;k++){
 					this.smokes[k].ticks++;
-					if (this.smokes[k].ticks > 12/*magic number!*/){
+					if (this.smokes[k].ticks > 20/*magic number!*/){
 						smokeIndexesToClear.push(k);
 					}
 				}
@@ -984,7 +984,7 @@ game.draw = function(){
 				//3+(8+mob.i-model.player.dungeon.i)*graphical.dungeon.tiles.width*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDx*model.player.dungeon.stepDi*graphical.dungeon.zoom,
 				getXViewFromI(smoke.i),
 				//10+(4+mob.j-model.player.dungeon.j)*graphical.dungeon.tiles.height*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDy*model.player.dungeon.stepDj*graphical.dungeon.zoom,
-				getYViewFromJ(smoke.j),
+				getYViewFromJ(smoke.j)-(smoke.ticks/4),
 				graphical.dungeon.tiles.width*graphical.dungeon.zoom,
 				graphical.dungeon.tiles.height*graphical.dungeon.zoom
 			);
