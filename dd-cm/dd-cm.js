@@ -502,70 +502,76 @@ var model = {
 				//moving arrows
 				for (var i=0;i<this.arrows.length;i++){
 					var arrow = this.arrows[i]; 
-					arrow.ticks++;
-					if (arrow.ticks < this.TICKS_TO_LIVE){
-						//check wall collision
-						var fullMazeSize = mazeGeneratorConfiguration.size*mazeGeneratorConfiguration.bits.tiles.width;
-						var newI = (((arrow.i + arrow.di+fullMazeSize)%fullMazeSize)+fullMazeSize)%fullMazeSize;
-						var newJ = (((arrow.j + arrow.dj+fullMazeSize)%fullMazeSize)+fullMazeSize)%fullMazeSize;
-						var trajectoryTile = model.dungeon.currentMaze.map[newI][newJ];				
-						if (trajectoryTile != 1){
-							arrow.i += arrow.di;
-							arrow.j += arrow.dj;
-							if (trajectoryTile == 2){
-								if (arrow.di == 1){
-									arrow.di = 0;
-									arrow.dj = 1;
-								}else{
-									arrow.di = -1;
-									arrow.dj = 0;
+					//check mob collision
+					var potentialMob = model.dungeon.mobsManager.getMobAt(arrow.i, arrow.j);
+					if (potentialMob != null){
+						potentialMob.wound();
+						arrowIndexesToDelete.push(i);
+					}else{
+						arrow.ticks++;
+						if (arrow.ticks < this.TICKS_TO_LIVE){
+							//check wall collision
+							var fullMazeSize = mazeGeneratorConfiguration.size*mazeGeneratorConfiguration.bits.tiles.width;
+							var newI = (((arrow.i + arrow.di+fullMazeSize)%fullMazeSize)+fullMazeSize)%fullMazeSize;
+							var newJ = (((arrow.j + arrow.dj+fullMazeSize)%fullMazeSize)+fullMazeSize)%fullMazeSize;
+							var trajectoryTile = model.dungeon.currentMaze.map[newI][newJ];				
+							if (trajectoryTile != 1){
+								arrow.i += arrow.di;
+								arrow.j += arrow.dj;
+								if (trajectoryTile == 2){
+									if (arrow.di == 1){
+										arrow.di = 0;
+										arrow.dj = 1;
+									}else{
+										arrow.di = -1;
+										arrow.dj = 0;
+									}
+								}else if (trajectoryTile == 3){
+									if (arrow.di == 1){
+										arrow.di = 0;
+										arrow.dj = -1;
+									}else{
+										arrow.di = -1;
+										arrow.dj = 0;
+									}
+								}else if (trajectoryTile == 4){
+									if (arrow.di == -1){
+										arrow.di = 0;
+										arrow.dj = -1;
+									}else{
+										arrow.di = 1;
+										arrow.dj = 0;
+									}
+								}else if (trajectoryTile == 5){
+									if (arrow.di == -1){
+										arrow.di = 0;
+										arrow.dj = 1;
+									}else{
+										arrow.di = 1;
+										arrow.dj = 0;
+									}
 								}
-							}else if (trajectoryTile == 3){
-								if (arrow.di == 1){
-									arrow.di = 0;
-									arrow.dj = -1;
-								}else{
-									arrow.di = -1;
-									arrow.dj = 0;
-								}
-							}else if (trajectoryTile == 4){
-								if (arrow.di == -1){
-									arrow.di = 0;
-									arrow.dj = -1;
-								}else{
-									arrow.di = 1;
-									arrow.dj = 0;
-								}
-							}else if (trajectoryTile == 5){
-								if (arrow.di == -1){
-									arrow.di = 0;
-									arrow.dj = 1;
-								}else{
-									arrow.di = 1;
-									arrow.dj = 0;
-								}
+							}else{
+								//hard wall
+								arrow.di = -arrow.di;
+								arrow.dj = -arrow.dj;
+							}
+							//recheck on collision
+							var potentialMob = model.dungeon.mobsManager.getMobAt(arrow.i, arrow.j);
+							if (potentialMob != null){
+								potentialMob.wound();
+								arrowIndexesToDelete.push(i);
 							}
 						}else{
-							//hard wall
-							arrow.di = -arrow.di;
-							arrow.dj = -arrow.dj;
-						}
-						//check mob collision
-						var potentialMob = model.dungeon.mobsManager.getMobAt(arrow.i, arrow.j);
-						if (potentialMob != null){
-							potentialMob.wound();
+							//delete arrow
 							arrowIndexesToDelete.push(i);
 						}
-					}else{
-						//delete arrow
-						arrowIndexesToDelete.push(i);
 					}
 				}
 				//delete timedout or hit arrows
 				for (var i=0;i<arrowIndexesToDelete.length;i++){
 					this.arrows.splice(arrowIndexesToDelete[i],1);
 				}
-
 			},
 			reset: function(){
 				this.arrows.splice(0,this.arrows.length);
