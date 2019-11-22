@@ -104,14 +104,14 @@ class WorldTile {
 			case "RIVER_RIGHT_DOWN":
 			case "RIVER_DOWN_LEFT":
 			case "RIVER_LEFT_UP":
-				result =  player.isPossessing("boat");
+				result =  player.isPossessing(ITEM.boat);
 				break;
 			case "FOREST":
-				result =  player.isPossessing("axe");
+				result =  player.isPossessing(ITEM.axe);
 				break;
 			case "WALL_DOOR_UP_DOWN":
 			case "WALL_DOOR_LEFT_RIGHT":
-				result =  player.isPossessing("key");
+				result =  player.isPossessing(ITEM.key);
 				break;
 			case "MOUNTAIN_BLACK": 
 			case "MOUNTAIN_BLANK":
@@ -154,14 +154,7 @@ class WorldTile {
 	
 };
 
-const mobType = {
-	rat: "rat",
-	snake: "snake",
-	troll: "troll",
-	ooze: "ooze",
-	dragon: "dragon",
-	spider: "spider"
-};
+
 
 class Mob {
 	constructor(type,i,j){
@@ -393,13 +386,7 @@ var model = {
 						//managers
 						model.dungeon.arrowsManager.reset();
 						model.dungeon.mobsManager.reset();
-						//model.dungeon.mobsManager.addMob("rat", 7,7);
-						model.dungeon.mobsManager.addMob("snake", 7,4);
-						//model.dungeon.mobsManager.addMob("troll", 7,4);
-						//model.dungeon.mobsManager.addMob("ooze", 7,6);
-						//model.dungeon.mobsManager.addMob("dragon", 7,7);
-						//model.dungeon.mobsManager.addMob("spider", 7,7);
-
+						model.dungeon.mobsManager.addMob(MOB.snake, 7,4);
 					}
 				}else{
 					//console.log("DBG player#moveIfPossible unpassable");
@@ -457,11 +444,11 @@ var model = {
 			var potentialItem = model.dungeon.currentMaze.getItem(this.dungeon.i, this.dungeon.j);
 			if (potentialItem != null){
 				//console.log("#tryPickingUpStuff stuff picked: "+potentialItem.type);
-				if (potentialItem.type == "ladder"){
+				if (potentialItem.type == ITEM.ladder){
 					game.state = STATES.world;
 				}else{
 					//TODO
-					if (potentialItem.type == "quiver"){
+					if (potentialItem.type == ITEM.quiver){
 						this.inventory["arrows"]+=4;
 					}else{
 						this.inventory[""+potentialItem.type]+=1;
@@ -825,7 +812,7 @@ game.draw = function(){
 			switch (worldMap[model.player.world.i][model.player.world.j].type){
 				case "FOREST":
 					shouldDrawItem = true;
-					item = "axe";
+					item = ITEM.axe;
 					break;
 				case "RIVER_UP_DOWN":
 				case "RIVER_UP_DOWN": 
@@ -834,12 +821,12 @@ game.draw = function(){
 				case "RIVER_DOWN_LEFT":
 				case "RIVER_LEFT_UP":
 					shouldDrawItem = true;
-					item = "boat";
+					item = ITEM.boat;
 					break;
 				case "WALL_DOOR_UP_DOWN":
 				case "WALL_DOOR_LEFT_RIGHT":
 					shouldDrawItem = true;
-					item = "key";
+					item = ITEM.key;
 					break;
 			}
 			if (shouldDrawItem){

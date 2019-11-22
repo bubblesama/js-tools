@@ -207,6 +207,23 @@ var mazeGeneratorConfiguration = {
 	]
 };
 
+const MOB = {
+	rat: "rat",
+	snake: "snake",
+	troll: "troll",
+	ooze: "ooze",
+	dragon: "dragon",
+	spider: "spider"
+};
+
+const ITEM = {
+	ladder: "ladder",
+	quiver: "quiver",
+	boat: "boat",
+	axe: "axe",
+	key: "key"
+}
+
 
 
 
