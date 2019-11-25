@@ -808,21 +808,21 @@ game.draw = function(){
 			var shouldDrawItem = false;
 			var item = "";
 			switch (worldMap[model.player.world.i][model.player.world.j].type){
-				case "FOREST":
+				case LAND.FOREST:
 					shouldDrawItem = true;
 					item = ITEM.axe;
 					break;
-				case "RIVER_UP_DOWN":
-				case "RIVER_UP_DOWN": 
-				case "RIVER_UP_RIGHT":
-				case "RIVER_RIGHT_DOWN":
-				case "RIVER_DOWN_LEFT":
-				case "RIVER_LEFT_UP":
+				case LAND.RIVER_UP_DOWN:
+				case LAND.RIVER_UP_DOWN: 
+				case LAND.RIVER_UP_RIGHT:
+				case LAND.RIVER_RIGHT_DOWN:
+				case LAND.RIVER_DOWN_LEFT:
+				case LAND.RIVER_LEFT_UP:
 					shouldDrawItem = true;
 					item = ITEM.boat;
 					break;
-				case "WALL_DOOR_UP_DOWN":
-				case "WALL_DOOR_LEFT_RIGHT":
+				case LAND.WALL_DOOR_UP_DOWN:
+				case LAND.WALL_DOOR_LEFT_RIGHT:
 					shouldDrawItem = true;
 					item = ITEM.key;
 					break;
