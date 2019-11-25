@@ -40,8 +40,8 @@ class WorldTile {
 
 
 	getTileToShowCoordinates(){
-		if (!this.discovered && (this.type == "MOUNTAIN_GREY" || this.type == "MOUNTAIN_RED" || this.type == "MOUNTAIN_BLUE" ||this.type == "MOUNTAIN_PURPLE")){
-			return WorldTile.worldSpritesCoordinatesByName()["MOUNTAIN_BLACK"];
+		if (!this.discovered && (this.type == LAND.MOUNTAIN_GREY || this.type == LAND.MOUNTAIN_RED || this.type == LAND.MOUNTAIN_BLUE ||this.type == LAND.MOUNTAIN_PURPLE)){
+			return WorldTile.worldSpritesCoordinatesByName()[LAND.MOUNTAIN_BLACK];
 		}else{
 			return WorldTile.worldSpritesCoordinatesByName()[this.type];
 		}
@@ -54,27 +54,26 @@ class WorldTile {
 		var result = this.entered;
 		if (!result){
 			switch(this.type) {
-				case "MOUNTAIN_GREY":
-				case "MOUNTAIN_BLUE": 
-				case "MOUNTAIN_RED": 
-				case "MOUNTAIN_PURPLE":
+				case LAND.MOUNTAIN_GREY:
+				case LAND.MOUNTAIN_BLUE: 
+				case LAND.MOUNTAIN_RED: 
+				case LAND.MOUNTAIN_PURPLE:
 					result = true;
 					break;
-				case "EMPTY":
-				case "HOUSE":
-				case "RIVER_UP_DOWN":
-				case "RIVER_UP_DOWN": 
-				case "RIVER_UP_RIGHT":
-				case "RIVER_RIGHT_DOWN":
-				case "RIVER_DOWN_LEFT":
-				case "RIVER_LEFT_UP":
-				case "FOREST":
-				case "WALL_DOOR_UP_DOWN":
-				case "WALL_DOOR_LEFT_RIGHT":
-				case "MOUNTAIN_BLACK": 
-				case "MOUNTAIN_BLANK":
-				case "WALL_UP_DOWN":
-				case "WALL_LEFT_RIGHT":
+				case LAND.EMPTY:
+				case LAND.HOUSE:
+				case LAND.RIVER_UP_DOWN:
+				case LAND.RIVER_UP_RIGHT:
+				case LAND.RIVER_RIGHT_DOWN:
+				case LAND.RIVER_DOWN_LEFT:
+				case LAND.RIVER_LEFT_UP:
+				case LAND.FOREST:
+				case LAND.WALL_DOOR_UP_DOWN:
+				case LAND.WALL_DOOR_LEFT_RIGHT:
+				case LAND.MOUNTAIN_BLACK: 
+				case LAND.MOUNTAIN_BLANK:
+				case LAND.WALL_UP_DOWN:
+				case LAND.WALL_LEFT_RIGHT:
 					break;
 				default:
 					result = false;
@@ -90,33 +89,32 @@ class WorldTile {
 	isPassable(player){
 		var result = false;
 		switch(this.type) {
-			case "EMPTY":
-			case "HOUSE":
-			case "MOUNTAIN_GREY":
-			case "MOUNTAIN_BLUE": 
-			case "MOUNTAIN_RED": 
-			case "MOUNTAIN_PURPLE":
+			case LAND.EMPTY:
+			case LAND.HOUSE:
+			case LAND.MOUNTAIN_GREY:
+			case LAND.MOUNTAIN_BLUE: 
+			case LAND.MOUNTAIN_RED: 
+			case LAND.MOUNTAIN_PURPLE:
 				result = true;
 				break;
-			case "RIVER_UP_DOWN":
-			case "RIVER_UP_DOWN": 
-			case "RIVER_UP_RIGHT":
-			case "RIVER_RIGHT_DOWN":
-			case "RIVER_DOWN_LEFT":
-			case "RIVER_LEFT_UP":
+			case LAND.RIVER_UP_DOWN:
+			case LAND.RIVER_UP_RIGHT:
+			case LAND.RIVER_RIGHT_DOWN:
+			case LAND.RIVER_DOWN_LEFT:
+			case LAND.RIVER_LEFT_UP:
 				result =  player.isPossessing(ITEM.boat);
 				break;
-			case "FOREST":
+			case LAND.FOREST:
 				result =  player.isPossessing(ITEM.axe);
 				break;
-			case "WALL_DOOR_UP_DOWN":
-			case "WALL_DOOR_LEFT_RIGHT":
+			case LAND.WALL_DOOR_UP_DOWN:
+			case LAND.WALL_DOOR_LEFT_RIGHT:
 				result =  player.isPossessing(ITEM.key);
 				break;
-			case "MOUNTAIN_BLACK": 
-			case "MOUNTAIN_BLANK":
-			case "WALL_UP_DOWN":
-			case "WALL_LEFT_RIGHT":
+			case LAND.MOUNTAIN_BLACK: 
+			case LAND.MOUNTAIN_BLANK:
+			case LAND.WALL_UP_DOWN:
+			case LAND.WALL_LEFT_RIGHT:
 				result = false;
 				break;
 			default:
@@ -233,24 +231,24 @@ class Mob {
 //******************* fin CLASSES *******************************************************
 
 var worldTileByLetter = {
-	"r": "RIVER_UP_DOWN",
-	"s": "RIVER_UP_RIGHT",
-	"t": "RIVER_RIGHT_DOWN",
-	"u": "RIVER_DOWN_LEFT",
-	"v": "RIVER_LEFT_UP",
-	"l": "MOUNTAIN_BLANK",
-	"m": "MOUNTAIN_BLACK",
-	"n": "MOUNTAIN_GREY",
-	"o": "MOUNTAIN_BLUE",
-	"p": "MOUNTAIN_RED",
-	"q": "MOUNTAIN_PURPLE",
-	"w": "WALL_DOOR_UP_DOWN",
-	"x": "WALL_DOOR_LEFT_RIGHT",
-	"y": "WALL_UP_DOWN",
-	"z": "WALL_LEFT_RIGHT",
-	"f": "FOREST",
-	"h": "HOUSE",
-	" ": "EMPTY"
+	"r": LAND.RIVER_UP_DOWN,
+	"s": LAND.RIVER_UP_RIGHT,
+	"t": LAND.RIVER_RIGHT_DOWN,
+	"u": LAND.RIVER_DOWN_LEFT,
+	"v": LAND.RIVER_LEFT_UP,
+	"l": LAND.MOUNTAIN_BLANK,
+	"m": LAND.MOUNTAIN_BLACK,
+	"n": LAND.MOUNTAIN_GREY,
+	"o": LAND.MOUNTAIN_BLUE,
+	"p": LAND.MOUNTAIN_RED,
+	"q": LAND.MOUNTAIN_PURPLE,
+	"w": LAND.WALL_DOOR_UP_DOWN,
+	"x": LAND.WALL_DOOR_LEFT_RIGHT,
+	"y": LAND.WALL_UP_DOWN,
+	"z": LAND.WALL_LEFT_RIGHT,
+	"f": LAND.FOREST,
+	"h": LAND.HOUSE,
+	" ": LAND.EMPTY
 };
 
 var graphical = {
