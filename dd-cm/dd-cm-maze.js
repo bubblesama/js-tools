@@ -251,38 +251,47 @@ function generateMaze(mountainType){
 	}
 	itemSpots = shuffle(itemSpots);
 	// TODO add all items before placing them
-	items.push({type: "ladder"});
-	items.push({type: "quiver"});
+	items.push({type: ITEM.ladder});
+	items.push({type: ITEM.quiver});
 	if (mountainType != null){
 		console.log("#generateMaze mountainType="+mountainType);
-		if (mountainType == "MOUNTAIN_GREY"){
-			items.push({type: "quiver"});
-		}else if (mountainType == "MOUNTAIN_BLUE"){
-			items.push({type: "boat"});
-		}else if(mountainType == "MOUNTAIN_RED"){
-			items.push({type: "axe"});
-		}else if(mountainType == "MOUNTAIN_PURPLE"){
-			items.push({type: "key"});
+		if (mountainType == LAND.MOUNTAIN_GREY){
+			items.push({type: ITEM.quiver});
+		}else if (mountainType == LAND.MOUNTAIN_BLUE){
+			items.push({type: ITEM.boat});
+		}else if(mountainType == LAND.MOUNTAIN_RED){
+			items.push({type: ITEM.axe});
+		}else if(mountainType == LAND.MOUNTAIN_PURPLE){
+			items.push({type: ITEM.key});
 		}
-	}else{
-		items.push({type: "axe"});
-		items.push({type: "boat"});
-		items.push({type: "key"});
 	}
 	console.log("#generateMaze items to place: "+items.length);
 	//placing
 	for (var i=0; i<items.length; i++){
 		items[i].i = itemSpots[i].i*mazeGeneratorConfiguration.bits.tiles.width+Math.floor(mazeGeneratorConfiguration.bits.tiles.width/2);
 		items[i].j = itemSpots[i].j*mazeGeneratorConfiguration.bits.tiles.height+Math.floor(mazeGeneratorConfiguration.bits.tiles.height/2);
+		//spawn guardian
+
+
+
 		console.log("#generateMaze item placed: "+items[i].type+" "+items[i].i+" "+items[i].j);
 	}
+	//TODO: mob generation and prints
+
+
+
+
+
+
+
+
 	/**
 	 * Big maze result object, full of data and methods regarding:
 	 *  - the layout of the maze
 	 *  - how to navigate it
 	 *  - the items
 	 *  - the lights
-	 *  - TODO: the mobs
+	 *  - TODO: the mobs to pop
 	 */
 	var result = {
 		fullWidth: fullWidth,
@@ -291,6 +300,7 @@ function generateMaze(mountainType){
 		lights: lights,
 		start: {i: 4, j: 4},
 		items: items,
+
 		getManatthan: function(Ai, Aj, Bi, Bj){
 			return Math.abs(delta(Ai,Bi,fullWidth))+Math.abs(delta(Aj,Bj,fullHeight));
 		},
@@ -406,16 +416,16 @@ function generateMaze(mountainType){
 					finished = true;
 					pathFound = true;
 				}else{
-					//TODO: list of neighbours
+					//list of neighbours
 					var rawNeighbours = [];
 					for (var k=0;k<neighbourDeltas.length;k++){
 						var rawNewNeighbourI = (nextNode.i+neighbourDeltas[k].di+fullWidth)%fullWidth;
 						var rawNewNeighbourJ = (nextNode.j+neighbourDeltas[k].dj+fullHeight)%fullHeight;
-						//TODO: managing corner move to determine "true" movements
+						//managing corner move to determine "true" movements
 						var rawNeighbourType = this.map[rawNewNeighbourI][rawNewNeighbourJ]
 						var realDi = neighbourDeltas[k].di;
 						var realDj = neighbourDeltas[k].dj;
-						//TODO check if tile is corner
+						//check if tile is corner
 						for (var a=0;a<dungeonTilesCornerMoves.length;a++){
 							if (dungeonTilesCornerMoves[a].index == rawNeighbourType){
 								//tile type found, switching di and dj
@@ -497,6 +507,7 @@ function generateMaze(mountainType){
 				console.log("A* no path found between ("+fromI+","+fromJ+") and ("+toI+","+toJ+")");
 			}
 		}
+
 	};
 	return result;
 };

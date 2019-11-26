@@ -40,8 +40,8 @@ class WorldTile {
 
 
 	getTileToShowCoordinates(){
-		if (!this.discovered && (this.type == "MOUNTAIN_GREY" || this.type == "MOUNTAIN_RED" || this.type == "MOUNTAIN_BLUE" ||this.type == "MOUNTAIN_PURPLE")){
-			return WorldTile.worldSpritesCoordinatesByName()["MOUNTAIN_BLACK"];
+		if (!this.discovered && (this.type == LAND.MOUNTAIN_GREY || this.type == LAND.MOUNTAIN_RED || this.type == LAND.MOUNTAIN_BLUE ||this.type == LAND.MOUNTAIN_PURPLE)){
+			return WorldTile.worldSpritesCoordinatesByName()[LAND.MOUNTAIN_BLACK];
 		}else{
 			return WorldTile.worldSpritesCoordinatesByName()[this.type];
 		}
@@ -54,27 +54,26 @@ class WorldTile {
 		var result = this.entered;
 		if (!result){
 			switch(this.type) {
-				case "MOUNTAIN_GREY":
-				case "MOUNTAIN_BLUE": 
-				case "MOUNTAIN_RED": 
-				case "MOUNTAIN_PURPLE":
+				case LAND.MOUNTAIN_GREY:
+				case LAND.MOUNTAIN_BLUE: 
+				case LAND.MOUNTAIN_RED: 
+				case LAND.MOUNTAIN_PURPLE:
 					result = true;
 					break;
-				case "EMPTY":
-				case "HOUSE":
-				case "RIVER_UP_DOWN":
-				case "RIVER_UP_DOWN": 
-				case "RIVER_UP_RIGHT":
-				case "RIVER_RIGHT_DOWN":
-				case "RIVER_DOWN_LEFT":
-				case "RIVER_LEFT_UP":
-				case "FOREST":
-				case "WALL_DOOR_UP_DOWN":
-				case "WALL_DOOR_LEFT_RIGHT":
-				case "MOUNTAIN_BLACK": 
-				case "MOUNTAIN_BLANK":
-				case "WALL_UP_DOWN":
-				case "WALL_LEFT_RIGHT":
+				case LAND.EMPTY:
+				case LAND.HOUSE:
+				case LAND.RIVER_UP_DOWN:
+				case LAND.RIVER_UP_RIGHT:
+				case LAND.RIVER_RIGHT_DOWN:
+				case LAND.RIVER_DOWN_LEFT:
+				case LAND.RIVER_LEFT_UP:
+				case LAND.FOREST:
+				case LAND.WALL_DOOR_UP_DOWN:
+				case LAND.WALL_DOOR_LEFT_RIGHT:
+				case LAND.MOUNTAIN_BLACK: 
+				case LAND.MOUNTAIN_BLANK:
+				case LAND.WALL_UP_DOWN:
+				case LAND.WALL_LEFT_RIGHT:
 					break;
 				default:
 					result = false;
@@ -90,33 +89,32 @@ class WorldTile {
 	isPassable(player){
 		var result = false;
 		switch(this.type) {
-			case "EMPTY":
-			case "HOUSE":
-			case "MOUNTAIN_GREY":
-			case "MOUNTAIN_BLUE": 
-			case "MOUNTAIN_RED": 
-			case "MOUNTAIN_PURPLE":
+			case LAND.EMPTY:
+			case LAND.HOUSE:
+			case LAND.MOUNTAIN_GREY:
+			case LAND.MOUNTAIN_BLUE: 
+			case LAND.MOUNTAIN_RED: 
+			case LAND.MOUNTAIN_PURPLE:
 				result = true;
 				break;
-			case "RIVER_UP_DOWN":
-			case "RIVER_UP_DOWN": 
-			case "RIVER_UP_RIGHT":
-			case "RIVER_RIGHT_DOWN":
-			case "RIVER_DOWN_LEFT":
-			case "RIVER_LEFT_UP":
-				result =  player.isPossessing("boat");
+			case LAND.RIVER_UP_DOWN:
+			case LAND.RIVER_UP_RIGHT:
+			case LAND.RIVER_RIGHT_DOWN:
+			case LAND.RIVER_DOWN_LEFT:
+			case LAND.RIVER_LEFT_UP:
+				result =  player.isPossessing(ITEM.boat);
 				break;
-			case "FOREST":
-				result =  player.isPossessing("axe");
+			case LAND.FOREST:
+				result =  player.isPossessing(ITEM.axe);
 				break;
-			case "WALL_DOOR_UP_DOWN":
-			case "WALL_DOOR_LEFT_RIGHT":
-				result =  player.isPossessing("key");
+			case LAND.WALL_DOOR_UP_DOWN:
+			case LAND.WALL_DOOR_LEFT_RIGHT:
+				result =  player.isPossessing(ITEM.key);
 				break;
-			case "MOUNTAIN_BLACK": 
-			case "MOUNTAIN_BLANK":
-			case "WALL_UP_DOWN":
-			case "WALL_LEFT_RIGHT":
+			case LAND.MOUNTAIN_BLACK: 
+			case LAND.MOUNTAIN_BLANK:
+			case LAND.WALL_UP_DOWN:
+			case LAND.WALL_LEFT_RIGHT:
 				result = false;
 				break;
 			default:
@@ -154,14 +152,7 @@ class WorldTile {
 	
 };
 
-const mobType = {
-	rat: "rat",
-	snake: "snake",
-	troll: "troll",
-	ooze: "ooze",
-	dragon: "dragon",
-	spider: "spider"
-};
+
 
 class Mob {
 	constructor(type,i,j){
@@ -240,24 +231,24 @@ class Mob {
 //******************* fin CLASSES *******************************************************
 
 var worldTileByLetter = {
-	"r": "RIVER_UP_DOWN",
-	"s": "RIVER_UP_RIGHT",
-	"t": "RIVER_RIGHT_DOWN",
-	"u": "RIVER_DOWN_LEFT",
-	"v": "RIVER_LEFT_UP",
-	"l": "MOUNTAIN_BLANK",
-	"m": "MOUNTAIN_BLACK",
-	"n": "MOUNTAIN_GREY",
-	"o": "MOUNTAIN_BLUE",
-	"p": "MOUNTAIN_RED",
-	"q": "MOUNTAIN_PURPLE",
-	"w": "WALL_DOOR_UP_DOWN",
-	"x": "WALL_DOOR_LEFT_RIGHT",
-	"y": "WALL_UP_DOWN",
-	"z": "WALL_LEFT_RIGHT",
-	"f": "FOREST",
-	"h": "HOUSE",
-	" ": "EMPTY"
+	"r": LAND.RIVER_UP_DOWN,
+	"s": LAND.RIVER_UP_RIGHT,
+	"t": LAND.RIVER_RIGHT_DOWN,
+	"u": LAND.RIVER_DOWN_LEFT,
+	"v": LAND.RIVER_LEFT_UP,
+	"l": LAND.MOUNTAIN_BLANK,
+	"m": LAND.MOUNTAIN_BLACK,
+	"n": LAND.MOUNTAIN_GREY,
+	"o": LAND.MOUNTAIN_BLUE,
+	"p": LAND.MOUNTAIN_RED,
+	"q": LAND.MOUNTAIN_PURPLE,
+	"w": LAND.WALL_DOOR_UP_DOWN,
+	"x": LAND.WALL_DOOR_LEFT_RIGHT,
+	"y": LAND.WALL_UP_DOWN,
+	"z": LAND.WALL_LEFT_RIGHT,
+	"f": LAND.FOREST,
+	"h": LAND.HOUSE,
+	" ": LAND.EMPTY
 };
 
 var graphical = {
@@ -393,13 +384,7 @@ var model = {
 						//managers
 						model.dungeon.arrowsManager.reset();
 						model.dungeon.mobsManager.reset();
-						//model.dungeon.mobsManager.addMob("rat", 7,7);
-						model.dungeon.mobsManager.addMob("snake", 7,4);
-						//model.dungeon.mobsManager.addMob("troll", 7,4);
-						//model.dungeon.mobsManager.addMob("ooze", 7,6);
-						//model.dungeon.mobsManager.addMob("dragon", 7,7);
-						//model.dungeon.mobsManager.addMob("spider", 7,7);
-
+						model.dungeon.mobsManager.addMob(MOB.snake, 7,4);
 					}
 				}else{
 					//console.log("DBG player#moveIfPossible unpassable");
@@ -457,11 +442,11 @@ var model = {
 			var potentialItem = model.dungeon.currentMaze.getItem(this.dungeon.i, this.dungeon.j);
 			if (potentialItem != null){
 				//console.log("#tryPickingUpStuff stuff picked: "+potentialItem.type);
-				if (potentialItem.type == "ladder"){
+				if (potentialItem.type == ITEM.ladder){
 					game.state = STATES.world;
 				}else{
 					//TODO
-					if (potentialItem.type == "quiver"){
+					if (potentialItem.type == ITEM.quiver){
 						this.inventory["arrows"]+=4;
 					}else{
 						this.inventory[""+potentialItem.type]+=1;
@@ -502,70 +487,76 @@ var model = {
 				//moving arrows
 				for (var i=0;i<this.arrows.length;i++){
 					var arrow = this.arrows[i]; 
-					arrow.ticks++;
-					if (arrow.ticks < this.TICKS_TO_LIVE){
-						//check wall collision
-						var fullMazeSize = mazeGeneratorConfiguration.size*mazeGeneratorConfiguration.bits.tiles.width;
-						var newI = (((arrow.i + arrow.di+fullMazeSize)%fullMazeSize)+fullMazeSize)%fullMazeSize;
-						var newJ = (((arrow.j + arrow.dj+fullMazeSize)%fullMazeSize)+fullMazeSize)%fullMazeSize;
-						var trajectoryTile = model.dungeon.currentMaze.map[newI][newJ];				
-						if (trajectoryTile != 1){
-							arrow.i += arrow.di;
-							arrow.j += arrow.dj;
-							if (trajectoryTile == 2){
-								if (arrow.di == 1){
-									arrow.di = 0;
-									arrow.dj = 1;
-								}else{
-									arrow.di = -1;
-									arrow.dj = 0;
+					//check mob collision
+					var potentialMob = model.dungeon.mobsManager.getMobAt(arrow.i, arrow.j);
+					if (potentialMob != null){
+						potentialMob.wound();
+						arrowIndexesToDelete.push(i);
+					}else{
+						arrow.ticks++;
+						if (arrow.ticks < this.TICKS_TO_LIVE){
+							//check wall collision
+							var fullMazeSize = mazeGeneratorConfiguration.size*mazeGeneratorConfiguration.bits.tiles.width;
+							var newI = (((arrow.i + arrow.di+fullMazeSize)%fullMazeSize)+fullMazeSize)%fullMazeSize;
+							var newJ = (((arrow.j + arrow.dj+fullMazeSize)%fullMazeSize)+fullMazeSize)%fullMazeSize;
+							var trajectoryTile = model.dungeon.currentMaze.map[newI][newJ];				
+							if (trajectoryTile != 1){
+								arrow.i += arrow.di;
+								arrow.j += arrow.dj;
+								if (trajectoryTile == 2){
+									if (arrow.di == 1){
+										arrow.di = 0;
+										arrow.dj = 1;
+									}else{
+										arrow.di = -1;
+										arrow.dj = 0;
+									}
+								}else if (trajectoryTile == 3){
+									if (arrow.di == 1){
+										arrow.di = 0;
+										arrow.dj = -1;
+									}else{
+										arrow.di = -1;
+										arrow.dj = 0;
+									}
+								}else if (trajectoryTile == 4){
+									if (arrow.di == -1){
+										arrow.di = 0;
+										arrow.dj = -1;
+									}else{
+										arrow.di = 1;
+										arrow.dj = 0;
+									}
+								}else if (trajectoryTile == 5){
+									if (arrow.di == -1){
+										arrow.di = 0;
+										arrow.dj = 1;
+									}else{
+										arrow.di = 1;
+										arrow.dj = 0;
+									}
 								}
-							}else if (trajectoryTile == 3){
-								if (arrow.di == 1){
-									arrow.di = 0;
-									arrow.dj = -1;
-								}else{
-									arrow.di = -1;
-									arrow.dj = 0;
-								}
-							}else if (trajectoryTile == 4){
-								if (arrow.di == -1){
-									arrow.di = 0;
-									arrow.dj = -1;
-								}else{
-									arrow.di = 1;
-									arrow.dj = 0;
-								}
-							}else if (trajectoryTile == 5){
-								if (arrow.di == -1){
-									arrow.di = 0;
-									arrow.dj = 1;
-								}else{
-									arrow.di = 1;
-									arrow.dj = 0;
-								}
+							}else{
+								//hard wall
+								arrow.di = -arrow.di;
+								arrow.dj = -arrow.dj;
+							}
+							//recheck on collision
+							var potentialMob = model.dungeon.mobsManager.getMobAt(arrow.i, arrow.j);
+							if (potentialMob != null){
+								potentialMob.wound();
+								arrowIndexesToDelete.push(i);
 							}
 						}else{
-							//hard wall
-							arrow.di = -arrow.di;
-							arrow.dj = -arrow.dj;
-						}
-						//check mob collision
-						var potentialMob = model.dungeon.mobsManager.getMobAt(arrow.i, arrow.j);
-						if (potentialMob != null){
-							potentialMob.wound();
+							//delete arrow
 							arrowIndexesToDelete.push(i);
 						}
-					}else{
-						//delete arrow
-						arrowIndexesToDelete.push(i);
 					}
 				}
 				//delete timedout or hit arrows
 				for (var i=0;i<arrowIndexesToDelete.length;i++){
 					this.arrows.splice(arrowIndexesToDelete[i],1);
 				}
-
 			},
 			reset: function(){
 				this.arrows.splice(0,this.arrows.length);
@@ -626,7 +617,7 @@ var model = {
 				var smokeIndexesToClear = [];
 				for (var k=0;k<this.smokes.length;k++){
 					this.smokes[k].ticks++;
-					if (this.smokes[k].ticks > 12/*magic number!*/){
+					if (this.smokes[k].ticks > 20/*magic number!*/){
 						smokeIndexesToClear.push(k);
 					}
 				}
@@ -817,23 +808,23 @@ game.draw = function(){
 			var shouldDrawItem = false;
 			var item = "";
 			switch (worldMap[model.player.world.i][model.player.world.j].type){
-				case "FOREST":
+				case LAND.FOREST:
 					shouldDrawItem = true;
-					item = "axe";
+					item = ITEM.axe;
 					break;
-				case "RIVER_UP_DOWN":
-				case "RIVER_UP_DOWN": 
-				case "RIVER_UP_RIGHT":
-				case "RIVER_RIGHT_DOWN":
-				case "RIVER_DOWN_LEFT":
-				case "RIVER_LEFT_UP":
+				case LAND.RIVER_UP_DOWN:
+				case LAND.RIVER_UP_DOWN: 
+				case LAND.RIVER_UP_RIGHT:
+				case LAND.RIVER_RIGHT_DOWN:
+				case LAND.RIVER_DOWN_LEFT:
+				case LAND.RIVER_LEFT_UP:
 					shouldDrawItem = true;
-					item = "boat";
+					item = ITEM.boat;
 					break;
-				case "WALL_DOOR_UP_DOWN":
-				case "WALL_DOOR_LEFT_RIGHT":
+				case LAND.WALL_DOOR_UP_DOWN:
+				case LAND.WALL_DOOR_LEFT_RIGHT:
 					shouldDrawItem = true;
-					item = "key";
+					item = ITEM.key;
 					break;
 			}
 			if (shouldDrawItem){
@@ -984,7 +975,7 @@ game.draw = function(){
 				//3+(8+mob.i-model.player.dungeon.i)*graphical.dungeon.tiles.width*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDx*model.player.dungeon.stepDi*graphical.dungeon.zoom,
 				getXViewFromI(smoke.i),
 				//10+(4+mob.j-model.player.dungeon.j)*graphical.dungeon.tiles.height*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDy*model.player.dungeon.stepDj*graphical.dungeon.zoom,
-				getYViewFromJ(smoke.j),
+				getYViewFromJ(smoke.j)-(smoke.ticks/4),
 				graphical.dungeon.tiles.width*graphical.dungeon.zoom,
 				graphical.dungeon.tiles.height*graphical.dungeon.zoom
 			);
