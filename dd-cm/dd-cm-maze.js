@@ -146,10 +146,6 @@ var mazeGeneratorConfiguration = {
 	]
 };
 
-
-
-
-
 //********************************** MAZE GENERATOR **********************************************
 function generateMaze(mountainType){
 	generateRotatedPatternsIfNeeded();
@@ -212,6 +208,7 @@ function generateMaze(mountainType){
 	var delay = Date.now() - firstTry;
 	console.log("generateMaze done, valid="+valid+" tries="+tries+" in "+delay+"ms");
 	//generate maze tiles from bit patterns (paste each bit)
+	var lootPoints = [];
 	var fullWidth = width * mazeGeneratorConfiguration.bits.tiles.width;
 	var fullHeight = height * mazeGeneratorConfiguration.bits.tiles.height;
 	var fullMaze = new Array(fullWidth);
@@ -236,6 +233,8 @@ function generateMaze(mountainType){
 					fullMaze[i*mazeGeneratorConfiguration.bits.tiles.width+m][j*mazeGeneratorConfiguration.bits.tiles.height+n]=patternMap[m+n*mazeGeneratorConfiguration.bits.tiles.width];
 				}
 			}
+			//adding loot points
+			//lootPoints.push({i: i*mazeGeneratorConfiguration.bits.tiles.width+});
 		}
 	}
 	//items
