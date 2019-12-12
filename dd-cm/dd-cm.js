@@ -382,7 +382,16 @@ var model = {
 						model.player.dungeon.j = newMaze.start.j;
 						newMaze.discover(model.player.dungeon.i,model.player.dungeon.j);
 						//managers
+
+
+
 						model.dungeon.arrowsManager.reset();
+						//creating monsters
+						for (var i=0;i<newMaze.monsters.length; i++){
+							var monster = newMaze.monsters[i];
+							console.log("entering dungeon, mob to place: "+monster.type+" "+monster.i+", "+monster.j);
+						}
+						
 						model.dungeon.mobsManager.reset();
 						model.dungeon.mobsManager.addMob(MOB.snake, 7,4);
 					}

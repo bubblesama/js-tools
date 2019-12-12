@@ -208,11 +208,11 @@ function generateMaze(mountainType){
 	var delay = Date.now() - firstTry;
 	console.log("generateMaze done, valid="+valid+" tries="+tries+" in "+delay+"ms");
 	//generate maze tiles from bit patterns (paste each bit)
-	var lootPoints = [];
 	var fullWidth = width * mazeGeneratorConfiguration.bits.tiles.width;
 	var fullHeight = height * mazeGeneratorConfiguration.bits.tiles.height;
 	var fullMaze = new Array(fullWidth);
 	var lights = new Array(fullWidth);
+	var monsters = new Array();
 	for (var i=0;i<fullWidth;i++){
 		fullMaze[i]=new Array(fullHeight);
 		lights[i]=new Array(fullHeight);
@@ -233,8 +233,7 @@ function generateMaze(mountainType){
 					fullMaze[i*mazeGeneratorConfiguration.bits.tiles.width+m][j*mazeGeneratorConfiguration.bits.tiles.height+n]=patternMap[m+n*mazeGeneratorConfiguration.bits.tiles.width];
 				}
 			}
-			//adding loot points
-			//lootPoints.push({i: i*mazeGeneratorConfiguration.bits.tiles.width+});
+
 		}
 	}
 	//items
@@ -243,7 +242,7 @@ function generateMaze(mountainType){
 	//fill itemSpots
 	for (var i=0; i< mazeGeneratorConfiguration.size; i++){
 		for (var j=0; j< mazeGeneratorConfiguration.size; j++){
-			if (i != 4 && j != 4){
+			if (i != 1 && j != 1){
 				itemSpots.push({i:i,j:j});
 			}
 		}
@@ -269,18 +268,11 @@ function generateMaze(mountainType){
 	for (var i=0; i<items.length; i++){
 		items[i].i = itemSpots[i].i*mazeGeneratorConfiguration.bits.tiles.width+Math.floor(mazeGeneratorConfiguration.bits.tiles.width/2);
 		items[i].j = itemSpots[i].j*mazeGeneratorConfiguration.bits.tiles.height+Math.floor(mazeGeneratorConfiguration.bits.tiles.height/2);
-		//spawn guardian
-
-
-
+		//spawn guardians
+		monsters.push({"type": MOB.rat, "i": items[i].i, "j": items[i].j});
 		console.log("#generateMaze item placed: "+items[i].type+" "+items[i].i+" "+items[i].j);
 	}
 	//TODO: mob generation and prints
-
-
-
-
-
 
 
 
@@ -299,7 +291,7 @@ function generateMaze(mountainType){
 		lights: lights,
 		start: {i: 4, j: 4},
 		items: items,
-
+		monsters: monsters,
 		getManatthan: function(Ai, Aj, Bi, Bj){
 			return Math.abs(delta(Ai,Bi,fullWidth))+Math.abs(delta(Aj,Bj,fullHeight));
 		},
