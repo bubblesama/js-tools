@@ -366,7 +366,7 @@ function generateMaze(mountainType){
 		},
 		//get list of coords to go from a tile to another, passing by walkable tiles, following A* algorithm
 		getPath: function (fromI, fromJ, toI, toJ, maxSteps){
-			console.log("#A* DBG IN: "+fromI+" "+fromJ+" "+toI+" "+toJ);
+			//console.log("#A* DBG IN: "+fromI+" "+fromJ+" "+toI+" "+toJ);
 			var getManatthan = function(nodeA, nodeB){
 				return Math.abs(delta(nodeA.i,nodeB.i,fullWidth))+Math.abs(delta(nodeA.j,nodeB.j,fullHeight));
 			};

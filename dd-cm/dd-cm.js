@@ -164,15 +164,15 @@ class Mob {
 		this.faceRight = false;
 		this.life = 1;
 		this.legs = {
-			ticksToMove: 3,
+			ticksToMove: 2,
 			currentMovingTick: -1,
 			ticksToWiggle: 2,
 			currentWigglingTick: -1,
 			wiggle: false
 		};
 		this.brain = {
-			ticksToThink: 20,
-			currentThinkingTick: -1,
+			ticksToThink: 8,
+			currentThinkingTick: 7,
 			maxChaseDistance: 20,
 			currentPath: null
 		};
@@ -184,8 +184,10 @@ class Mob {
 		return (this.life <= 0);
 	}
 	update(){
-		this.tryMoving();
-		this.tryThinking();
+		if (model.dungeon.currentMaze.isShown(this.i,this.j)){
+			this.tryThinking();
+			this.tryMoving();
+		}
 	}
 	tryThinking(){
 		this.brain.currentThinkingTick++;
