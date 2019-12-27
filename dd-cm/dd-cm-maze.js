@@ -269,12 +269,28 @@ function generateMaze(mountainType){
 		items[i].i = itemSpots[i].i*mazeGeneratorConfiguration.bits.tiles.width+Math.floor(mazeGeneratorConfiguration.bits.tiles.width/2);
 		items[i].j = itemSpots[i].j*mazeGeneratorConfiguration.bits.tiles.height+Math.floor(mazeGeneratorConfiguration.bits.tiles.height/2);
 		//spawn guardians
-		monsters.push({"type": MOB.rat, "i": items[i].i, "j": items[i].j});
+		var popMobType = MOB.rat;
+		switch (items[i].type) {
+			case ITEM.boat:
+				popMobType = MOB.troll;
+				break;
+			case ITEM.axe:
+				popMobType = MOB.snake;
+				break;
+			case ITEM.key:
+				popMobType = MOB.dragon;
+				break;
+			default:
+				popMobType = MOB.rat;
+				break;
+		}
+		monsters.push({"type": popMobType, "i": items[i].i, "j": items[i].j});
 		console.log("#generateMaze item placed: "+items[i].type+" "+items[i].i+" "+items[i].j);
 	}
 	//TODO: mob generation and prints
 
 
+	//TODO: scanning for nice places (empty tile with empty tile on borders)
 
 	/**
 	 * Big maze result object, full of data and methods regarding:
