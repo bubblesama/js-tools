@@ -333,7 +333,9 @@ var model = {
 			isMoving: false,
 			walkPart: 0,
 			walkCycle: 8,
-			hitpoints: 3
+			hitpoints: 3,
+			deadTick: 0,
+			maxDeadTick: 20
 		},
 		inventory:{
 			arrows: 4,
@@ -390,7 +392,7 @@ var model = {
 						//creating monsters
 						for (var i=0;i<newMaze.monsters.length; i++){
 							var monster = newMaze.monsters[i];
-							console.log("entering dungeon, mob to place: "+monster.type+" "+monster.i+", "+monster.j);
+							//console.log("entering dungeon, mob to place: "+monster.type+" "+monster.i+", "+monster.j);
 							model.dungeon.mobsManager.addMob(monster.type, monster.i, monster.j);
 						}
 						//model.dungeon.mobsManager.addMob(MOB.snake, 7,4);
@@ -482,8 +484,11 @@ var model = {
 
 		},
 		wound(){
-			console.log("OUCH!");
+			//console.log("OUCH!");
 			this.dungeon.hitpoints--;
+		},
+		isDead(){
+			return this.dungeon.hitpoints <= 0;
 		}
 	},
 	
@@ -682,7 +687,22 @@ var model = {
 			}
 		}else if (game.state == STATES.dungeon){
 			//update for player
-			if (this.player.dungeon.isMoving){
+			if (this.player.isDead()){
+				if (this.player.dungeon.deadTick == 0){
+					//spawning a fume
+					this.dungeon.mobsManager.smokes.push({i: this.player.dungeon.i, j:this.player.dungeon.j, ticks: 0});
+					//losing a life
+					this.player.lives--;
+				}
+				this.player.dungeon.deadTick++;
+				if (this.player.dungeon.deadTick > this.player.dungeon.maxDeadTick){
+					//respawn
+					this.player.dungeon.i = this.dungeon.currentMaze.start.i;
+					this.player.dungeon.j = this.dungeon.currentMaze.start.j;
+					this.player.dungeon.deadTick = 0;
+					this.player.dungeon.hitpoints = 3;
+				}
+			}else if (this.player.dungeon.isMoving){
 				this.player.stepInDungeon();
 			}else{
 				if (keyMap.e){
@@ -918,21 +938,23 @@ game.draw = function(){
 			}
 		}
 		//display player
-		var playerPicI = 0;
-		playerPicI += Math.floor((model.player.dungeon.walkPart)/2);
-		var playerPicJ = 1;
-		if (!model.player.dungeon.faceRight){playerPicJ++;}
-		context.drawImage(
-			dungeonSprites,
-			playerPicI*graphical.dungeon.tiles.width,
-			playerPicJ*graphical.dungeon.tiles.height,
-			graphical.dungeon.tiles.width,
-			graphical.dungeon.tiles.height,
-			3+8*graphical.dungeon.tiles.width*graphical.dungeon.zoom,
-			10+4*graphical.dungeon.tiles.height*graphical.dungeon.zoom,
-			graphical.dungeon.tiles.width*graphical.dungeon.zoom,
-			graphical.dungeon.tiles.height*graphical.dungeon.zoom
-		);
+		if (!model.player.isDead()){
+			var playerPicI = 0;
+			playerPicI += Math.floor((model.player.dungeon.walkPart)/2);
+			var playerPicJ = 1;
+			if (!model.player.dungeon.faceRight){playerPicJ++;}
+			context.drawImage(
+				dungeonSprites,
+				playerPicI*graphical.dungeon.tiles.width,
+				playerPicJ*graphical.dungeon.tiles.height,
+				graphical.dungeon.tiles.width,
+				graphical.dungeon.tiles.height,
+				3+8*graphical.dungeon.tiles.width*graphical.dungeon.zoom,
+				10+4*graphical.dungeon.tiles.height*graphical.dungeon.zoom,
+				graphical.dungeon.tiles.width*graphical.dungeon.zoom,
+				graphical.dungeon.tiles.height*graphical.dungeon.zoom
+			);
+		}
 		//display arrows
 		for (var i=0; i<model.dungeon.arrowsManager.arrows.length; i++){
 			var item = model.dungeon.arrowsManager.arrows[i];
