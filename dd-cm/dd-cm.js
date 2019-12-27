@@ -333,9 +333,10 @@ var model = {
 			isMoving: false,
 			walkPart: 0,
 			walkCycle: 8,
+			hitpoints: 3
 		},
 		inventory:{
-			arrows: 200,
+			arrows: 4,
 			boat: 0,
 			axe: 0,
 			key: 0,
@@ -479,6 +480,10 @@ var model = {
 				//console.log("player#tryShootingArrow no arrow!");
 			}
 
+		},
+		wound(){
+			console.log("OUCH!");
+			this.dungeon.hitpoints--;
 		}
 	},
 	
@@ -499,6 +504,9 @@ var model = {
 					var potentialMob = model.dungeon.mobsManager.getMobAt(arrow.i, arrow.j);
 					if (potentialMob != null){
 						potentialMob.wound();
+						arrowIndexesToDelete.push(i);
+					}else if ((arrow.ticks > 5) && (!DBG.ON || DBG.ARROW_KILL_PLAYER) && (arrow.i == model.player.dungeon.i && arrow.j == model.player.dungeon.j)){
+						model.player.wound();
 						arrowIndexesToDelete.push(i);
 					}else{
 						arrow.ticks++;

@@ -7,12 +7,13 @@ liste des taches
  - x intégrer des fichiers de données
  - x boucle de jeu (update,draw,repeat)
 - mecaniques
- - x map
+ -  map
   - x generation d'une carte à partir des donnees
   - x déplacement sur la map
   - x affichage partiel de la map (montagnes voilees)
   - x decouverte de la map
   - x entree dans un donjon
+  - entree dans le donjon final
  - donjon
   - x génération de donjons aléatoires
   - remplissage des donjons
@@ -26,6 +27,7 @@ liste des taches
    - traces des monstres
    - x collision des fleches
    - x AI des monstres
+   - x tuage de monstres
   
 notes
 map tile: 8x8
