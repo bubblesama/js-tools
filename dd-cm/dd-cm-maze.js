@@ -146,10 +146,6 @@ var mazeGeneratorConfiguration = {
 	]
 };
 
-
-
-
-
 //********************************** MAZE GENERATOR **********************************************
 function generateMaze(mountainType){
 	generateRotatedPatternsIfNeeded();
@@ -216,6 +212,7 @@ function generateMaze(mountainType){
 	var fullHeight = height * mazeGeneratorConfiguration.bits.tiles.height;
 	var fullMaze = new Array(fullWidth);
 	var lights = new Array(fullWidth);
+	var monsters = new Array();
 	for (var i=0;i<fullWidth;i++){
 		fullMaze[i]=new Array(fullHeight);
 		lights[i]=new Array(fullHeight);
@@ -236,6 +233,7 @@ function generateMaze(mountainType){
 					fullMaze[i*mazeGeneratorConfiguration.bits.tiles.width+m][j*mazeGeneratorConfiguration.bits.tiles.height+n]=patternMap[m+n*mazeGeneratorConfiguration.bits.tiles.width];
 				}
 			}
+
 		}
 	}
 	//items
@@ -244,7 +242,7 @@ function generateMaze(mountainType){
 	//fill itemSpots
 	for (var i=0; i< mazeGeneratorConfiguration.size; i++){
 		for (var j=0; j< mazeGeneratorConfiguration.size; j++){
-			if (i != 4 && j != 4){
+			if (i != 1 && j != 1){
 				itemSpots.push({i:i,j:j});
 			}
 		}
@@ -270,20 +268,29 @@ function generateMaze(mountainType){
 	for (var i=0; i<items.length; i++){
 		items[i].i = itemSpots[i].i*mazeGeneratorConfiguration.bits.tiles.width+Math.floor(mazeGeneratorConfiguration.bits.tiles.width/2);
 		items[i].j = itemSpots[i].j*mazeGeneratorConfiguration.bits.tiles.height+Math.floor(mazeGeneratorConfiguration.bits.tiles.height/2);
-		//spawn guardian
-
-
-
+		//spawn guardians
+		var popMobType = MOB.rat;
+		switch (items[i].type) {
+			case ITEM.boat:
+				popMobType = MOB.troll;
+				break;
+			case ITEM.axe:
+				popMobType = MOB.snake;
+				break;
+			case ITEM.key:
+				popMobType = MOB.dragon;
+				break;
+			default:
+				popMobType = MOB.rat;
+				break;
+		}
+		monsters.push({"type": popMobType, "i": items[i].i, "j": items[i].j});
 		console.log("#generateMaze item placed: "+items[i].type+" "+items[i].i+" "+items[i].j);
 	}
 	//TODO: mob generation and prints
 
 
-
-
-
-
-
+	//TODO: scanning for nice places (empty tile with empty tile on borders)
 
 	/**
 	 * Big maze result object, full of data and methods regarding:
@@ -300,7 +307,7 @@ function generateMaze(mountainType){
 		lights: lights,
 		start: {i: 4, j: 4},
 		items: items,
-
+		monsters: monsters,
 		getManatthan: function(Ai, Aj, Bi, Bj){
 			return Math.abs(delta(Ai,Bi,fullWidth))+Math.abs(delta(Aj,Bj,fullHeight));
 		},
@@ -375,7 +382,7 @@ function generateMaze(mountainType){
 		},
 		//get list of coords to go from a tile to another, passing by walkable tiles, following A* algorithm
 		getPath: function (fromI, fromJ, toI, toJ, maxSteps){
-			console.log("#A* DBG IN: "+fromI+" "+fromJ+" "+toI+" "+toJ);
+			//console.log("#A* DBG IN: "+fromI+" "+fromJ+" "+toI+" "+toJ);
 			var getManatthan = function(nodeA, nodeB){
 				return Math.abs(delta(nodeA.i,nodeB.i,fullWidth))+Math.abs(delta(nodeA.j,nodeB.j,fullHeight));
 			};
