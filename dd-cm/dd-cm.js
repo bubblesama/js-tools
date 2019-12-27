@@ -172,7 +172,7 @@ class Mob {
 		};
 		this.brain = {
 			ticksToThink: 8,
-			currentThinkingTick: 7,
+			currentThinkingTick: 3,
 			maxChaseDistance: 20,
 			currentPath: null
 		};
@@ -392,7 +392,7 @@ var model = {
 							console.log("entering dungeon, mob to place: "+monster.type+" "+monster.i+", "+monster.j);
 							model.dungeon.mobsManager.addMob(monster.type, monster.i, monster.j);
 						}
-						model.dungeon.mobsManager.addMob(MOB.snake, 7,4);
+						//model.dungeon.mobsManager.addMob(MOB.snake, 7,4);
 					}
 				}else{
 					//console.log("DBG player#moveIfPossible unpassable");
