@@ -104,7 +104,10 @@ const LAND = {
 };
 
 
-
+const DBG = {
+	ON: true,
+	ARROW_KILL_PLAYER: true
+};
 
 
 

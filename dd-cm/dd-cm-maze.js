@@ -206,7 +206,7 @@ function generateMaze(mountainType){
 		}
 	}
 	var delay = Date.now() - firstTry;
-	console.log("generateMaze done, valid="+valid+" tries="+tries+" in "+delay+"ms");
+	//console.log("generateMaze done, valid="+valid+" tries="+tries+" in "+delay+"ms");
 	//generate maze tiles from bit patterns (paste each bit)
 	var fullWidth = width * mazeGeneratorConfiguration.bits.tiles.width;
 	var fullHeight = height * mazeGeneratorConfiguration.bits.tiles.height;
@@ -252,7 +252,7 @@ function generateMaze(mountainType){
 	items.push({type: ITEM.ladder});
 	items.push({type: ITEM.quiver});
 	if (mountainType != null){
-		console.log("#generateMaze mountainType="+mountainType);
+		//console.log("#generateMaze mountainType="+mountainType);
 		if (mountainType == LAND.MOUNTAIN_GREY){
 			items.push({type: ITEM.quiver});
 		}else if (mountainType == LAND.MOUNTAIN_BLUE){
@@ -263,7 +263,7 @@ function generateMaze(mountainType){
 			items.push({type: ITEM.key});
 		}
 	}
-	console.log("#generateMaze items to place: "+items.length);
+	//console.log("#generateMaze items to place: "+items.length);
 	//placing
 	for (var i=0; i<items.length; i++){
 		items[i].i = itemSpots[i].i*mazeGeneratorConfiguration.bits.tiles.width+Math.floor(mazeGeneratorConfiguration.bits.tiles.width/2);
@@ -285,7 +285,7 @@ function generateMaze(mountainType){
 				break;
 		}
 		monsters.push({"type": popMobType, "i": items[i].i, "j": items[i].j});
-		console.log("#generateMaze item placed: "+items[i].type+" "+items[i].i+" "+items[i].j);
+		//console.log("#generateMaze item placed: "+items[i].type+" "+items[i].i+" "+items[i].j);
 	}
 	//TODO: mob generation and prints
 
@@ -315,7 +315,7 @@ function generateMaze(mountainType){
 			return fullMaze[(i+fullWidth+fullWidth)%fullWidth][(j+fullHeight+fullHeight)%fullHeight];
 		},
 		getItem: function(i, j){
-			console.log("maze#getItem IN i="+i+" j="+j);
+			//console.log("maze#getItem IN i="+i+" j="+j);
 			var result = null;
 			for (var k=0;k<items.length; k++){
 				if (i == items[k].i && j == items[k].j){

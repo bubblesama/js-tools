@@ -152,8 +152,6 @@ class WorldTile {
 	
 };
 
-
-
 class Mob {
 	constructor(type,i,j){
 		this.type = type;
@@ -218,6 +216,10 @@ class Mob {
 				this.faceRight = this.i<nextNode.i;
 				this.i = nextNode.i;
 				this.j = nextNode.j;
+				//TODO: possibily touch the player
+				if ((this.i == model.player.dungeon.i) && (this.j == model.player.dungeon.j)){
+					model.player.touchs();
+				}
 			}
 		}
 		this.legs.currentWigglingTick++;
@@ -333,9 +335,14 @@ var model = {
 			isMoving: false,
 			walkPart: 0,
 			walkCycle: 8,
+			hitpoints: 3,
+			deadTick: 0,
+			maxDeadTick: 20,
+			ticksSinceLastWound: 20,
+			ticksToWound: 10
 		},
 		inventory:{
-			arrows: 200,
+			arrows: 4,
 			boat: 0,
 			axe: 0,
 			key: 0,
@@ -389,7 +396,7 @@ var model = {
 						//creating monsters
 						for (var i=0;i<newMaze.monsters.length; i++){
 							var monster = newMaze.monsters[i];
-							console.log("entering dungeon, mob to place: "+monster.type+" "+monster.i+", "+monster.j);
+							//console.log("entering dungeon, mob to place: "+monster.type+" "+monster.i+", "+monster.j);
 							model.dungeon.mobsManager.addMob(monster.type, monster.i, monster.j);
 						}
 						//model.dungeon.mobsManager.addMob(MOB.snake, 7,4);
@@ -479,6 +486,20 @@ var model = {
 				//console.log("player#tryShootingArrow no arrow!");
 			}
 
+		},
+		touchs(){
+			if (this.dungeon.ticksSinceLastWound > this.dungeon.ticksToWound){
+				console.log("player#touchs touched and wounded");
+				this.wound();
+			}
+		},
+		wound(){
+			//console.log("OUCH!");
+			this.dungeon.hitpoints--;
+			this.dungeon.ticksSinceLastWound = 0;
+		},
+		isDead(){
+			return this.dungeon.hitpoints <= 0;
 		}
 	},
 	
@@ -499,6 +520,9 @@ var model = {
 					var potentialMob = model.dungeon.mobsManager.getMobAt(arrow.i, arrow.j);
 					if (potentialMob != null){
 						potentialMob.wound();
+						arrowIndexesToDelete.push(i);
+					}else if ((arrow.ticks > 5) && (!DBG.ON || DBG.ARROW_KILL_PLAYER) && (arrow.i == model.player.dungeon.i && arrow.j == model.player.dungeon.j)){
+						model.player.wound();
 						arrowIndexesToDelete.push(i);
 					}else{
 						arrow.ticks++;
@@ -632,7 +656,6 @@ var model = {
 				for (var k=smokeIndexesToClear.length-1;k>=0;k--){
 					this.smokes.splice(smokeIndexesToClear[k],1);
 				}
-				//TODO: move mobs
 			}
 		}
 	},
@@ -674,7 +697,23 @@ var model = {
 			}
 		}else if (game.state == STATES.dungeon){
 			//update for player
-			if (this.player.dungeon.isMoving){
+			this.player.dungeon.ticksSinceLastWound++;
+			if (this.player.isDead()){
+				if (this.player.dungeon.deadTick == 0){
+					//spawning a fume
+					this.dungeon.mobsManager.smokes.push({i: this.player.dungeon.i, j:this.player.dungeon.j, ticks: 0});
+					//losing a life
+					this.player.lives--;
+				}
+				this.player.dungeon.deadTick++;
+				if (this.player.dungeon.deadTick > this.player.dungeon.maxDeadTick){
+					//respawn
+					this.player.dungeon.i = this.dungeon.currentMaze.start.i;
+					this.player.dungeon.j = this.dungeon.currentMaze.start.j;
+					this.player.dungeon.deadTick = 0;
+					this.player.dungeon.hitpoints = 3;
+				}
+			}else if (this.player.dungeon.isMoving){
 				this.player.stepInDungeon();
 			}else{
 				if (keyMap.e){
@@ -715,7 +754,7 @@ var model = {
 					if (shouldStopStepAnimation){
 						this.player.dungeon.walkPart = 0;
 					}
-					//TODO: managing picking stuff
+					//managing picking stuff
 					if (keyMap.a){
 						this.player.tryPickingUpStuff();
 					} 
@@ -910,21 +949,23 @@ game.draw = function(){
 			}
 		}
 		//display player
-		var playerPicI = 0;
-		playerPicI += Math.floor((model.player.dungeon.walkPart)/2);
-		var playerPicJ = 1;
-		if (!model.player.dungeon.faceRight){playerPicJ++;}
-		context.drawImage(
-			dungeonSprites,
-			playerPicI*graphical.dungeon.tiles.width,
-			playerPicJ*graphical.dungeon.tiles.height,
-			graphical.dungeon.tiles.width,
-			graphical.dungeon.tiles.height,
-			3+8*graphical.dungeon.tiles.width*graphical.dungeon.zoom,
-			10+4*graphical.dungeon.tiles.height*graphical.dungeon.zoom,
-			graphical.dungeon.tiles.width*graphical.dungeon.zoom,
-			graphical.dungeon.tiles.height*graphical.dungeon.zoom
-		);
+		if (!model.player.isDead()){
+			var playerPicI = 0;
+			playerPicI += Math.floor((model.player.dungeon.walkPart)/2);
+			var playerPicJ = 1;
+			if (!model.player.dungeon.faceRight){playerPicJ++;}
+			context.drawImage(
+				dungeonSprites,
+				playerPicI*graphical.dungeon.tiles.width,
+				playerPicJ*graphical.dungeon.tiles.height,
+				graphical.dungeon.tiles.width,
+				graphical.dungeon.tiles.height,
+				3+8*graphical.dungeon.tiles.width*graphical.dungeon.zoom,
+				10+4*graphical.dungeon.tiles.height*graphical.dungeon.zoom,
+				graphical.dungeon.tiles.width*graphical.dungeon.zoom,
+				graphical.dungeon.tiles.height*graphical.dungeon.zoom
+			);
+		}
 		//display arrows
 		for (var i=0; i<model.dungeon.arrowsManager.arrows.length; i++){
 			var item = model.dungeon.arrowsManager.arrows[i];
