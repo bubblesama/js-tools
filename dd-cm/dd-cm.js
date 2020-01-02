@@ -152,8 +152,6 @@ class WorldTile {
 	
 };
 
-
-
 class Mob {
 	constructor(type,i,j){
 		this.type = type;
@@ -218,6 +216,10 @@ class Mob {
 				this.faceRight = this.i<nextNode.i;
 				this.i = nextNode.i;
 				this.j = nextNode.j;
+				//TODO: possibily touch the player
+				if ((this.i == model.player.dungeon.i) && (this.j == model.player.dungeon.j)){
+					model.player.touchs();
+				}
 			}
 		}
 		this.legs.currentWigglingTick++;
@@ -335,7 +337,9 @@ var model = {
 			walkCycle: 8,
 			hitpoints: 3,
 			deadTick: 0,
-			maxDeadTick: 20
+			maxDeadTick: 20,
+			ticksSinceLastWound: 20,
+			ticksToWound: 10
 		},
 		inventory:{
 			arrows: 4,
@@ -483,9 +487,16 @@ var model = {
 			}
 
 		},
+		touchs(){
+			if (this.dungeon.ticksSinceLastWound > this.dungeon.ticksToWound){
+				console.log("player#touchs touched and wounded");
+				this.wound();
+			}
+		},
 		wound(){
 			//console.log("OUCH!");
 			this.dungeon.hitpoints--;
+			this.dungeon.ticksSinceLastWound = 0;
 		},
 		isDead(){
 			return this.dungeon.hitpoints <= 0;
@@ -645,7 +656,6 @@ var model = {
 				for (var k=smokeIndexesToClear.length-1;k>=0;k--){
 					this.smokes.splice(smokeIndexesToClear[k],1);
 				}
-				//TODO: move mobs
 			}
 		}
 	},
@@ -687,6 +697,7 @@ var model = {
 			}
 		}else if (game.state == STATES.dungeon){
 			//update for player
+			this.player.dungeon.ticksSinceLastWound++;
 			if (this.player.isDead()){
 				if (this.player.dungeon.deadTick == 0){
 					//spawning a fume
@@ -743,7 +754,7 @@ var model = {
 					if (shouldStopStepAnimation){
 						this.player.dungeon.walkPart = 0;
 					}
-					//TODO: managing picking stuff
+					//managing picking stuff
 					if (keyMap.a){
 						this.player.tryPickingUpStuff();
 					} 
