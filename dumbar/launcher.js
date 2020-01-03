@@ -32,7 +32,7 @@ router.route("/dumbar/person/:code")
 }).put(function(request, response){
     _updatePersonByCode(request,response);
 });
-router.route("/dumbar/memories/:code")
+router.route("/dumbar/person/:code/memories")
 .get(function(request, response){
     _getMemoriesByPersonCode(request,response);
 });
