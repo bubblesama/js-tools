@@ -17,7 +17,7 @@ var worldMapData= {
 " llpl rfff      l  "
 };
 
-var dungeonTilesCornerMoves = {
+const dungeonTilesCornerMoves = {
 	TOP_RIGHT: {
 		index: 2,
 		moves: [
@@ -102,6 +102,8 @@ const LAND = {
 	WALL_UP_DOWN: "WALL_UP_DOWN",
 	WALL_LEFT_RIGHT: "WALL_LEFT_RIGHT"
 };
+
+
 
 
 const DBG = {

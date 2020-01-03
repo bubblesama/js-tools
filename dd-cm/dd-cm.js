@@ -316,6 +316,23 @@ var model = {
 		maxTick : 6,
 		currentTick : 0
 	},
+	entry: {
+		active: false,
+		maxTicks: 14,
+		currentTick: 0,
+		update: function(){
+			this.currentTick++;
+			if (this.currentTick > this.maxTicks){
+				this.currentTick = 0;
+				this.active = false;
+				game.state = STATES.dungeon;
+			}
+		},
+		activate: function(){
+			this.active = true;
+			this.currentTick = 0;
+		}
+	},
 	player: {
 		lives: 3,
 		world: {
@@ -382,7 +399,9 @@ var model = {
 					// entering a dungeon
 					if (worldMap[newI][newJ].isNewDungeon() && !worldMap[newI][newJ].entered){
 						//console.log("DBG player#moveIfPossible entering a dungeon");
-						game.state = STATES.dungeon;
+						//launching entry state
+						model.entry.activate();
+						//map location marked as entered
 						worldMap[newI][newJ].entered = true;
 						//dungeon maze and items
 						var newMaze = generateMaze(worldMap[newI][newJ].type);
@@ -399,7 +418,6 @@ var model = {
 							//console.log("entering dungeon, mob to place: "+monster.type+" "+monster.i+", "+monster.j);
 							model.dungeon.mobsManager.addMob(monster.type, monster.i, monster.j);
 						}
-						//model.dungeon.mobsManager.addMob(MOB.snake, 7,4);
 					}
 				}else{
 					//console.log("DBG player#moveIfPossible unpassable");
@@ -502,7 +520,6 @@ var model = {
 			return this.dungeon.hitpoints <= 0;
 		}
 	},
-	
 	dungeon: {
 		currentMaze: null,
 		arrowsManager: {
@@ -659,7 +676,6 @@ var model = {
 			}
 		}
 	},
-	
 	update: function(){
 		if (game.state == STATES.splash){
 			if (this.splash.currentTick > this.splash.maxTick){
@@ -669,31 +685,35 @@ var model = {
 				//console.log("#update this.splash.currentTick = "+this.splash.currentTick);
 			}
 		} else if (game.state == STATES.world){
-			//update player team
-			if (keyMap.a){
-				this.player.moveOnWorldIfPossible(-1,-1);
-				shouldStopStepAnimation = false;
-			}else if (keyMap.z){
-				this.player.moveOnWorldIfPossible(0,-1);
-				shouldStopStepAnimation = false;
-			}else if (keyMap.e){
-				this.player.moveOnWorldIfPossible(1,-1);
-				shouldStopStepAnimation = false;
-			}else if (keyMap.q){
-				this.player.moveOnWorldIfPossible(-1,0);
-				shouldStopStepAnimation = false;
-			} else if (keyMap.d){
-				this.player.moveOnWorldIfPossible(1,0);
-				shouldStopStepAnimation = false;
-			}else if (keyMap.w){
-				this.player.moveOnWorldIfPossible(-1,1);
-				shouldStopStepAnimation = false;
-			}else if (keyMap.x){
-				this.player.moveOnWorldIfPossible(0,1);
-				shouldStopStepAnimation = false;
-			}else if (keyMap.c){
-				this.player.moveOnWorldIfPossible(1,1);
-				shouldStopStepAnimation = false;
+			if (this.entry.active){
+				this.entry.update();
+			}else{
+				//update player team
+				if (keyMap.a){
+					this.player.moveOnWorldIfPossible(-1,-1);
+					shouldStopStepAnimation = false;
+				}else if (keyMap.z){
+					this.player.moveOnWorldIfPossible(0,-1);
+					shouldStopStepAnimation = false;
+				}else if (keyMap.e){
+					this.player.moveOnWorldIfPossible(1,-1);
+					shouldStopStepAnimation = false;
+				}else if (keyMap.q){
+					this.player.moveOnWorldIfPossible(-1,0);
+					shouldStopStepAnimation = false;
+				} else if (keyMap.d){
+					this.player.moveOnWorldIfPossible(1,0);
+					shouldStopStepAnimation = false;
+				}else if (keyMap.w){
+					this.player.moveOnWorldIfPossible(-1,1);
+					shouldStopStepAnimation = false;
+				}else if (keyMap.x){
+					this.player.moveOnWorldIfPossible(0,1);
+					shouldStopStepAnimation = false;
+				}else if (keyMap.c){
+					this.player.moveOnWorldIfPossible(1,1);
+					shouldStopStepAnimation = false;
+				}
 			}
 		}else if (game.state == STATES.dungeon){
 			//update for player
@@ -769,7 +789,7 @@ var model = {
 
 
 		}
-	},
+	}
 };
 
 //global variables
@@ -901,6 +921,10 @@ game.draw = function(){
 					graphical.world.tile.height*graphical.world.zoom
 				);
 			}
+		}
+		if (model.entry.active){
+			var entryStep = (model.entry.currentTick*14)/model.entry.maxTicks;
+			context.fillRect(0,0,618,entryStep*graphical.world.tile.height*graphical.world.zoom);
 		}
 		//context.fillText("FPS: "+this.fps,10,90);
 	}else if (this.state == STATES.dungeon){
