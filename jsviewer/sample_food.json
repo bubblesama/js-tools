@@ -7,7 +7,7 @@
 	},
 	"content":[
 		{
-			"id": "auto",
+			"id": "gram",
 			"name":"gram",
 			"type": "unit"
 		},
@@ -24,13 +24,13 @@
 		{
 			"id": "auto",
 			"name":"apple",
-			"type": "ingredient",
+			"type": "ingredient"
 		},
 		{
 			"id": "auto",
 			"name":"flour",
 			"type": "ingredient",
-			"unit":"#gram",
+			"unit":"#gram"
 		},
 		{
 			"id": "auto",
