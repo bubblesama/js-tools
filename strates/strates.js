@@ -36,15 +36,18 @@ game.fps = 0;
 
 //COMPOSANTS DU JEU
 game.model = {
+
 	map: {
 		WIDTH: 200.0,
 		HEIGHT: 100.0,
-		elements: [
-			{type: "tree", x: 10.0, y: 10.0, size: 2.0},
-			{type: "tree", x: 18.0, y: 12.0, size: 3.0}
-		]
+		elements: [],
+		addElement: function(type, x, y, size){
+			game.model.map.elements.push({"type": type, "x":x, "y": y, "size":size});
+		}
 	},
-
+	addMapElement: function(type, x, y, size){
+		game.model.map.addElement(type, x, y, size);
+	},
 	_update: function(){
 
 	}
@@ -68,15 +71,45 @@ game.draw = function(){
 	context.fillText("FPS: "+this.fps,10,20);
 	//map
 	context.fillStyle = "rgb(60,120,60)";
+	context.strokeStyle = "rgb(60,120,60)";
 	for (var i=0;i < game.model.map.elements.length;i++){
-		context.fillRect(
+		//context.fillRect(
+		//	game.display.map.pixels_per_unit*(game.model.map.elements[i].x-game.model.map.elements[i].size/2),
+		//	game.display.map.pixels_per_unit*(game.model.map.elements[i].y-game.model.map.elements[i].size/2),
+		//	game.display.map.pixels_per_unit*game.model.map.elements[i].size,
+		//	game.display.map.pixels_per_unit*game.model.map.elements[i].size
+		//);
+		fillEllipse(
+			context,
 			game.display.map.pixels_per_unit*(game.model.map.elements[i].x-game.model.map.elements[i].size/2),
 			game.display.map.pixels_per_unit*(game.model.map.elements[i].y-game.model.map.elements[i].size/2),
 			game.display.map.pixels_per_unit*game.model.map.elements[i].size,
 			game.display.map.pixels_per_unit*game.model.map.elements[i].size
 		);
+
+
 	}
 };
+
+
+function fillEllipse(ctx, x, y, w, h) {
+	var kappa = .5522848,
+	ox = (w / 2) * kappa, // control point offset horizontal
+	oy = (h / 2) * kappa, // control point offset vertical
+	xe = x + w,           // x-end
+	ye = y + h,           // y-end
+	xm = x + w / 2,       // x-middle
+	ym = y + h / 2;       // y-middle
+	ctx.beginPath();
+	ctx.moveTo(x, ym);
+	ctx.bezierCurveTo(x, ym - oy, xm - ox, y, xm, y);
+	ctx.bezierCurveTo(xm + ox, y, xe, ym - oy, xe, ym);
+	ctx.bezierCurveTo(xe, ym + oy, xm + ox, ye, xm, ye);
+	ctx.bezierCurveTo(xm - ox, ye, x, ym + oy, x, ym);
+	ctx.fill();
+}
+
+
 
 // METHODE DE MaJ
 game.update = function(){
@@ -96,6 +129,10 @@ game.update = function(){
 
 //************************************ INIT ***********************************
 function start(){
+	//init
+	game.model.addMapElement("tree", 10.0, 10.0, 2.0);
+	game.model.addMapElement("tree", 10.0, 18.0, 4.0);
+
 	//graphical context
 	context.imageSmoothingEnabled = false;
 	requestAnimationFrame(mainLoop)
