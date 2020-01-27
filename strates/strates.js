@@ -56,7 +56,11 @@ game.model = {
 
 game.display = {
 	map: {
-		pixels_per_unit: 10
+		pixels_per_unit: 10,
+		from: {
+			x: 0,
+			y:0
+		}
 	}
 
 
@@ -65,7 +69,7 @@ game.display = {
 // METHODE DE DESSIN
 game.draw = function(){
 	//clean
-	context.fillStyle = "rgb(128,128,128)";
+	context.fillStyle = "rgb(200,200,200)";
 	context.fillRect(0,0,800,600);
 	context.fillStyle = "rgb(0,0,0)";
 	context.fillText("FPS: "+this.fps,10,20);
@@ -81,12 +85,11 @@ game.draw = function(){
 		//);
 		fillEllipse(
 			context,
-			game.display.map.pixels_per_unit*(game.model.map.elements[i].x-game.model.map.elements[i].size/2),
-			game.display.map.pixels_per_unit*(game.model.map.elements[i].y-game.model.map.elements[i].size/2),
+			game.display.map.pixels_per_unit*(game.model.map.elements[i].x-game.model.map.elements[i].size/2-game.display.map.from.x),
+			game.display.map.pixels_per_unit*(game.model.map.elements[i].y-game.model.map.elements[i].size/2-game.display.map.from.y),
 			game.display.map.pixels_per_unit*game.model.map.elements[i].size,
 			game.display.map.pixels_per_unit*game.model.map.elements[i].size
 		);
-
 
 	}
 };
