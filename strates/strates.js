@@ -27,6 +27,31 @@ document.addEventListener('keyup', (event) => {
 	keyMap[event.key] = false;
 }, false);
 
+
+function getMousePosition(canvas, evt) {
+	var rect = canvas.getBoundingClientRect();
+	return {
+		x: evt.clientX - rect.left,
+		y: evt.clientY - rect.top
+	};
+}
+
+var mouse = {
+	x: 200,
+	y: 200
+};
+
+canvas.addEventListener('mousemove', function(evt) {
+	var mousePosition = getMousePosition(canvas, evt);
+	if (isInRectangle(mousePosition.x, mousePosition.y, 0, 0, game.display.viewport.w, game.display.viewport.h)){
+		mouse.x = mousePosition.x;
+		mouse.y = mousePosition.y;
+	}
+}, false);
+
+
+//**********  game *
+
 var game = {};
 //données de base
 game.ticker = 0;
@@ -35,6 +60,7 @@ game.fps = 0;
 
 
 //COMPOSANTS DU JEU
+//MODEL
 game.model = {
 
 	map: {
@@ -51,9 +77,51 @@ game.model = {
 	_update: function(){
 
 	}
-
+};
+//CONTROLES
+game.controls = {
+	scroll: {
+		conf: {
+			dx: 5,
+			dy: 3
+		},
+		state: {
+			isScrolling : false,
+			dx: 0,
+			dy: 0
+		},
+		update: function(){
+			game.controls.scroll.state.dx = 0;
+			game.controls.scroll.state.dy = 0;
+			if (isInRectangle(mouse.x, mouse.y, 0, 0, game.display.viewport.w, game.display.controls.scroll.width)){
+				game.controls.scroll.state.isScrolling = true;
+				game.controls.scroll.state.dy = -game.controls.scroll.conf.dy;
+			}
+			if (isInRectangle(mouse.x, mouse.y, 0, game.display.viewport.h-game.display.controls.scroll.width, game.display.viewport.w, game.display.controls.scroll.width)){
+				game.controls.scroll.state.isScrolling = true;
+				game.controls.scroll.state.dy = game.controls.scroll.conf.dy;
+			}
+			if (isInRectangle(mouse.x, mouse.y, 0, 0, game.display.controls.scroll.width,game.display.viewport.h)){
+				game.controls.scroll.state.isScrolling = true;
+				game.controls.scroll.state.dx = -game.controls.scroll.conf.dx;
+			}
+			if (isInRectangle(mouse.x, mouse.y, game.display.viewport.w-game.display.controls.scroll.width, 0, game.display.controls.scroll.width, game.display.viewport.h)){
+				game.controls.scroll.state.isScrolling = true;
+				game.controls.scroll.state.dx = game.controls.scroll.conf.dx;
+			}
+		}
+	},
+	update: function(){
+		game.controls.scroll.update();
+	}
 };
 
+
+function isInRectangle(x, y, rectX0, rectY0, width, height){
+	return (x> rectX0 && x<rectX0+width && y > rectY0 && y < rectY0+height)
+};
+
+//AFFICHAGE
 game.display = {
 	viewport: {
 		w: 800,
@@ -69,6 +137,14 @@ game.display = {
 	controls: {
 		scroll :{
 			width: 40
+		}
+	},
+	update: function(){
+		//update from input
+		//scroll
+		if (game.controls.scroll.state.isScrolling){
+			game.display.map.from.x += game.controls.scroll.state.dx;
+			game.display.map.from.y += game.controls.scroll.state.dy;
 		}
 	}
 };
@@ -140,8 +216,12 @@ game.update = function(){
 	}else{
 		this.ticker++;
 	}
-	// rendu du modele
+	//inputs update
+	game.controls.update();
+	//model
 	game.model._update();
+	// display
+	game.display.update();
 };
 
 
