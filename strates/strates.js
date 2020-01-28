@@ -169,9 +169,17 @@ game.draw = function(){
 	context.strokeRect(0,game.display.viewport.h-game.display.controls.scroll.width,game.display.viewport.w,game.display.controls.scroll.width);
 	context.strokeRect(0,0,game.display.controls.scroll.width,game.display.viewport.h);
 	context.strokeRect(game.display.viewport.w-game.display.controls.scroll.width,0,game.display.controls.scroll.width,game.display.viewport.h);
+	//mouse
+	context.fillStyle = "rgb(255,255,0)";
+	fillEllipse(
+		context,
+		mouse.x,
+		mouse.y,
+		10,
+		10
+	);
 
 	//map
-	
 	for (var i=0;i < game.model.map.elements.length;i++){
 		context.fillStyle = "rgb(60,120,60)";
 		context.strokeStyle = "rgb(60,120,60)";
