@@ -55,28 +55,44 @@ game.model = {
 };
 
 game.display = {
+	viewport: {
+		w: 800,
+		h: 600
+	},
 	map: {
 		pixels_per_unit: 10,
 		from: {
 			x: 0,
 			y:0
 		}
+	},
+	controls: {
+		scroll :{
+			width: 40
+		}
 	}
-
-
 };
 
 // METHODE DE DESSIN
 game.draw = function(){
 	//clean
 	context.fillStyle = "rgb(200,200,200)";
-	context.fillRect(0,0,800,600);
+	context.fillRect(0,0,game.display.viewport.w,game.display.viewport.h);
 	context.fillStyle = "rgb(0,0,0)";
 	context.fillText("FPS: "+this.fps,10,20);
+	//controls
+	// four scroll zones
+	context.strokeStyle = "rgb(255,0,0)";
+	context.strokeRect(0,0,game.display.viewport.w,game.display.controls.scroll.width);
+	context.strokeRect(0,game.display.viewport.h-game.display.controls.scroll.width,game.display.viewport.w,game.display.controls.scroll.width);
+	context.strokeRect(0,0,game.display.controls.scroll.width,game.display.viewport.h);
+	context.strokeRect(game.display.viewport.w-game.display.controls.scroll.width,0,game.display.controls.scroll.width,game.display.viewport.h);
+
 	//map
-	context.fillStyle = "rgb(60,120,60)";
-	context.strokeStyle = "rgb(60,120,60)";
+	
 	for (var i=0;i < game.model.map.elements.length;i++){
+		context.fillStyle = "rgb(60,120,60)";
+		context.strokeStyle = "rgb(60,120,60)";
 		//context.fillRect(
 		//	game.display.map.pixels_per_unit*(game.model.map.elements[i].x-game.model.map.elements[i].size/2),
 		//	game.display.map.pixels_per_unit*(game.model.map.elements[i].y-game.model.map.elements[i].size/2),
