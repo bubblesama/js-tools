@@ -82,8 +82,8 @@ game.model = {
 game.controls = {
 	scroll: {
 		conf: {
-			dx: 5,
-			dy: 3
+			dx: 2,
+			dy: 1
 		},
 		state: {
 			isScrolling : false,
@@ -169,15 +169,7 @@ game.draw = function(){
 	context.strokeRect(0,game.display.viewport.h-game.display.controls.scroll.width,game.display.viewport.w,game.display.controls.scroll.width);
 	context.strokeRect(0,0,game.display.controls.scroll.width,game.display.viewport.h);
 	context.strokeRect(game.display.viewport.w-game.display.controls.scroll.width,0,game.display.controls.scroll.width,game.display.viewport.h);
-	//mouse
-	context.fillStyle = "rgb(255,255,0)";
-	fillEllipse(
-		context,
-		mouse.x,
-		mouse.y,
-		10,
-		10
-	);
+	
 
 	//map
 	for (var i=0;i < game.model.map.elements.length;i++){
@@ -198,6 +190,16 @@ game.draw = function(){
 		);
 
 	}
+
+	//mouse
+	context.fillStyle = "rgb(255,255,0)";
+	fillEllipse(
+		context,
+		mouse.x,
+		mouse.y,
+		10,
+		10
+	);
 };
 
 
@@ -247,6 +249,7 @@ function start(){
 	game.model.addMapElement("tree", 10.0, 18.0, 4.0);
 	for (var i=0;i<400;i++){
 		game.model.addMapElement("tree", i, i/10, 1.0);
+		game.model.addMapElement("tree", i, i, 1.0);
 		game.model.addMapElement("tree", i/10, i, 1.0);
 	}
 	//graphical context
