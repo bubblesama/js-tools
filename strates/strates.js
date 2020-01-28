@@ -145,6 +145,12 @@ game.display = {
 		if (game.controls.scroll.state.isScrolling){
 			game.display.map.from.x += game.controls.scroll.state.dx;
 			game.display.map.from.y += game.controls.scroll.state.dy;
+
+			game.display.map.from.x = Math.max(0, game.display.map.from.x);
+			game.display.map.from.x = Math.min(game.display.map.from.x, game.model.map.WIDTH);
+			game.display.map.from.y = Math.max(0, game.display.map.from.y);
+			game.display.map.from.y = Math.min(game.display.map.from.y, game.model.map.HEIGHT);
+
 		}
 	}
 };
@@ -231,7 +237,10 @@ function start(){
 	//init
 	game.model.addMapElement("tree", 10.0, 10.0, 2.0);
 	game.model.addMapElement("tree", 10.0, 18.0, 4.0);
-
+	for (var i=0;i<400;i++){
+		game.model.addMapElement("tree", i, i/10, 1.0);
+		game.model.addMapElement("tree", i/10, i, 1.0);
+	}
 	//graphical context
 	context.imageSmoothingEnabled = false;
 	requestAnimationFrame(mainLoop)
