@@ -49,6 +49,13 @@ canvas.addEventListener('mousemove', function(evt) {
 	}
 }, false);
 
+canvas.addEventListener('mouseout', function(evt) {
+	game.controls.mouse.in = false;
+}, false);
+
+canvas.addEventListener('mouseover', function(evt) {
+	game.controls.mouse.in = true;
+}, false);
 
 //**********  game *
 
@@ -111,6 +118,11 @@ game.controls = {
 			}
 		}
 	},
+	mouse: {
+		x: 200,
+		y: 200,
+		in: true
+	},
 	update: function(){
 		game.controls.scroll.update();
 	}
@@ -124,12 +136,14 @@ function isInRectangle(x, y, rectX0, rectY0, width, height){
 //AFFICHAGE
 game.display = {
 	viewport: {
+		//pixels
 		w: 800,
 		h: 600
 	},
 	map: {
 		pixels_per_unit: 10,
 		from: {
+			//coords
 			x: 0,
 			y:0
 		}
@@ -192,14 +206,16 @@ game.draw = function(){
 	}
 
 	//mouse
-	context.fillStyle = "rgb(255,255,0)";
-	fillEllipse(
-		context,
-		mouse.x,
-		mouse.y,
-		10,
-		10
-	);
+	if (game.controls.mouse.in){
+		context.fillStyle = "rgb(255,255,0)";
+		fillEllipse(
+			context,
+			mouse.x,
+			mouse.y,
+			10,
+			10
+		);
+	}
 };
 
 
