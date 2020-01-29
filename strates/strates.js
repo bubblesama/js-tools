@@ -36,25 +36,28 @@ function getMousePosition(canvas, evt) {
 	};
 }
 
-var mouse = {
-	x: 200,
-	y: 200
-};
-
 canvas.addEventListener('mousemove', function(evt) {
 	var mousePosition = getMousePosition(canvas, evt);
 	if (isInRectangle(mousePosition.x, mousePosition.y, 0, 0, game.display.viewport.w, game.display.viewport.h)){
-		mouse.x = mousePosition.x;
-		mouse.y = mousePosition.y;
+		game.controls.mouse.x = mousePosition.x;
+		game.controls.mouse.y = mousePosition.y;
 	}
 }, false);
 
 canvas.addEventListener('mouseout', function(evt) {
 	game.controls.mouse.in = false;
+	game.controls.mouse.x = -1;
+	game.controls.mouse.y = -1;
 }, false);
 
 canvas.addEventListener('mouseover', function(evt) {
 	game.controls.mouse.in = true;
+}, false);
+
+canvas.addEventListener('click', function(evt) {
+	//console.log("click");
+	game.controls.mouse.clicked = true;
+
 }, false);
 
 //**********  game *
@@ -69,7 +72,6 @@ game.fps = 0;
 //COMPOSANTS DU JEU
 //MODEL
 game.model = {
-
 	map: {
 		WIDTH: 200.0,
 		HEIGHT: 100.0,
@@ -83,7 +85,11 @@ game.model = {
 	},
 	_update: function(){
 
+	},
+	registerPlayerAction: function(x, y){
+		console.log("#registerPlayerAction action on map point: "+x +" "+y);
 	}
+
 };
 //CONTROLES
 game.controls = {
@@ -100,19 +106,19 @@ game.controls = {
 		update: function(){
 			game.controls.scroll.state.dx = 0;
 			game.controls.scroll.state.dy = 0;
-			if (isInRectangle(mouse.x, mouse.y, 0, 0, game.display.viewport.w, game.display.controls.scroll.width)){
+			if (isInRectangle(game.controls.mouse.x, game.controls.mouse.y, 0, 0, game.display.viewport.w, game.display.controls.scroll.width)){
 				game.controls.scroll.state.isScrolling = true;
 				game.controls.scroll.state.dy = -game.controls.scroll.conf.dy;
 			}
-			if (isInRectangle(mouse.x, mouse.y, 0, game.display.viewport.h-game.display.controls.scroll.width, game.display.viewport.w, game.display.controls.scroll.width)){
+			if (isInRectangle(game.controls.mouse.x, game.controls.mouse.y, 0, game.display.viewport.h-game.display.controls.scroll.width, game.display.viewport.w, game.display.controls.scroll.width)){
 				game.controls.scroll.state.isScrolling = true;
 				game.controls.scroll.state.dy = game.controls.scroll.conf.dy;
 			}
-			if (isInRectangle(mouse.x, mouse.y, 0, 0, game.display.controls.scroll.width,game.display.viewport.h)){
+			if (isInRectangle(game.controls.mouse.x, game.controls.mouse.y, 0, 0, game.display.controls.scroll.width,game.display.viewport.h)){
 				game.controls.scroll.state.isScrolling = true;
 				game.controls.scroll.state.dx = -game.controls.scroll.conf.dx;
 			}
-			if (isInRectangle(mouse.x, mouse.y, game.display.viewport.w-game.display.controls.scroll.width, 0, game.display.controls.scroll.width, game.display.viewport.h)){
+			if (isInRectangle(game.controls.mouse.x, game.controls.mouse.y, game.display.viewport.w-game.display.controls.scroll.width, 0, game.display.controls.scroll.width, game.display.viewport.h)){
 				game.controls.scroll.state.isScrolling = true;
 				game.controls.scroll.state.dx = game.controls.scroll.conf.dx;
 			}
@@ -121,10 +127,20 @@ game.controls = {
 	mouse: {
 		x: 200,
 		y: 200,
-		in: true
+		in: true,
+		clicked: false,
+		update: function(){
+			if (this.clicked){
+				this.clicked = false;
+				var gameX = (game.controls.mouse.x + game.display.map.from.x)/game.display.map.pixels_per_unit;
+				var gameY = (game.controls.mouse.y + game.display.map.from.y)/game.display.map.pixels_per_unit;
+				game.model.registerPlayerAction(gameX, gameY);
+			}
+		}
 	},
 	update: function(){
 		game.controls.scroll.update();
+		game.controls.mouse.update();
 	}
 };
 
@@ -210,8 +226,8 @@ game.draw = function(){
 		context.fillStyle = "rgb(255,255,0)";
 		fillEllipse(
 			context,
-			mouse.x,
-			mouse.y,
+			game.controls.mouse.x,
+			game.controls.mouse.y,
 			10,
 			10
 		);
