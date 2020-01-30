@@ -106,6 +106,7 @@ game.controls = {
 		update: function(){
 			game.controls.scroll.state.dx = 0;
 			game.controls.scroll.state.dy = 0;
+			game.controls.scroll.state.isScrolling = false;
 			if (isInRectangle(game.controls.mouse.x, game.controls.mouse.y, 0, 0, game.display.viewport.w, game.display.controls.scroll.width)){
 				game.controls.scroll.state.isScrolling = true;
 				game.controls.scroll.state.dy = -game.controls.scroll.conf.dy;
@@ -132,8 +133,8 @@ game.controls = {
 		update: function(){
 			if (this.clicked){
 				this.clicked = false;
-				var gameX = (game.controls.mouse.x + game.display.map.from.x)/game.display.map.pixels_per_unit;
-				var gameY = (game.controls.mouse.y + game.display.map.from.y)/game.display.map.pixels_per_unit;
+				var gameX = game.controls.mouse.x/game.display.map.pixels_per_unit + game.display.map.from.x;
+				var gameY = game.controls.mouse.y/game.display.map.pixels_per_unit + game.display.map.from.y;
 				game.model.registerPlayerAction(gameX, gameY);
 			}
 		}
@@ -161,11 +162,11 @@ game.display = {
 		from: {
 			//coords
 			x: 0,
-			y:0
+			y: 0
 		}
 	},
 	controls: {
-		scroll :{
+		scroll: {
 			width: 40
 		}
 	},
@@ -177,9 +178,9 @@ game.display = {
 			game.display.map.from.y += game.controls.scroll.state.dy;
 
 			game.display.map.from.x = Math.max(0, game.display.map.from.x);
-			game.display.map.from.x = Math.min(game.display.map.from.x, game.model.map.WIDTH);
+			game.display.map.from.x = Math.min(game.display.map.from.x, game.model.map.WIDTH-game.display.viewport.w/game.display.map.pixels_per_unit);
 			game.display.map.from.y = Math.max(0, game.display.map.from.y);
-			game.display.map.from.y = Math.min(game.display.map.from.y, game.model.map.HEIGHT);
+			game.display.map.from.y = Math.min(game.display.map.from.y, game.model.map.HEIGHT-game.display.viewport.h/game.display.map.pixels_per_unit);
 
 		}
 	}
@@ -202,23 +203,25 @@ game.draw = function(){
 	
 
 	//map
+	context.fillStyle = "rgb(60,120,60)";
+	context.strokeStyle = "rgb(60,120,60)";
 	for (var i=0;i < game.model.map.elements.length;i++){
-		context.fillStyle = "rgb(60,120,60)";
-		context.strokeStyle = "rgb(60,120,60)";
-		//context.fillRect(
-		//	game.display.map.pixels_per_unit*(game.model.map.elements[i].x-game.model.map.elements[i].size/2),
-		//	game.display.map.pixels_per_unit*(game.model.map.elements[i].y-game.model.map.elements[i].size/2),
-		//	game.display.map.pixels_per_unit*game.model.map.elements[i].size,
-		//	game.display.map.pixels_per_unit*game.model.map.elements[i].size
-		//);
-		fillEllipse(
-			context,
-			game.display.map.pixels_per_unit*(game.model.map.elements[i].x-game.model.map.elements[i].size/2-game.display.map.from.x),
-			game.display.map.pixels_per_unit*(game.model.map.elements[i].y-game.model.map.elements[i].size/2-game.display.map.from.y),
-			game.display.map.pixels_per_unit*game.model.map.elements[i].size,
-			game.display.map.pixels_per_unit*game.model.map.elements[i].size
-		);
-
+		var currentElement = game.model.map.elements[i];
+		if (isInRectangle(currentElement.x,currentElement.y, 0,0,game.model.map.WIDTH,game.model.map.HEIGHT)){
+			//context.fillRect(
+			//	game.display.map.pixels_per_unit*(game.model.map.elements[i].x-game.model.map.elements[i].size/2),
+			//	game.display.map.pixels_per_unit*(game.model.map.elements[i].y-game.model.map.elements[i].size/2),
+			//	game.display.map.pixels_per_unit*game.model.map.elements[i].size,
+			//	game.display.map.pixels_per_unit*game.model.map.elements[i].size
+			//);
+			fillEllipse(
+				context,
+				game.display.map.pixels_per_unit*(game.model.map.elements[i].x-game.model.map.elements[i].size/2-game.display.map.from.x),
+				game.display.map.pixels_per_unit*(game.model.map.elements[i].y-game.model.map.elements[i].size/2-game.display.map.from.y),
+				game.display.map.pixels_per_unit*game.model.map.elements[i].size,
+				game.display.map.pixels_per_unit*game.model.map.elements[i].size
+			);
+		}
 	}
 
 	//mouse
@@ -277,7 +280,7 @@ game.update = function(){
 //************************************ INIT ***********************************
 function start(){
 	//init
-	game.model.addMapElement("tree", 10.0, 10.0, 2.0);
+	game.model.addMapElement("tree", 10.0, 10.0, 3.0);
 	game.model.addMapElement("tree", 10.0, 18.0, 4.0);
 	for (var i=0;i<400;i++){
 		game.model.addMapElement("tree", i, i/10, 1.0);
