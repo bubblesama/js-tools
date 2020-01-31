@@ -83,6 +83,25 @@ game.model = {
 	addMapElement: function(type, x, y, size){
 		game.model.map.addElement(type, x, y, size);
 	},
+	mobs: {
+		list: [],
+		addMob: function(type, x0, y0, size){
+			this.list.push({
+				//mob definition
+				type: type,
+				trunk: {
+					x: x0,
+					y: y0,
+					size: size
+				},
+				//TODO mob brain and updates
+				legs: {}
+				
+
+			});
+		}
+	},
+	//global functions
 	_update: function(){
 
 	},
@@ -239,18 +258,23 @@ game.draw = function(){
 		}
 	}
 	//mobs
-	context.drawImage(
-		game.display.sprites.gobo.sheet,
-		game.display.sprites.gobo.from.x,
-		game.display.sprites.gobo.from.y,
-		game.display.sprites.gobo.width,
-		game.display.sprites.gobo.height,
-		40,
-		40,
-		game.display.sprites.gobo.width,
-		game.display.sprites.gobo.height
-	);
+	for (var i=0;i < game.model.mobs.list.length; i++){
+		var mob = game.model.mobs.list[i];
 
+
+		context.drawImage(
+			game.display.sprites.gobo.sheet,
+			game.display.sprites.gobo.from.x,
+			game.display.sprites.gobo.from.y,
+			game.display.sprites.gobo.width,
+			game.display.sprites.gobo.height,
+			game.display.map.pixels_per_unit*(mob.x-mob.size/2-game.display.map.from.x),
+			game.display.map.pixels_per_unit*(mob.y-mob.size/2-game.display.map.from.y),
+			game.display.sprites.gobo.width,
+			game.display.sprites.gobo.height
+		);
+
+	}
 	//mouse
 	if (game.controls.mouse.in){
 		context.fillStyle = "rgb(255,255,0)";
@@ -310,10 +334,11 @@ function start(){
 	game.model.addMapElement("tree", 10.0, 10.0, 3.0);
 	game.model.addMapElement("tree", 10.0, 18.0, 4.0);
 	for (var i=0;i<400;i++){
-		game.model.addMapElement("tree", i, i/10, 1.0);
-		game.model.addMapElement("tree", i, i, 1.0);
-		game.model.addMapElement("tree", i/10, i, 1.0);
+		game.model.addMapElement("tree", i, 	i/10, 	1.0);
+		game.model.addMapElement("tree", i, 	i, 		1.0);
+		game.model.addMapElement("tree", i/10, 	i, 		1.0);
 	}
+	game.model.mobs.addMob("gobo", 10, 20, 2);
 	//graphical context
 	context.imageSmoothingEnabled = false;
 	//ressource loading
