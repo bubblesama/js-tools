@@ -136,6 +136,11 @@ game.controls = {
 				var gameX = game.controls.mouse.x/game.display.map.pixels_per_unit + game.display.map.from.x;
 				var gameY = game.controls.mouse.y/game.display.map.pixels_per_unit + game.display.map.from.y;
 				game.model.registerPlayerAction(gameX, gameY);
+				//debug
+				document.getElementById("mouse-click-y").innerHTML=(gameY+"").split(".")[0];
+				document.getElementById("mouse-click-x").innerHTML=(gameX+"").split(".")[0];
+			
+
 			}
 		}
 	},
