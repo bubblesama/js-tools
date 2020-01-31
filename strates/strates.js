@@ -170,6 +170,16 @@ game.display = {
 			y: 0
 		}
 	},
+	sprites: {
+		// gobo: 804x1324 pour 13x21 => ?x?
+		gobo: {
+			//248,127, 50x45
+			from: {x: 248, y: 127},
+			width: 50,
+			height: 45,
+			sheet: null
+		}
+	},
 	controls: {
 		scroll: {
 			width: 40
@@ -228,6 +238,18 @@ game.draw = function(){
 			);
 		}
 	}
+	//mobs
+	context.drawImage(
+		game.display.sprites.gobo.sheet,
+		game.display.sprites.gobo.from.x,
+		game.display.sprites.gobo.from.y,
+		game.display.sprites.gobo.width,
+		game.display.sprites.gobo.height,
+		40,
+		40,
+		game.display.sprites.gobo.width,
+		game.display.sprites.gobo.height
+	);
 
 	//mouse
 	if (game.controls.mouse.in){
@@ -294,7 +316,12 @@ function start(){
 	}
 	//graphical context
 	context.imageSmoothingEnabled = false;
-	requestAnimationFrame(mainLoop)
+	//ressource loading
+	game.display.sprites.gobo.sheet = new Image();
+	game.display.sprites.gobo.sheet.src = "strates_picto.png";
+	game.display.sprites.gobo.sheet.onload = function(){
+		requestAnimationFrame(mainLoop);
+	};
 };
 
 function mainLoop() {
