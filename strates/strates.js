@@ -97,7 +97,6 @@ game.model = {
 				//TODO mob brain and updates
 				legs: {}
 				
-
 			});
 		}
 	},
@@ -260,20 +259,17 @@ game.draw = function(){
 	//mobs
 	for (var i=0;i < game.model.mobs.list.length; i++){
 		var mob = game.model.mobs.list[i];
-
-
 		context.drawImage(
 			game.display.sprites.gobo.sheet,
 			game.display.sprites.gobo.from.x,
 			game.display.sprites.gobo.from.y,
 			game.display.sprites.gobo.width,
 			game.display.sprites.gobo.height,
-			game.display.map.pixels_per_unit*(mob.x-mob.size/2-game.display.map.from.x),
-			game.display.map.pixels_per_unit*(mob.y-mob.size/2-game.display.map.from.y),
+			game.display.map.pixels_per_unit*(mob.trunk.x-mob.trunk.size/2-game.display.map.from.x),
+			game.display.map.pixels_per_unit*(mob.trunk.y-mob.trunk.size/2-game.display.map.from.y),
 			game.display.sprites.gobo.width,
 			game.display.sprites.gobo.height
 		);
-
 	}
 	//mouse
 	if (game.controls.mouse.in){
@@ -332,13 +328,13 @@ game.update = function(){
 function start(){
 	//init
 	game.model.addMapElement("tree", 10.0, 10.0, 3.0);
-	game.model.addMapElement("tree", 10.0, 18.0, 4.0);
+	//game.model.addMapElement("tree", 10.0, 18.0, 4.0);
 	for (var i=0;i<400;i++){
 		game.model.addMapElement("tree", i, 	i/10, 	1.0);
 		game.model.addMapElement("tree", i, 	i, 		1.0);
 		game.model.addMapElement("tree", i/10, 	i, 		1.0);
 	}
-	game.model.mobs.addMob("gobo", 10, 20, 2);
+	game.model.mobs.addMob("gobo", 10, 12, 2);
 	//graphical context
 	context.imageSmoothingEnabled = false;
 	//ressource loading
