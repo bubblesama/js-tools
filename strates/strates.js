@@ -125,24 +125,54 @@ game.controls = {
 			game.controls.scroll.state.dx = 0;
 			game.controls.scroll.state.dy = 0;
 			game.controls.scroll.state.isScrolling = false;
-			if (isInRectangle(game.controls.mouse.x, game.controls.mouse.y, 0, 0, game.display.viewport.w, game.display.controls.scroll.width)){
+			if (isInRectangle(
+					game.controls.mouse.x,
+					game.controls.mouse.y,
+					0,
+					0,
+					game.display.viewport.w-game.display.portaits.w,
+					game.display.controls.scroll.width
+			)){
 				game.controls.scroll.state.isScrolling = true;
 				game.controls.scroll.state.dy = -game.controls.scroll.conf.dy;
 			}
-			if (isInRectangle(game.controls.mouse.x, game.controls.mouse.y, 0, game.display.viewport.h-game.display.controls.scroll.width, game.display.viewport.w, game.display.controls.scroll.width)){
+			if (isInRectangle(
+					game.controls.mouse.x,
+					game.controls.mouse.y,
+					0,
+					game.display.viewport.h-game.display.controls.scroll.width,
+					game.display.viewport.w-game.display.portaits.w,
+					game.display.controls.scroll.width
+			)){
 				game.controls.scroll.state.isScrolling = true;
 				game.controls.scroll.state.dy = game.controls.scroll.conf.dy;
 			}
-			if (isInRectangle(game.controls.mouse.x, game.controls.mouse.y, 0, 0, game.display.controls.scroll.width,game.display.viewport.h)){
+			if (isInRectangle(
+					game.controls.mouse.x,
+					game.controls.mouse.y,
+					0,
+					0,
+					game.display.controls.scroll.width-game.display.portaits.w,
+					game.display.viewport.h
+			)){
 				game.controls.scroll.state.isScrolling = true;
 				game.controls.scroll.state.dx = -game.controls.scroll.conf.dx;
 			}
-			if (isInRectangle(game.controls.mouse.x, game.controls.mouse.y, game.display.viewport.w-game.display.controls.scroll.width, 0, game.display.controls.scroll.width, game.display.viewport.h)){
+			if (isInRectangle(
+					game.controls.mouse.x,
+					game.controls.mouse.y,
+					game.display.viewport.w-game.display.controls.scroll.width-game.display.portaits.w,
+					0,
+					game.display.controls.scroll.width,
+					game.display.viewport.h
+			)){
 				game.controls.scroll.state.isScrolling = true;
 				game.controls.scroll.state.dx = game.controls.scroll.conf.dx;
 			}
 		}
 	},
+
+
 	mouse: {
 		x: 200,
 		y: 200,
@@ -198,6 +228,10 @@ game.display = {
 			sheet: null
 		}
 	},
+	portaits: {
+		w: 100,
+		h: 150
+	},
 	controls: {
 		scroll: {
 			width: 40
@@ -229,10 +263,10 @@ game.draw = function(){
 	//controls
 	// four scroll zones
 	context.strokeStyle = "rgb(255,0,0)";
-	context.strokeRect(0,0,game.display.viewport.w,game.display.controls.scroll.width);
-	context.strokeRect(0,game.display.viewport.h-game.display.controls.scroll.width,game.display.viewport.w,game.display.controls.scroll.width);
+	context.strokeRect(0,0,game.display.viewport.w-game.display.portaits.w,game.display.controls.scroll.width);
+	context.strokeRect(0,game.display.viewport.h-game.display.controls.scroll.width,game.display.viewport.w-game.display.portaits.w,game.display.controls.scroll.width);
 	context.strokeRect(0,0,game.display.controls.scroll.width,game.display.viewport.h);
-	context.strokeRect(game.display.viewport.w-game.display.controls.scroll.width,0,game.display.controls.scroll.width,game.display.viewport.h);
+	context.strokeRect(game.display.viewport.w-game.display.controls.scroll.width-game.display.portaits.w,0,game.display.controls.scroll.width,game.display.viewport.h);
 	
 
 	//map
