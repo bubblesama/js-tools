@@ -152,7 +152,7 @@ game.controls = {
 					game.controls.mouse.y,
 					0,
 					0,
-					game.display.controls.scroll.width-game.display.portaits.w,
+					game.display.controls.scroll.width,
 					game.display.viewport.h
 			)){
 				game.controls.scroll.state.isScrolling = true;
@@ -171,8 +171,6 @@ game.controls = {
 			}
 		}
 	},
-
-
 	mouse: {
 		x: 200,
 		y: 200,
@@ -226,6 +224,9 @@ game.display = {
 			width: 50,
 			height: 45,
 			sheet: null
+		},
+		chars: {
+			sheet: null
 		}
 	},
 	portaits: {
@@ -267,20 +268,12 @@ game.draw = function(){
 	context.strokeRect(0,game.display.viewport.h-game.display.controls.scroll.width,game.display.viewport.w-game.display.portaits.w,game.display.controls.scroll.width);
 	context.strokeRect(0,0,game.display.controls.scroll.width,game.display.viewport.h);
 	context.strokeRect(game.display.viewport.w-game.display.controls.scroll.width-game.display.portaits.w,0,game.display.controls.scroll.width,game.display.viewport.h);
-	
-
 	//map
 	context.fillStyle = "rgb(60,120,60)";
 	context.strokeStyle = "rgb(60,120,60)";
 	for (var i=0;i < game.model.map.elements.length;i++){
 		var currentElement = game.model.map.elements[i];
 		if (isInRectangle(currentElement.x,currentElement.y, 0,0,game.model.map.WIDTH,game.model.map.HEIGHT)){
-			//context.fillRect(
-			//	game.display.map.pixels_per_unit*(game.model.map.elements[i].x-game.model.map.elements[i].size/2),
-			//	game.display.map.pixels_per_unit*(game.model.map.elements[i].y-game.model.map.elements[i].size/2),
-			//	game.display.map.pixels_per_unit*game.model.map.elements[i].size,
-			//	game.display.map.pixels_per_unit*game.model.map.elements[i].size
-			//);
 			fillEllipse(
 				context,
 				game.display.map.pixels_per_unit*(game.model.map.elements[i].x-game.model.map.elements[i].size/2-game.display.map.from.x),
@@ -305,6 +298,18 @@ game.draw = function(){
 			game.display.sprites.gobo.height
 		);
 	}
+	//controls chars
+	context.drawImage(
+		game.display.sprites.chars.sheet,
+		0,
+		0,
+		game.display.portaits.w,
+		game.display.portaits.h,
+		game.display.viewport.w-game.display.portaits.w,
+		0,
+		game.display.portaits.w,
+		game.display.portaits.h
+	);
 	//mouse
 	if (game.controls.mouse.in){
 		context.fillStyle = "rgb(255,255,0)";
@@ -316,6 +321,7 @@ game.draw = function(){
 			10
 		);
 	}
+	
 };
 
 
@@ -375,7 +381,11 @@ function start(){
 	game.display.sprites.gobo.sheet = new Image();
 	game.display.sprites.gobo.sheet.src = "strates_picto.png";
 	game.display.sprites.gobo.sheet.onload = function(){
-		requestAnimationFrame(mainLoop);
+		game.display.sprites.chars.sheet = new Image();
+		game.display.sprites.chars.sheet.src = "strates_chars.png";
+		game.display.sprites.chars.sheet.onload = function(){
+			requestAnimationFrame(mainLoop);
+		}
 	};
 };
 
