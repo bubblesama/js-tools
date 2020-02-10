@@ -70,6 +70,8 @@ game.fps = 0;
 
 
 //COMPOSANTS DU JEU
+
+
 //MODEL
 game.model = {
 	map: {
@@ -176,7 +178,7 @@ game.controls = {
 		zones: [],
 		init: function(){
 			game.controls.over.addZone(
-				"portrait #1",
+				"portrait_1",
 				game.display.viewport.w - game.display.portaits.w,
 				0,
 				game.display.portaits.w,
@@ -186,9 +188,9 @@ game.controls = {
 				}
 			);
 		},
-		addZone: function(name, x0, y0, w, h, overTrigger){
+		addZone: function(zoneId, x0, y0, w, h, overTrigger){
 			game.controls.over.zones.push({
-				name: name,
+				zoneId: zoneId,
 				x0: x0,
 				y0: y0,
 				w: w,
@@ -197,6 +199,15 @@ game.controls = {
 				over: false,
 				overTick: 0
 			});
+		},
+		getZoneById:function(zoneId) {
+			for (var i=0;i<game.controls.over.zones.length; i++){
+				var zone = game.controls.over.zones[i];
+				if (zone.zoneId == zoneId){
+					return zone;
+				}
+			}
+			return null;
 		},
 		update: function(){
 			for (var i=0;i<game.controls.over.zones.length; i++){
@@ -222,7 +233,45 @@ game.controls = {
 	scroll: {
 		conf: {
 			dx: 2,
-			dy: 1
+			dy: 1,
+			zones: [
+				{
+					id: "scroll_left", 
+					dx: -1, 
+					dy: 0, 
+					x0: 0, 
+					y0: 0, 
+					w: game.display.controls.scroll.w, 
+					h: game.display.viewport.h
+				},
+				{
+					id: "scroll_up", 
+					dx: 0, 
+					dy: -1, 
+					x0: 0, 
+					y0: 0, 
+					w: game.display.viewport.w-game.display.portaits.w, 
+					h: game.display.controls.scroll.width
+				},
+				{
+					id: "scroll_down", 
+					dx: 0, 
+					dy: 1, 
+					x0: 0, 
+					y0: game.display.viewport.h-game.display.controls.scroll.width, 
+					w: game.display.viewport.w-game.display.portaits.w, 
+					h: game.display.controls.scroll.width
+				},
+				{
+					id: "scroll_right", 
+					dx: 1, 
+					dy: 0, 
+					x0: game.display.viewport.w-game.display.controls.scroll.width-game.display.portaits.w, 
+					y0: 0, 
+					w: game.display.controls.scroll.width, 
+					h: game.display.viewport.h
+				}
+			]
 		},
 		state: {
 			isScrolling : false,
@@ -230,53 +279,34 @@ game.controls = {
 			dy: 0
 		},
 		update: function(){
+			game.controls.scroll.state.isScrolling = false;
 			game.controls.scroll.state.dx = 0;
 			game.controls.scroll.state.dy = 0;
-			game.controls.scroll.state.isScrolling = false;
-			if (isInRectangle(
-					game.controls.mouse.x,
-					game.controls.mouse.y,
-					0,
-					0,
-					game.display.viewport.w-game.display.portaits.w,
-					game.display.controls.scroll.width
-			)){
-				game.controls.scroll.state.isScrolling = true;
-				game.controls.scroll.state.dy = -game.controls.scroll.conf.dy;
+			for (var i=0; i<game.controls.scroll.conf.zones.length; i++){
+				var scrollZone = game.controls.scroll.conf.zones[i];
+				if (game.controls.over.getZoneById(scrollZone.id).over){
+					//console.log("over scroll zone: "+zone.zoneId);
+					game.controls.scroll.state.isScrolling = true;
+					game.controls.scroll.state.dx += scrollZone.dx*game.controls.scroll.conf.dx;
+					game.controls.scroll.state.dy += scrollZone.dy*game.controls.scroll.conf.dy;
+				}
 			}
-			if (isInRectangle(
-					game.controls.mouse.x,
-					game.controls.mouse.y,
-					0,
-					game.display.viewport.h-game.display.controls.scroll.width,
-					game.display.viewport.w-game.display.portaits.w,
-					game.display.controls.scroll.width
-			)){
-				game.controls.scroll.state.isScrolling = true;
-				game.controls.scroll.state.dy = game.controls.scroll.conf.dy;
+		},
+		init: function(){
+			for (var i=0;i<game.controls.scroll.conf.zones.length;i++){
+				var scrollZone = game.controls.scroll.conf.zones[i];
+				game.controls.over.addZone(
+					scrollZone.id,
+					scrollZone.x0,
+					scrollZone.y0,
+					scrollZone.w,
+					scrollZone.h,
+					function(){
+						//TODO: managing scroll: no need here
+					}
+				);
 			}
-			if (isInRectangle(
-					game.controls.mouse.x,
-					game.controls.mouse.y,
-					0,
-					0,
-					game.display.controls.scroll.width,
-					game.display.viewport.h
-			)){
-				game.controls.scroll.state.isScrolling = true;
-				game.controls.scroll.state.dx = -game.controls.scroll.conf.dx;
-			}
-			if (isInRectangle(
-					game.controls.mouse.x,
-					game.controls.mouse.y,
-					game.display.viewport.w-game.display.controls.scroll.width-game.display.portaits.w,
-					0,
-					game.display.controls.scroll.width,
-					game.display.viewport.h
-			)){
-				game.controls.scroll.state.isScrolling = true;
-				game.controls.scroll.state.dx = game.controls.scroll.conf.dx;
-			}
+		
 		}
 	},
 	mouse: {
@@ -300,11 +330,12 @@ game.controls = {
 	},
 	init: function(){
 		game.controls.over.init();
+		game.controls.scroll.init();
 	},
 	update: function(){
-		game.controls.scroll.update();
 		game.controls.mouse.update();
 		game.controls.over.update();
+		game.controls.scroll.update();
 	}
 };
 
@@ -364,7 +395,7 @@ game.draw = function(){
 		game.display.portaits.w,
 		game.display.portaits.h
 	);
-	if (game.controls.over.zones[0].over){
+	if (game.controls.over.getZoneById("portrait_1").over){
 		context.strokeStyle = "rgb(255,0,0)";
 		context.strokeRect(
 			game.display.viewport.w-game.display.portaits.w,
@@ -405,8 +436,6 @@ function fillEllipse(ctx, x, y, w, h) {
 	ctx.fill();
 }
 
-
-
 // METHODE DE MaJ
 game.update = function(){
 	// fps
@@ -424,8 +453,6 @@ game.update = function(){
 	// display
 	game.display.update();
 };
-
-
 
 //************************************ INIT ***********************************
 function start(){
@@ -458,5 +485,3 @@ function mainLoop() {
 	game.draw();
 	requestAnimationFrame(mainLoop);
 }
-
-
