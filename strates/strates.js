@@ -109,8 +109,116 @@ game.model = {
 	}
 
 };
+
+
+
+function isInRectangle(x, y, rectX0, rectY0, width, height){
+	return (x> rectX0 && x<rectX0+width && y > rectY0 && y < rectY0+height)
+};
+
+//AFFICHAGE
+game.display = {
+	viewport: {
+		//pixels
+		w: 800,
+		h: 600
+	},
+	map: {
+		pixels_per_unit: 10,
+		from: {
+			//coords
+			x: 0,
+			y: 0
+		}
+	},
+	sprites: {
+		// gobo: 804x1324 pour 13x21 => ?x?
+		gobo: {
+			//248,127, 50x45
+			from: {x: 248, y: 127},
+			width: 50,
+			height: 45,
+			sheet: null
+		},
+		chars: {
+			sheet: null
+		}
+	},
+	portaits: {
+		w: 100,
+		h: 150
+	},
+	controls: {
+		scroll: {
+			width: 40
+		}
+	},
+	update: function(){
+		//update from input
+		//scroll
+		if (game.controls.scroll.state.isScrolling){
+			game.display.map.from.x += game.controls.scroll.state.dx;
+			game.display.map.from.y += game.controls.scroll.state.dy;
+
+			game.display.map.from.x = Math.max(0, game.display.map.from.x);
+			game.display.map.from.x = Math.min(game.display.map.from.x, game.model.map.WIDTH-game.display.viewport.w/game.display.map.pixels_per_unit);
+			game.display.map.from.y = Math.max(0, game.display.map.from.y);
+			game.display.map.from.y = Math.min(game.display.map.from.y, game.model.map.HEIGHT-game.display.viewport.h/game.display.map.pixels_per_unit);
+
+		}
+	}
+};
+
+
 //CONTROLES
 game.controls = {
+	over: {
+		zones: [],
+		init: function(){
+			game.controls.over.addZone(
+				"portrait #1",
+				game.display.viewport.w - game.display.portaits.w,
+				0,
+				game.display.portaits.w,
+				game.display.portaits.h,
+				function(){
+					document.getElementById("dbg-portait-over").innerHTML = "yes";
+				}
+			);
+		},
+		addZone: function(name, x0, y0, w, h, overTrigger){
+			game.controls.over.zones.push({
+				name: name,
+				x0: x0,
+				y0: y0,
+				w: w,
+				h: h,
+				trigger: overTrigger,
+				over: false,
+				overTick: 0
+			});
+		},
+		update: function(){
+			for (var i=0;i<game.controls.over.zones.length; i++){
+				var zone = game.controls.over.zones[i];
+				zone.over = false;
+				if (isInRectangle(
+					game.controls.mouse.x,
+					game.controls.mouse.y,
+					zone.x0,
+					zone.y0,
+					zone.w,
+					zone.h	
+				)){
+					zone.over = true;
+					zone.overTick++;
+					zone.trigger();
+				}else{
+					zone.overTick = 0;
+				}
+			}
+		}
+	},
 	scroll: {
 		conf: {
 			dx: 2,
@@ -190,67 +298,13 @@ game.controls = {
 			}
 		}
 	},
+	init: function(){
+		game.controls.over.init();
+	},
 	update: function(){
 		game.controls.scroll.update();
 		game.controls.mouse.update();
-	}
-};
-
-
-function isInRectangle(x, y, rectX0, rectY0, width, height){
-	return (x> rectX0 && x<rectX0+width && y > rectY0 && y < rectY0+height)
-};
-
-//AFFICHAGE
-game.display = {
-	viewport: {
-		//pixels
-		w: 800,
-		h: 600
-	},
-	map: {
-		pixels_per_unit: 10,
-		from: {
-			//coords
-			x: 0,
-			y: 0
-		}
-	},
-	sprites: {
-		// gobo: 804x1324 pour 13x21 => ?x?
-		gobo: {
-			//248,127, 50x45
-			from: {x: 248, y: 127},
-			width: 50,
-			height: 45,
-			sheet: null
-		},
-		chars: {
-			sheet: null
-		}
-	},
-	portaits: {
-		w: 100,
-		h: 150
-	},
-	controls: {
-		scroll: {
-			width: 40
-		}
-	},
-	update: function(){
-		//update from input
-		//scroll
-		if (game.controls.scroll.state.isScrolling){
-			game.display.map.from.x += game.controls.scroll.state.dx;
-			game.display.map.from.y += game.controls.scroll.state.dy;
-
-			game.display.map.from.x = Math.max(0, game.display.map.from.x);
-			game.display.map.from.x = Math.min(game.display.map.from.x, game.model.map.WIDTH-game.display.viewport.w/game.display.map.pixels_per_unit);
-			game.display.map.from.y = Math.max(0, game.display.map.from.y);
-			game.display.map.from.y = Math.min(game.display.map.from.y, game.model.map.HEIGHT-game.display.viewport.h/game.display.map.pixels_per_unit);
-
-		}
+		game.controls.over.update();
 	}
 };
 
@@ -310,6 +364,15 @@ game.draw = function(){
 		game.display.portaits.w,
 		game.display.portaits.h
 	);
+	if (game.controls.over.zones[0].over){
+		context.strokeStyle = "rgb(255,0,0)";
+		context.strokeRect(
+			game.display.viewport.w-game.display.portaits.w,
+			0,
+			game.display.portaits.w,
+			game.display.portaits.h
+		);
+	}
 	//mouse
 	if (game.controls.mouse.in){
 		context.fillStyle = "rgb(255,255,0)";
@@ -384,6 +447,7 @@ function start(){
 		game.display.sprites.chars.sheet = new Image();
 		game.display.sprites.chars.sheet.src = "strates_chars.png";
 		game.display.sprites.chars.sheet.onload = function(){
+			game.controls.init();
 			requestAnimationFrame(mainLoop);
 		}
 	};
