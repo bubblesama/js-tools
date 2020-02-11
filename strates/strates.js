@@ -241,7 +241,7 @@ game.controls = {
 					dy: 0, 
 					x0: 0, 
 					y0: 0, 
-					w: game.display.controls.scroll.w, 
+					w: game.display.controls.scroll.width, 
 					h: game.display.viewport.h
 				},
 				{
@@ -284,7 +284,7 @@ game.controls = {
 			game.controls.scroll.state.dy = 0;
 			for (var i=0; i<game.controls.scroll.conf.zones.length; i++){
 				var scrollZone = game.controls.scroll.conf.zones[i];
-				if (game.controls.over.getZoneById(scrollZone.id).over){
+				if (game.controls.over.getZoneById(scrollZone.id).over && game.controls.over.getZoneById(scrollZone.id).overTick > 20){
 					//console.log("over scroll zone: "+zone.zoneId);
 					game.controls.scroll.state.isScrolling = true;
 					game.controls.scroll.state.dx += scrollZone.dx*game.controls.scroll.conf.dx;
