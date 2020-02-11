@@ -38,7 +38,7 @@ function getMousePosition(canvas, evt) {
 
 canvas.addEventListener('mousemove', function(evt) {
 	var mousePosition = getMousePosition(canvas, evt);
-	if (isInRectangle(mousePosition.x, mousePosition.y, 0, 0, game.display.viewport.w, game.display.viewport.h)){
+	if (isInRectangle(mousePosition.x, mousePosition.y, 0, 0, game.conf.display.viewport.W, game.conf.display.viewport.H)){
 		game.controls.mouse.x = mousePosition.x;
 		game.controls.mouse.y = mousePosition.y;
 	}
@@ -69,9 +69,32 @@ game.lastFpsCountDate = Date.now();
 game.fps = 0;
 
 
+//CONFIGURATION
+
+game.conf = {
+	controls: {
+
+	},
+	display:{
+		viewport: {
+			W: 800,
+			H: 600
+		},
+		map: {
+			PX_PER_UNIT: 10
+		},
+		portaits: {
+			W: 100,
+			H: 150
+		},
+	}
+
+}
+
+
+
+
 //COMPOSANTS DU JEU
-
-
 //MODEL
 game.model = {
 	map: {
@@ -113,18 +136,12 @@ game.model = {
 };
 
 
-
 function isInRectangle(x, y, rectX0, rectY0, width, height){
 	return (x> rectX0 && x<rectX0+width && y > rectY0 && y < rectY0+height)
 };
 
 //AFFICHAGE
 game.display = {
-	viewport: {
-		//pixels
-		w: 800,
-		h: 600
-	},
 	map: {
 		pixels_per_unit: 10,
 		from: {
@@ -146,10 +163,6 @@ game.display = {
 			sheet: null
 		}
 	},
-	portaits: {
-		w: 100,
-		h: 150
-	},
 	controls: {
 		scroll: {
 			width: 40
@@ -163,9 +176,9 @@ game.display = {
 			game.display.map.from.y += game.controls.scroll.state.dy;
 
 			game.display.map.from.x = Math.max(0, game.display.map.from.x);
-			game.display.map.from.x = Math.min(game.display.map.from.x, game.model.map.WIDTH-game.display.viewport.w/game.display.map.pixels_per_unit);
+			game.display.map.from.x = Math.min(game.display.map.from.x, game.model.map.WIDTH-game.conf.display.viewport.W/game.conf.display.map.PX_PER_UNIT);
 			game.display.map.from.y = Math.max(0, game.display.map.from.y);
-			game.display.map.from.y = Math.min(game.display.map.from.y, game.model.map.HEIGHT-game.display.viewport.h/game.display.map.pixels_per_unit);
+			game.display.map.from.y = Math.min(game.display.map.from.y, game.model.map.HEIGHT-game.conf.display.viewport.H/game.conf.display.map.PX_PER_UNIT);
 
 		}
 	}
@@ -179,10 +192,10 @@ game.controls = {
 		init: function(){
 			game.controls.over.addZone(
 				"portrait_1",
-				game.display.viewport.w - game.display.portaits.w,
+				game.conf.display.viewport.W - game.conf.display.portaits.W,
 				0,
-				game.display.portaits.w,
-				game.display.portaits.h,
+				game.conf.display.portaits.W,
+				game.conf.display.portaits.H,
 				function(){
 					document.getElementById("dbg-portait-over").innerHTML = "yes";
 				}
@@ -242,7 +255,7 @@ game.controls = {
 					x0: 0, 
 					y0: 0, 
 					w: game.display.controls.scroll.width, 
-					h: game.display.viewport.h
+					h: game.conf.display.viewport.H
 				},
 				{
 					id: "scroll_up", 
@@ -250,7 +263,7 @@ game.controls = {
 					dy: -1, 
 					x0: 0, 
 					y0: 0, 
-					w: game.display.viewport.w-game.display.portaits.w, 
+					w: game.conf.display.viewport.W-game.conf.display.portaits.W, 
 					h: game.display.controls.scroll.width
 				},
 				{
@@ -258,18 +271,18 @@ game.controls = {
 					dx: 0, 
 					dy: 1, 
 					x0: 0, 
-					y0: game.display.viewport.h-game.display.controls.scroll.width, 
-					w: game.display.viewport.w-game.display.portaits.w, 
+					y0: game.conf.display.viewport.H-game.display.controls.scroll.width, 
+					w: game.conf.display.viewport.W-game.conf.display.portaits.W, 
 					h: game.display.controls.scroll.width
 				},
 				{
 					id: "scroll_right", 
 					dx: 1, 
 					dy: 0, 
-					x0: game.display.viewport.w-game.display.controls.scroll.width-game.display.portaits.w, 
+					x0: game.conf.display.viewport.W-game.display.controls.scroll.width-game.conf.display.portaits.W, 
 					y0: 0, 
 					w: game.display.controls.scroll.width, 
-					h: game.display.viewport.h
+					h: game.conf.display.viewport.H
 				}
 			]
 		},
@@ -343,16 +356,36 @@ game.controls = {
 game.draw = function(){
 	//clean
 	context.fillStyle = "rgb(200,200,200)";
-	context.fillRect(0,0,game.display.viewport.w,game.display.viewport.h);
+	context.fillRect(0,0,game.conf.display.viewport.W,game.conf.display.viewport.H);
 	context.fillStyle = "rgb(0,0,0)";
 	context.fillText("FPS: "+this.fps,10,20);
 	//controls
 	// four scroll zones
 	context.strokeStyle = "rgb(255,0,0)";
-	context.strokeRect(0,0,game.display.viewport.w-game.display.portaits.w,game.display.controls.scroll.width);
-	context.strokeRect(0,game.display.viewport.h-game.display.controls.scroll.width,game.display.viewport.w-game.display.portaits.w,game.display.controls.scroll.width);
-	context.strokeRect(0,0,game.display.controls.scroll.width,game.display.viewport.h);
-	context.strokeRect(game.display.viewport.w-game.display.controls.scroll.width-game.display.portaits.w,0,game.display.controls.scroll.width,game.display.viewport.h);
+	context.strokeRect(
+		0,
+		0,
+		game.conf.display.viewport.W-game.conf.display.portaits.W,
+		game.display.controls.scroll.width
+	);
+	context.strokeRect(
+		0,
+		game.conf.display.viewport.H-game.display.controls.scroll.width,
+		game.conf.display.viewport.W-game.conf.display.portaits.W,
+		game.display.controls.scroll.width
+	);
+	context.strokeRect(
+		0,
+		0,
+		game.display.controls.scroll.width,
+		game.conf.display.viewport.H
+	);
+	context.strokeRect(
+		game.conf.display.viewport.W-game.display.controls.scroll.width-game.conf.display.portaits.W,
+		0,
+		game.display.controls.scroll.width,
+		game.conf.display.viewport.H
+	);
 	//map
 	context.fillStyle = "rgb(60,120,60)";
 	context.strokeStyle = "rgb(60,120,60)";
@@ -388,20 +421,20 @@ game.draw = function(){
 		game.display.sprites.chars.sheet,
 		0,
 		0,
-		game.display.portaits.w,
-		game.display.portaits.h,
-		game.display.viewport.w-game.display.portaits.w,
+		game.conf.display.portaits.W,
+		game.conf.display.portaits.H,
+		game.conf.display.viewport.W-game.conf.display.portaits.W,
 		0,
-		game.display.portaits.w,
-		game.display.portaits.h
+		game.conf.display.portaits.W,
+		game.conf.display.portaits.H
 	);
 	if (game.controls.over.getZoneById("portrait_1").over){
 		context.strokeStyle = "rgb(255,0,0)";
 		context.strokeRect(
-			game.display.viewport.w-game.display.portaits.w,
+			game.conf.display.viewport.W-game.conf.display.portaits.W,
 			0,
-			game.display.portaits.w,
-			game.display.portaits.h
+			game.conf.display.portaits.W,
+			game.conf.display.portaits.H
 		);
 	}
 	//mouse
