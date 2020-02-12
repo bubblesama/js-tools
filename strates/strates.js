@@ -73,7 +73,9 @@ game.fps = 0;
 
 game.conf = {
 	controls: {
-
+		scroll: {
+			width: 18
+		}
 	},
 	display:{
 		viewport: {
@@ -92,8 +94,6 @@ game.conf = {
 }
 
 
-
-
 //COMPOSANTS DU JEU
 //MODEL
 game.model = {
@@ -108,6 +108,12 @@ game.model = {
 	addMapElement: function(type, x, y, size){
 		game.model.map.addElement(type, x, y, size);
 	},
+	players: [],
+	addPlayer: function(name){
+		game.model.players.push({
+			name: name
+		});
+	},
 	mobs: {
 		list: [],
 		addMob: function(type, x0, y0, size){
@@ -120,13 +126,26 @@ game.model = {
 					size: size
 				},
 				//TODO mob brain and updates
-				legs: {}
-				
+				legs: {
+					dx: 0.1,
+					dy: 0.01
+				},
+				update: function(){
+					this.trunk.x += this.legs.dx;
+					this.trunk.y += this.legs.dy;
+				}
 			});
+		},
+		update(){
+			for (var i=0;i<game.model.mobs.list.length; i++){
+				var mob = game.model.mobs.list[i];
+				mob.update();
+			}
 		}
 	},
 	//global functions
 	_update: function(){
+		game.model.mobs.update();
 
 	},
 	registerPlayerAction: function(x, y){
@@ -134,7 +153,6 @@ game.model = {
 	}
 
 };
-
 
 function isInRectangle(x, y, rectX0, rectY0, width, height){
 	return (x> rectX0 && x<rectX0+width && y > rectY0 && y < rectY0+height)
@@ -163,11 +181,6 @@ game.display = {
 			sheet: null
 		}
 	},
-	controls: {
-		scroll: {
-			width: 40
-		}
-	},
 	update: function(){
 		//update from input
 		//scroll
@@ -190,16 +203,16 @@ game.controls = {
 	over: {
 		zones: [],
 		init: function(){
-			game.controls.over.addZone(
-				"portrait_1",
-				game.conf.display.viewport.W - game.conf.display.portaits.W,
-				0,
-				game.conf.display.portaits.W,
-				game.conf.display.portaits.H,
-				function(){
-					document.getElementById("dbg-portait-over").innerHTML = "yes";
-				}
-			);
+			for (var i=0;i<3;i++){
+				game.controls.over.addZone(
+					"portrait_"+i,
+					game.conf.display.viewport.W - game.conf.display.portaits.W,
+					i*game.conf.display.portaits.H,
+					game.conf.display.portaits.W,
+					game.conf.display.portaits.H,
+					function(){}
+				);
+			}
 		},
 		addZone: function(zoneId, x0, y0, w, h, overTrigger){
 			game.controls.over.zones.push({
@@ -254,7 +267,7 @@ game.controls = {
 					dy: 0, 
 					x0: 0, 
 					y0: 0, 
-					w: game.display.controls.scroll.width, 
+					w: game.conf.controls.scroll.width, 
 					h: game.conf.display.viewport.H
 				},
 				{
@@ -264,24 +277,24 @@ game.controls = {
 					x0: 0, 
 					y0: 0, 
 					w: game.conf.display.viewport.W-game.conf.display.portaits.W, 
-					h: game.display.controls.scroll.width
+					h: game.conf.controls.scroll.width
 				},
 				{
 					id: "scroll_down", 
 					dx: 0, 
 					dy: 1, 
 					x0: 0, 
-					y0: game.conf.display.viewport.H-game.display.controls.scroll.width, 
+					y0: game.conf.display.viewport.H-game.conf.controls.scroll.width, 
 					w: game.conf.display.viewport.W-game.conf.display.portaits.W, 
-					h: game.display.controls.scroll.width
+					h: game.conf.controls.scroll.width
 				},
 				{
 					id: "scroll_right", 
 					dx: 1, 
 					dy: 0, 
-					x0: game.conf.display.viewport.W-game.display.controls.scroll.width-game.conf.display.portaits.W, 
+					x0: game.conf.display.viewport.W-game.conf.controls.scroll.width-game.conf.display.portaits.W, 
 					y0: 0, 
-					w: game.display.controls.scroll.width, 
+					w: game.conf.controls.scroll.width, 
 					h: game.conf.display.viewport.H
 				}
 			]
@@ -366,24 +379,24 @@ game.draw = function(){
 		0,
 		0,
 		game.conf.display.viewport.W-game.conf.display.portaits.W,
-		game.display.controls.scroll.width
+		game.conf.controls.scroll.width
 	);
 	context.strokeRect(
 		0,
-		game.conf.display.viewport.H-game.display.controls.scroll.width,
+		game.conf.display.viewport.H-game.conf.controls.scroll.width,
 		game.conf.display.viewport.W-game.conf.display.portaits.W,
-		game.display.controls.scroll.width
+		game.conf.controls.scroll.width
 	);
 	context.strokeRect(
 		0,
 		0,
-		game.display.controls.scroll.width,
+		game.conf.controls.scroll.width,
 		game.conf.display.viewport.H
 	);
 	context.strokeRect(
-		game.conf.display.viewport.W-game.display.controls.scroll.width-game.conf.display.portaits.W,
+		game.conf.display.viewport.W-game.conf.controls.scroll.width-game.conf.display.portaits.W,
 		0,
-		game.display.controls.scroll.width,
+		game.conf.controls.scroll.width,
 		game.conf.display.viewport.H
 	);
 	//map
@@ -417,25 +430,37 @@ game.draw = function(){
 		);
 	}
 	//controls chars
-	context.drawImage(
-		game.display.sprites.chars.sheet,
-		0,
-		0,
-		game.conf.display.portaits.W,
-		game.conf.display.portaits.H,
-		game.conf.display.viewport.W-game.conf.display.portaits.W,
-		0,
-		game.conf.display.portaits.W,
-		game.conf.display.portaits.H
-	);
-	if (game.controls.over.getZoneById("portrait_1").over){
-		context.strokeStyle = "rgb(255,0,0)";
-		context.strokeRect(
-			game.conf.display.viewport.W-game.conf.display.portaits.W,
+	for (var i=0;i < game.model.players.length; i++){
+		var player = game.model.players[i];
+		context.drawImage(
+			game.display.sprites.chars.sheet,
 			0,
+			0,
+			game.conf.display.portaits.W,
+			game.conf.display.portaits.H,
+			game.conf.display.viewport.W-game.conf.display.portaits.W,
+			i*game.conf.display.portaits.H,
 			game.conf.display.portaits.W,
 			game.conf.display.portaits.H
 		);
+		if (game.controls.over.getZoneById("portrait_"+i)!=null && game.controls.over.getZoneById("portrait_"+i).over){
+			var portraitZone = game.controls.over.getZoneById("portrait_"+i);
+			context.strokeStyle = "rgb(255,0,0)";
+			/*
+			context.strokeRect(
+				game.conf.display.viewport.W-game.conf.display.portaits.W,
+				i*game.conf.display.portaits.H,
+				game.conf.display.portaits.W,
+				game.conf.display.portaits.H
+			);
+			*/
+			context.strokeRect(
+				portraitZone.x0,
+				portraitZone.y0,
+				portraitZone.w,
+				portraitZone.h
+			);
+		}
 	}
 	//mouse
 	if (game.controls.mouse.in){
@@ -498,6 +523,10 @@ function start(){
 		game.model.addMapElement("tree", i/10, 	i, 		1.0);
 	}
 	game.model.mobs.addMob("gobo", 10, 12, 2);
+	game.model.mobs.addMob("gobo", 16, 14, 2);
+	game.model.addPlayer("Joe");
+	game.model.addPlayer("Meg");
+	game.model.addPlayer("Beth");
 	//graphical context
 	context.imageSmoothingEnabled = false;
 	//ressource loading
