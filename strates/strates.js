@@ -101,8 +101,19 @@ game.model = {
 		WIDTH: 200.0,
 		HEIGHT: 100.0,
 		elements: [],
+		nextElementIndex: 1,
 		addElement: function(type, x, y, size){
-			game.model.map.elements.push({"type": type, "x":x, "y": y, "size":size});
+			game.model.map.elements.push({"type": type, id: "map_"+type+"_"+this.nextElementIndex, "x":x, "y": y, "size":size});
+			this.nextElementIndex++;
+		},
+		getMapElementById: function(id){
+			for (var i=0;i<this.elements.length;i++){
+				var mapElement = this.elements[i];
+				if (mapElement.id == id){
+					return mapElement;
+				}
+			}
+			return null;
 		}
 	},
 	addMapElement: function(type, x, y, size){
@@ -115,11 +126,13 @@ game.model = {
 		});
 	},
 	mobs: {
+		nextMobIndex: 1,
 		list: [],
 		addMob: function(type, x0, y0, size){
 			this.list.push({
 				//mob definition
 				type: type,
+				id: "mob_"+type+"_"+game.model.mobs.nextMobIndex,
 				trunk: {
 					x: x0,
 					y: y0,
@@ -128,30 +141,114 @@ game.model = {
 				//TODO mob brain and updates
 				legs: {
 					dx: 0.1,
-					dy: 0.01
+					dy: 0.01,
+					maxSpeed: 0.1,
+					stopMoving: function(){
+						dx = 0;
+						dy = 0;
+					}
+				},
+				brain: {
+					isTargeting: false,
+					target: null,
+					tick: 0
+				},
+				pointTargetPlace: function(mapElement){
+					this.brain.isTargeting = true;
+					this.brain.target = {
+						type: "place",
+						id: mapElement.id
+					}
+				},
+				pointTargetMob: function(mob){
+					this.brain.isTargeting = true;
+					this.brain.target = {
+						type: "mob",
+						id: mob.id
+					}
+					this.focusOnTarget();
+				},
+				pointTarget(x,y){
+					this.brain.isTargeting = true;
+					this.brain.target = {
+						type: "simple",
+						x: x,
+						y: y
+					}
+				},
+				focusOnTarget: function(){
+					if (this.brain.isTargeting){
+						var target = null;
+						if (this.brain.target.type == "place"){
+							target = game.model.map.getMapElementById(this.brain.target.id);
+						}
+						if (this.brain.target.type == "mob"){
+							target = game.model.mobs.getMobById(this.brain.target.id);
+						}
+						if (this.brain.target.type == "simple"){
+							target = this.brain.target;
+						}
+						if (target == null){
+							//no real target
+							this.clearTarget();
+							this.stopMoving();
+						}else{
+							//TODO: change legs
+							var fullDx = target.x - this.trunk.x;
+							var fullDy = target.y - this.trunk.y;
+							var norm = Math.sqrt(fullDx*fullDx+fullDy*fullDy);
+							this.legs.dx = fullDx/norm*this.legs.maxSpeed;
+							this.legs.dy = fullDy/norm*this.legs.maxSpeed;
+						}
+					}else{
+						this.stopMoving();
+					}
+				},
+				clearTarget: function(){
+					this.brain.isTargeting = false;
+					this.brain.target = null;
+				},
+				stopMoving(){
+					this.legs.stopMoving();
 				},
 				update: function(){
+					//brain
+					this.brain.tick++;
+					if (this.brain.tick > 10){
+						this.brain.tick = 0;
+						this.focusOnTarget();
+					}
+					//legs
 					this.trunk.x += this.legs.dx;
 					this.trunk.y += this.legs.dy;
 				}
 			});
+			game.model.mobs.nextMobIndex++;
 		},
 		update(){
 			for (var i=0;i<game.model.mobs.list.length; i++){
 				var mob = game.model.mobs.list[i];
 				mob.update();
 			}
+		},
+		getMobById: function(mobId){
+			for (var i=0;i<game.model.mobs.list.length;i++){
+				var mob = game.model.mobs.list[i];
+				if (mob.id == mobId){
+					return mob;
+				}
+			}
+			return null;
 		}
 	},
 	//global functions
 	_update: function(){
 		game.model.mobs.update();
-
 	},
 	registerPlayerAction: function(x, y){
 		console.log("#registerPlayerAction action on map point: "+x +" "+y);
+		game.model.mobs.getMobById("mob_gobo_1").pointTarget(x,y);
 	}
-
 };
 
 function isInRectangle(x, y, rectX0, rectY0, width, height){
