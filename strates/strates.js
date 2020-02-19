@@ -247,7 +247,7 @@ game.model = {
 	},
 	registerPlayerAction: function(x, y){
 		console.log("#registerPlayerAction action on map point: "+x +" "+y);
-		game.model.mobs.getMobById("mob_gobo_1").pointTarget(x,y);
+		//game.model.mobs.getMobById("mob_gobo_1").pointTarget(x,y);
 	}
 };
 
@@ -440,15 +440,51 @@ game.controls = {
 		update: function(){
 			if (this.clicked){
 				this.clicked = false;
-				var gameX = game.controls.mouse.x/game.display.map.pixels_per_unit + game.display.map.from.x;
-				var gameY = game.controls.mouse.y/game.display.map.pixels_per_unit + game.display.map.from.y;
-				game.model.registerPlayerAction(gameX, gameY);
+				var clickedZone = game.controls.mouse.getClickedZone(game.controls.mouse.x, game.controls.mouse.y);
+				if (clickedZone != null){
+					clickedZone.trigger(game.controls.mouse.x,game.controls.mouse.y);
+				}else{
+					console.log("no clickZone here!");
+				}
+			
+				//var gameX = game.controls.mouse.x/game.display.map.pixels_per_unit + game.display.map.from.x;
+				//var gameY = game.controls.mouse.y/game.display.map.pixels_per_unit + game.display.map.from.y;
+				//game.model.registerPlayerAction(gameX, gameY);
 				//debug
-				document.getElementById("mouse-click-y").innerHTML=(gameY+"").split(".")[0];
-				document.getElementById("mouse-click-x").innerHTML=(gameX+"").split(".")[0];
+				//document.getElementById("mouse-click-y").innerHTML=(gameY+"").split(".")[0];
+				//document.getElementById("mouse-click-x").innerHTML=(gameX+"").split(".")[0];
 			
 
 			}
+		},
+		clickZones: [],
+		addClickZone: function(zoneId, x0, y0, w, h, clickTrigger){
+			game.controls.mouse.clickZones.push({
+				zoneId: zoneId,
+				x0: x0,
+				y0: y0,
+				w: w,
+				h: h,
+				trigger: clickTrigger
+			});
+		},
+		getClickZoneById: function(zoneId) {
+			for (var i=0;i<game.controls.mouse.clickZones.length; i++){
+				var clickZone = game.controls.mouse.clickZones[i];
+				if (clickZone.zoneId == zoneId){
+					return clickZone;
+				}
+			}
+			return null;
+		},
+		getClickedZone: function(clickX, clickY){
+			for (var i=0;i<game.controls.mouse.clickZones.length; i++){
+				var clickZone = game.controls.mouse.clickZones[i];
+				if (isInRectangle(clickX, clickY, clickZOne.x0, clickZone.y0, cickZone.w, clickZone.h)){
+					return clickZone;
+				}
+			}
+			return null;
 		}
 	},
 	init: function(){
