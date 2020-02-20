@@ -46,14 +46,30 @@ canvas.addEventListener(
 	false
 );
 
+var conf = {
+	display: {
+		screen: {w: 800, h: 600},
+		palette: {
+			//https://coolors.co/2c302e-474a48-909590-9ae19d-537a5a
+			darkest: "rgb(44,48,46)",
+			dark: "rgb(71,74,72)",
+			light: "rgb(144,149,144)",
+			main: "rgb(154,225,157)",
+			second: "rgb(83,122,90)"
+		}
+	}
+};
+
 var model = {
 	update: function(){}
 };
 
 var display = {
-	draw: function(){}
+	draw: function(){
+		context.fillStyle = conf.display.palette.darkest;
+		context.fillRect(0,0,conf.display.screen.w,conf.display.screen.h);
+	}
 };
-
 
 //******* draw primitives  *******
 function fillEllipse(ctx, x, y, w, h) {
@@ -82,4 +98,4 @@ function mainLoop() {
 	model.update();
 	display.draw();
 	requestAnimationFrame(mainLoop);
-}
+};
