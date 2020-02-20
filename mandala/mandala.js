@@ -78,10 +78,12 @@ var getSimpleCircleGlyph = function(x0, y0, r){
 		x0: x0,
 		y0: y0,
 		r: r,
+		getX: function(){return this.x0;},
+		getY: function(){return this.y0;},
 		update: function(){},
 		draw: function(context){
 			context.fillStyle = conf.display.palette.main;
-			fillEllipse(context,this.x0,this.y0,this.r,this.r);
+			fillEllipse(context,this.x0-this.r,this.y0-this.r,2*this.r,2*this.r);
 		}
 	};
 };
@@ -94,6 +96,8 @@ var getSimpleBlinkingCircleGlyph = function(x0, y0, r){
 		maxTick: 10,
 		currentTick: 0,
 		visible: true,
+		getX: function(){return this.x0;},
+		getY: function(){return this.y0;},
 		update: function(){
 			this.currentTick++;
 			if (this.maxTick < this.currentTick){
@@ -104,10 +108,27 @@ var getSimpleBlinkingCircleGlyph = function(x0, y0, r){
 		draw: function(context){
 			if (this.visible){
 				context.fillStyle = conf.display.palette.main;
-				fillEllipse(context,this.x0,this.y0,this.r,this.r);
+				fillEllipse(context,this.x0-this.r,this.y0-this.r,2*this.r,2*this.r);
 			}
 		}
 	};
+};
+
+var getLinkGlyph = function(glyphA, glyphB){
+	return {
+		glyphA: glyphA,
+		glyphB: glyphB,
+		getX: function(){return (glyphA.getX()+glyphB.getX())/2;},
+		getY: function(){return (glyphA.getY()+glyphB.getY())/2;},
+		update: function(){},
+		draw: function(context){
+			context.strokeStyle = conf.display.palette.second;
+			context.beginPath();
+			context.moveTo(glyphA.getX(), glyphA.getY());
+			context.lineTo(glyphB.getX(), glyphB.getY());
+			context.stroke();
+		}
+	}
 };
 
 var getRotatingCircleGlyph = function(x0, y0, wayR, r, steps, currentStep){
@@ -118,6 +139,8 @@ var getRotatingCircleGlyph = function(x0, y0, wayR, r, steps, currentStep){
 		y0: y0,
 		r: r,
 		wayR: wayR,
+		getX: function(){return this.x0+this.wayR*Math.cos(Math.PI*2.0*this.currentStep/this.steps);},
+		getY: function(){return this.y0+this.wayR*Math.sin(Math.PI*2.0*this.currentStep/this.steps);},
 		update: function(){
 			this.currentStep++;
 			if (this.currentStep >= this.steps){
@@ -128,10 +151,10 @@ var getRotatingCircleGlyph = function(x0, y0, wayR, r, steps, currentStep){
 			context.fillStyle = conf.display.palette.main;
 			fillEllipse(
 				context,
-				this.x0+this.wayR*Math.cos(Math.PI*2.0*this.currentStep/this.steps),
-				this.y0+this.wayR*Math.sin(Math.PI*2.0*this.currentStep/this.steps),
-				this.r,
-				this.r);
+				this.x0+this.wayR*Math.cos(Math.PI*2.0*this.currentStep/this.steps)-this.r,
+				this.y0+this.wayR*Math.sin(Math.PI*2.0*this.currentStep/this.steps)-this.r,
+				2*this.r,
+				2*this.r);
 		}
 	};
 };
@@ -174,18 +197,23 @@ function fillEllipse(ctx, x, y, w, h) {
 
 //************************************ INIT ***********************************
 function start(){
-	model.addGlyph(getSimpleBlinkingCircleGlyph(50,30,20));
-	model.addGlyph(getSimpleCircleGlyph(60,30,100));
-	model.addGlyph(getSimpleCircleGlyph(200,300,40));
-	model.addGlyph(getRotatingCircleGlyph(200,300,100,10,400));
-	model.addGlyph(getRotatingCircleGlyph(200,300,100,10,400,1));
-	model.addGlyph(getRotatingCircleGlyph(200,300,100,10,400, 50));
-	model.addGlyph(getRotatingCircleGlyph(200,300,100,10,400,100));
-	model.addGlyph(getRotatingCircleGlyph(200,300,100,10,400,150));
-	model.addGlyph(getRotatingCircleGlyph(200,300,100,10,400,200));
-	model.addGlyph(getRotatingCircleGlyph(200,300,100,10,400,250));
-	model.addGlyph(getRotatingCircleGlyph(200,300,100,10,400,300));
-	model.addGlyph(getRotatingCircleGlyph(200,300,100,10,400,350));
+	model.addGlyph(getSimpleBlinkingCircleGlyph(200,30,10));
+	model.addGlyph(getSimpleCircleGlyph(60,50,40));
+	
+	model.addGlyph(getRotatingCircleGlyph(200,300,100,5,400));
+	var cohort = [];
+	for (var i=0;i<8;i++){
+		var glyphCircle = getRotatingCircleGlyph(200,300,100,5,400,i*50);
+		cohort.push(glyphCircle);
+		for (var k=0;k<i;k++){
+			model.addGlyph(getLinkGlyph(glyphCircle,cohort[k]));
+		}
+	}
+	for (var i=0;i<8;i++){
+		model.addGlyph(cohort[i]);
+	}
+	model.addGlyph(getSimpleCircleGlyph(200,300,20));
+
 	requestAnimationFrame(mainLoop);
 };
 
