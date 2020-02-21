@@ -93,7 +93,7 @@ var getSimpleBlinkingCircleGlyph = function(x0, y0, r){
 		x0: x0,
 		y0: y0,
 		r: r,
-		maxTick: 10,
+		maxTick: 100,
 		currentTick: 0,
 		visible: true,
 		getX: function(){return this.x0;},
@@ -212,7 +212,7 @@ function start(){
 	for (var i=0;i<8;i++){
 		model.addGlyph(cohort[i]);
 	}
-	model.addGlyph(getSimpleCircleGlyph(200,300,20));
+	model.addGlyph(getSimpleBlinkingCircleGlyph(200,300,20));
 
 	requestAnimationFrame(mainLoop);
 };
