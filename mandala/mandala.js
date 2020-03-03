@@ -201,18 +201,27 @@ function start(){
 	model.addGlyph(getSimpleCircleGlyph(60,50,40));
 	
 	model.addGlyph(getRotatingCircleGlyph(200,300,100,5,400));
-	var cohort = [];
-	for (var i=0;i<8;i++){
-		var glyphCircle = getRotatingCircleGlyph(200,300,100,5,400,i*50);
-		cohort.push(glyphCircle);
-		for (var k=0;k<i;k++){
-			model.addGlyph(getLinkGlyph(glyphCircle,cohort[k]));
+	
+	
+	var complexMandalasCount = 6;
+	var firstMandalaSize = 3;
+	
+	for (var m=0;m<complexMandalasCount;m++){
+		var cohort = [];
+		var cohortSize = firstMandalaSize+m;
+		for (var i=0;i<cohortSize;i++){
+			var glyphCircle = getRotatingCircleGlyph(100+100*m,300,40,2,50*cohortSize,i*50);
+			cohort.push(glyphCircle);
+			for (var k=0;k<i;k++){
+				model.addGlyph(getLinkGlyph(glyphCircle,cohort[k]));
+			}
+		}
+		for (var i=0;i<cohortSize;i++){
+			model.addGlyph(cohort[i]);
 		}
 	}
-	for (var i=0;i<8;i++){
-		model.addGlyph(cohort[i]);
-	}
-	model.addGlyph(getSimpleBlinkingCircleGlyph(200,300,20));
+	
+	//model.addGlyph(getSimpleBlinkingCircleGlyph(200,300,20));
 
 	requestAnimationFrame(mainLoop);
 };
