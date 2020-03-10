@@ -14,6 +14,7 @@ liste des taches
   - x decouverte de la map
   - x entree dans un donjon
   - entree dans le donjon final
+  - game over
  - donjon
   - x génération de donjons aléatoires
   - remplissage des donjons
@@ -29,6 +30,10 @@ liste des taches
    - x AI des monstres
    - x tuage de monstres
   
+bugs
+ - no kill if not moving
+
+
 notes
 map tile: 8x8
 
