@@ -1,5 +1,12 @@
 mandala
 mandalas en canvas
-depuis S1 2020
+since H1 2020
 
-Work in progress
+# backlog
+TODO
+
+
+
+#release notes
+- v1.0.0
+	.rotating mandalas

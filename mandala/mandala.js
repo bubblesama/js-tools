@@ -226,24 +226,38 @@ function fillEllipse(ctx, x, y, w, h) {
 function start(){
 	//model.addGlyph(getSimpleBlinkingCircleGlyph(200,30,10));
 	
-	var hole =getSimpleCircleGlyph(400,250,5);
+	var hole =getSimpleCircleGlyph(400,250,10);
 	model.addGlyph(hole);
-	var sun = getRotatingCircleGlyphFromGlyph(hole,200,20,3000,0);
+	var sun = getRotatingCircleGlyphFromGlyph(hole,200,1,3000,0);
 	model.addGlyph(sun);
-	var planet = getRotatingCircleGlyphFromGlyph(sun,100,7,100,0);
+	var planet = getRotatingCircleGlyphFromGlyph(sun,100,7,400,0);
 	model.addGlyph(planet);
-	var moon = getRotatingCircleGlyphFromGlyph(planet,50,4,200,1);
+	var moon = getRotatingCircleGlyphFromGlyph(planet,50,4,800,1);
 	model.addGlyph(moon);
-	var rock = getRotatingCircleGlyphFromGlyph(moon,10,2,50,1);
+	var rock = getRotatingCircleGlyphFromGlyph(moon,30,2,400,30);
 	model.addGlyph(rock);
 
 	var complexMandalasCount = 6;
 	var firstMandalaSize = 3;
+	var speedConstant = 100;
 	for (var m=0;m<complexMandalasCount;m++){
 		var cohort = [];
 		var cohortSize = firstMandalaSize+m;
 		for (var i=0;i<cohortSize;i++){
-			var glyphCircle = getRotatingCircleGlyph(100+100*m,450,40,2,50*cohortSize,i*50);
+			var glyphCircle = getRotatingCircleGlyph(100+100*m,450,40,2,speedConstant*cohortSize,i*speedConstant);
+			if (m == complexMandalasCount-1){
+				glyphCircle = getRotatingCircleGlyphFromGlyph(sun,30,2,speedConstant*cohortSize,i*speedConstant);
+			}
+			if (m == 0){
+				glyphCircle = getRotatingCircleGlyphFromGlyph(planet,30,2,speedConstant*cohortSize,i*speedConstant);
+			}
+			if (m == 1){
+				glyphCircle = getRotatingCircleGlyphFromGlyph(moon,20,2,speedConstant*cohortSize,i*speedConstant);
+			}
+			if (m == 3){
+				glyphCircle = getRotatingCircleGlyphFromGlyph(hole,40,2,speedConstant*cohortSize,i*speedConstant);
+			}
+
 			cohort.push(glyphCircle);
 			for (var k=0;k<i;k++){
 				model.addGlyph(getLinkGlyph(glyphCircle,cohort[k]));
