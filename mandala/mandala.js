@@ -226,13 +226,17 @@ function fillEllipse(ctx, x, y, w, h) {
 function start(){
 	//model.addGlyph(getSimpleBlinkingCircleGlyph(200,30,10));
 	
-	var sun = getSimpleCircleGlyph(200,150,30);
+	var hole =getSimpleCircleGlyph(400,250,5);
+	model.addGlyph(hole);
+	var sun = getRotatingCircleGlyphFromGlyph(hole,200,20,3000,0);
 	model.addGlyph(sun);
-	var planet = getRotatingCircleGlyphFromGlyph(sun,100,10,500,0);
+	var planet = getRotatingCircleGlyphFromGlyph(sun,100,7,100,0);
 	model.addGlyph(planet);
-	var moon = getRotatingCircleGlyphFromGlyph(planet,50,4,100,1);
+	var moon = getRotatingCircleGlyphFromGlyph(planet,50,4,200,1);
 	model.addGlyph(moon);
-	
+	var rock = getRotatingCircleGlyphFromGlyph(moon,10,2,50,1);
+	model.addGlyph(rock);
+
 	var complexMandalasCount = 6;
 	var firstMandalaSize = 3;
 	for (var m=0;m<complexMandalasCount;m++){
