@@ -131,6 +131,33 @@ var getLinkGlyph = function(glyphA, glyphB){
 	}
 };
 
+var getRotatingCircleGlyphFromGlyph = function(centerGlyph, wayR, r, steps, currentStep){
+	return {
+		steps: steps,
+		currentStep: currentStep,
+		centerGlyph: centerGlyph,
+		r: r,
+		wayR: wayR,
+		getX: function(){return this.centerGlyph.getX()+this.wayR*Math.cos(Math.PI*2.0*this.currentStep/this.steps);},
+		getY: function(){return this.centerGlyph.getY()+this.wayR*Math.sin(Math.PI*2.0*this.currentStep/this.steps);},
+		update: function(){
+			this.currentStep++;
+			if (this.currentStep >= this.steps){
+				this.currentStep = 1;
+			}
+		},
+		draw: function(context){
+			context.fillStyle = conf.display.palette.main;
+			fillEllipse(
+				context,
+				this.centerGlyph.getX()+this.wayR*Math.cos(Math.PI*2.0*this.currentStep/this.steps)-this.r,
+				this.centerGlyph.getY()+this.wayR*Math.sin(Math.PI*2.0*this.currentStep/this.steps)-this.r,
+				2*this.r,
+				2*this.r);
+		}
+	};
+};
+
 var getRotatingCircleGlyph = function(x0, y0, wayR, r, steps, currentStep){
 	return {
 		steps: steps,
@@ -197,20 +224,22 @@ function fillEllipse(ctx, x, y, w, h) {
 
 //************************************ INIT ***********************************
 function start(){
-	model.addGlyph(getSimpleBlinkingCircleGlyph(200,30,10));
-	model.addGlyph(getSimpleCircleGlyph(60,50,40));
+	//model.addGlyph(getSimpleBlinkingCircleGlyph(200,30,10));
 	
-	model.addGlyph(getRotatingCircleGlyph(200,300,100,5,400));
-	
+	var sun = getSimpleCircleGlyph(200,150,30);
+	model.addGlyph(sun);
+	var planet = getRotatingCircleGlyphFromGlyph(sun,100,10,500,0);
+	model.addGlyph(planet);
+	var moon = getRotatingCircleGlyphFromGlyph(planet,50,4,100,1);
+	model.addGlyph(moon);
 	
 	var complexMandalasCount = 6;
 	var firstMandalaSize = 3;
-	
 	for (var m=0;m<complexMandalasCount;m++){
 		var cohort = [];
 		var cohortSize = firstMandalaSize+m;
 		for (var i=0;i<cohortSize;i++){
-			var glyphCircle = getRotatingCircleGlyph(100+100*m,300,40,2,50*cohortSize,i*50);
+			var glyphCircle = getRotatingCircleGlyph(100+100*m,450,40,2,50*cohortSize,i*50);
 			cohort.push(glyphCircle);
 			for (var k=0;k<i;k++){
 				model.addGlyph(getLinkGlyph(glyphCircle,cohort[k]));
