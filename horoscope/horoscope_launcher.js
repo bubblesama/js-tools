@@ -1,29 +1,36 @@
+/*
+
+npm install lokijs --save
+npm install uuid
+
+
+*/
+
 var http = require('http');
 var fs = require('fs');
 var express = require('express');
 var ent = require('ent');
-var Mongo = require('mongodb');
-var MongoClient = require('mongodb').MongoClient;
+var loki = require('lokijs');
+const { v4: uuidv4 } = require('uuid');
 
+//global vars
 // mapping de routes express
 var app = express();
-
 var rootPath = 'horoscope';
 var apiPath = 'horoscope/api';
 //NOTE 
 //var horoscopeFolderPath = "/projects/horoscope/data/";
 var horoscopeFolderPath = "D:/projects/js-tools/horoscope/data/";
-var staticHttp200Header = {"Content-Type": "text/html; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"};
+//var staticHttp200Header = {"Content-Type": "text/html; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"};
+var staticHttp200Header = {"Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"};
 var signs = ["aries","taurus","gemini","cancer","leo","virgo","libra","scorpius","sagittarius","capricorn","aquarius","pisces"];
-
 var horoscopeStatus = {};
-
-
 var date = "20160908";
 var serverAddress = "192.168.1.16:27017";
 var dbName = "horoscope";
 var dbUrl = "mongodb://"+serverAddress+"/"+dbName
-
+//database link
+var database;
 var quizzOrderings = [[0,1,2],[0,2,1],[1,0,2],[1,2,0],[2,0,1],[2,1,0]];
 
 //SERVEUR D'APPLICATION REST
@@ -70,92 +77,45 @@ app.post(
 		for (var i=0;i<quizzOrderings[randomOrderingIndex].length;i++){
 			orderedQuizzSigns.push(quizzSigns[quizzOrderings[randomOrderingIndex][i]]);
 		}
-		var response = {"result":"KO", "quizzId":"-1"};
+		var quizzId = uuidv4();
+		var response = {"result":"KO", "quizzId":quizzId};
 		//creation du quizz
-		var quizz = {"date": req.params.date, "sign": req.params.sign, "signs": orderedQuizzSigns, "guess": "none"};
+		var quizz = {"date": req.params.date, "sign": req.params.sign, "signs": orderedQuizzSigns, "guess": "none", "quizzId": quizzId};
 		// sauvegarde du quizz
-		MongoClient.connect(dbUrl, function(err, db) {
-			var collection = db.collection('quizz');
-			// insert some documents
-			collection.insert(
-				quizz,
-				function(err, result) {
-					if (err){
-					}else{
-						console.log("post quizz: "+result);
-						response.result = "OK";
-						response.quizzId = result.insertedIds[0];
-					}
-					res.writeHead(200, staticHttp200Header);
-					res.end(JSON.stringify(response));
-				}
-			);
-		});
+		var quizzCollection = database.addCollection("quizz");
+		var insertedQuizz = quizzCollection.insert(quizz);
+		response.result = "OK";
+		res.writeHead(200, staticHttp200Header);
+		res.end(JSON.stringify(response));
 	}
 );
-
-/*
-
- db.quizz.find({date:"20160908",$where: "this.guess == this.sign"}).count();
-var query = {date: date, guess :{ $ne: "none" }};
-
-*/
-
 
 app.get(
 	'/'+apiPath+'/date/:date/stats/',
 	function(req,res){
 		console.log("GET stats IN: date="+req.params.date);
 		var date = req.params.date;
-		MongoClient.connect(
-			dbUrl, 
-			function(err, db) {
-				var collection = db.collection('quizz');
-				// recuperation des stats
-				var query = {date: date};
-				var result = {"code": "KO", message: "none"};
-				collection.count(
-					query,
-					function(error, count) {
-						if (!error){
-							result.total = count;
-							query = {date: date, guess :{ $ne: "none" }};
-							collection.count(
-								query,
-								function(error, count) {
-									if (!error){
-										result.tries = count;
-										query = {date: date, $where: "this.guess == this.sign"};
-										collection.count(
-											query,
-											function(error, count) {
-												if (!error){
-													result.right = count;
-													res.writeHead(200, {"Content-Type": "text/plain; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
-													res.end(JSON.stringify(result));
-												}else{
-													result.message = "database error on right: "+error;
-													res.writeHead(200, {"Content-Type": "text/plain; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
-													res.end(JSON.stringify(result));
-												}
-											}
-										);
-									}else{
-										result.message = "database error on generated: "+error;
-										res.writeHead(200, {"Content-Type": "text/plain; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
-										res.end(JSON.stringify(result));
-									}
-								}
-							);
-						}else{
-							result.message = "database error on total: "+error;
-							res.writeHead(200, {"Content-Type": "text/plain; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
-							res.end(JSON.stringify(result));
-						}
-					}
-				);
+		var quizzCollection = database.addCollection("quizz");
+		// quizzes de la journée
+		var dateQuizzes = quizzCollection.find({"date": date });
+		var dateQuizzesCount = dateQuizzes.length;
+		// quizzes répondus
+		var guessedDateQuizzesCount = quizzCollection.find({"$and": [
+			{"date": date },
+			{"guess" : { "$ne": "none" }}
+		]}).length;
+		// quizzes réussis
+		var okQuizzesCount = 0;
+		for (var i=0;i<dateQuizzes.length;i++){
+			if (dateQuizzes[i].guess == dateQuizzes[i].sign){
+				okQuizzesCount++;
 			}
-		);
+		}
+		//console.log("stats dateQuizzesCount="+dateQuizzesCount+" guessedDateQuizzesCount="+guessedDateQuizzesCount+" okQuizzesCount="+okQuizzesCount);
+		var result = {"code": "OK", "message": "none", "total": dateQuizzesCount, "tries": guessedDateQuizzesCount, "right": okQuizzesCount};
+		res.writeHead(200, {"Content-Type": "text/plain; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
+		res.end(JSON.stringify(result));
+
 	}
 );
 
@@ -165,59 +125,42 @@ app.get(
 		console.log("GET quizz IN: quizzId="+req.params.quizzId);
 		var quizzId = req.params.quizzId;
 		var date = req.params.date;
-		MongoClient.connect(
-			dbUrl, 
-			function(err, db) {
-				var collection = db.collection('quizz');
-				// recuperation du quizz
-				var query = {"_id":new Mongo.ObjectID(quizzId)};
-				collection.findOne(
-					query,
-					function(error, quizz) {
-						var result = {"code": "KO", message: "none", predictions: []};
-						if (error){
-							result.message = "database error, quizz "+quizzId+" with no error known";
-							res.writeHead(200, {"Content-Type": "text/plain; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
-							res.end(JSON.stringify(result));
-						}else{
-							if (!quizz || !quizz.guess){
-								result.message = "database error, quizz "+quizzId+" not found";
-								res.writeHead(200, {"Content-Type": "text/plain; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
-								res.end(JSON.stringify(result));
-							}else{
-								console.log("GET quizz: quizz.guess="+quizz.guess);
-								// quizz bien recupere
-								if (quizz.guess == "none"){
-									getHoroscopes(
-										date,
-										null,
-										function(error,horoscopes,context){
-											
-											//TODO controle de l'existance de l'horoscope pour la date
-											
-											for (var i=0;i<quizz.signs.length;i++){
-												result.predictions[i] = horoscopes[quizz.signs[i]];
-											}
-											result.code = "OK";
-											res.writeHead(200, {"Content-Type": "text/plain; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
-											res.end(JSON.stringify(result));
-										}	
-									);
-								}else{
-									result.message = "quizz already tested";
-									result.code = "DONE";
-									res.writeHead(200, {"Content-Type": "text/plain; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
-									res.end(JSON.stringify(result));
-									console.log("GET quizz: already guessed!");
-								}
-							}
-						}				
-					}
+		var result = {code: "KO", message: "none", predictions: []};
+		var quizzCollection = database.addCollection("quizz");
+		var quizz = quizzCollection.findOne({quizzId: quizzId});
+
+		if (!quizz || !quizz.guess){
+			result.message = "database error, quizz "+quizzId+" not found";
+			res.writeHead(200, {"Content-Type": "text/plain; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
+			res.end(JSON.stringify(result));
+		}else{
+			console.log("GET quizz: quizz.guess="+quizz.guess);
+			// quizz bien recupere
+			if (quizz.guess == "none"){
+				getHoroscopes(
+					date,
+					null,
+					function(error,horoscopes,context){
+						//TODO controle de l'existence de l'horoscope pour la date
+						for (var i=0;i<quizz.signs.length;i++){
+							result.predictions[i] = horoscopes[quizz.signs[i]];
+						}
+						result.code = "OK";
+						res.writeHead(200, {"Content-Type": "text/plain; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
+						res.end(JSON.stringify(result));
+					}	
 				);
+			}else{
+				result.message = "quizz already tested";
+				result.code = "DONE";
+				res.writeHead(200, {"Content-Type": "text/plain; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
+				res.end(JSON.stringify(result));
+				console.log("GET quizz: already guessed!");
 			}
-		);
-	}
+		}				
+	}		
 );
+
 
 
 /* gestion de la reponse au quizz*/
@@ -228,49 +171,26 @@ app.get(
 		var guess = parseInt(req.params.guess);
 		console.log("GET guess IN: quizzId="+quizzId+" guess="+guess);
 		var result = {code: "KO", message: "none"};
-		MongoClient.connect(
-			dbUrl, 
-			function(err, db) {
-				var collection = db.collection('quizz');
-				// recuperation du quizz
-				var query = {"_id":new Mongo.ObjectID(quizzId)};
-				collection.findOne(
-					query,
-					function(error, quizz) {
-						if (!error){
-							if (quizz.guess == "none"){
-								result.code = "OK";
-								//result.message = "quizz.guess="+quizz.guess+" quizz.signs[guess]="+quizz.signs[guess] ;
-								result.message = "fine";
-								result.details = [];
-								for (var i=0;i<quizz.signs.length;i++){
-									result.details[i] = quizz.signs[i];	
-								}
-								result.guessed = (quizz.sign == quizz.signs[guess]);
-								// maj du quizz
-								collection.update(
-									query, 
-									{$set:{guess:quizz.signs[guess]}}, 
-									{w:1}, 
-									function(err, result) {
-										if (error){
-											result.message("database error while saving quizz state, quizz "+quizzId+" not updated with guess");
-										}
-									}
-								);
-							}else{
-								result.code = "DONE";
-								result.message = "flow error: quizz "+quizzId+" already guessed";
-							}
-						}else{
-							result.message = "database error, quizz "+quizzId+" not found";
-						}
-						res.writeHead(200, {"Content-Type": "text/plain; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
-						res.end(JSON.stringify(result));
-					}
-				);
+		var quizzCollection = database.addCollection("quizz");
+		var quizz = quizzCollection.findOne({quizzId: quizzId});
+		if (quizz.guess == "none"){
+			result.code = "OK";
+			result.message = "fine";
+			result.details = [];
+			for (var i=0;i<quizz.signs.length;i++){
+				result.details[i] = quizz.signs[i];	
 			}
-		);
+			result.guessed = (quizz.sign == quizz.signs[guess]);
+			// maj du quizz
+			quizz.guess = quizz.signs[guess];
+			quizzCollection.update(quizz);
+		}else{
+			result.code = "DONE";
+			result.message = "flow error: quizz "+quizzId+" already guessed";
+		}
+		res.writeHead(200, {"Content-Type": "text/plain; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
+		res.end(JSON.stringify(result));
+
 	}
 );
 
@@ -310,15 +230,6 @@ app.get(
 		);
 	}
 );
-
-// creation du serveur
-var server=http.createServer(app);
-
-
-var serverPort = 8088;
-console.log("serveur launched, listening on port "+serverPort);
-// lancement serveur
-server.listen(serverPort,"0.0.0.0");
 
 function getHoroscope(date, sign, context, callback){
 	console.log("getHoroscope: IN date="+date+" sign="+sign);
@@ -445,4 +356,33 @@ app.get(
 			}
 		);
 	}
+);
+
+
+
+//INIT
+
+//database and server startup
+console.log("starting loki database");
+database = new loki(
+    'horoscope-lokidb.json',
+    {
+        autosave: "true",
+        autosaveInterval: 2000,
+    }
+);
+
+database.loadDatabase(
+    {},
+    function(err){
+		console.log("#init loki database loaded, checking intialization");
+		var horoscopeStats = database.addCollection("stats");
+		console.log("#init horoscope database loaded, stats="+horoscopeStats.count());
+		database.saveDatabase();
+		console.log("#init launching 'horoquizz' server");
+		var server=http.createServer(app);
+		var serverPort = 8088;
+		server.listen(serverPort,"0.0.0.0");
+		console.log("#init server running on port "+serverPort);
+    }
 );
