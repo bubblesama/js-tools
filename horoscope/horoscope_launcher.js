@@ -21,7 +21,8 @@ var apiPath = 'horoscope/api';
 //NOTE 
 //var horoscopeFolderPath = "/projects/horoscope/data/";
 var horoscopeFolderPath = "D:/projects/js-tools/horoscope/data/";
-var staticHttp200Header = {"Content-Type": "text/html; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"};
+//var staticHttp200Header = {"Content-Type": "text/html; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"};
+var staticHttp200Header = {"Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"};
 var signs = ["aries","taurus","gemini","cancer","leo","virgo","libra","scorpius","sagittarius","capricorn","aquarius","pisces"];
 var horoscopeStatus = {};
 var date = "20160908";
