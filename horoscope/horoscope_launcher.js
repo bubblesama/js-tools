@@ -23,6 +23,7 @@ var apiPath = 'horoscope/api';
 var horoscopeFolderPath = "D:/projects/js-tools/horoscope/data/";
 //var staticHttp200Header = {"Content-Type": "text/html; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"};
 var staticHttp200Header = {"Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"};
+var staticJson200Header = {"Content-Type": "application/json; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"};
 var signs = ["aries","taurus","gemini","cancer","leo","virgo","libra","scorpius","sagittarius","capricorn","aquarius","pisces"];
 var horoscopeStatus = {};
 var date = "20160908";
@@ -85,7 +86,7 @@ app.post(
 		var quizzCollection = database.addCollection("quizz");
 		var insertedQuizz = quizzCollection.insert(quizz);
 		response.result = "OK";
-		res.writeHead(200, staticHttp200Header);
+		res.writeHead(200, staticJson200Header);
 		res.end(JSON.stringify(response));
 	}
 );
@@ -113,7 +114,7 @@ app.get(
 		}
 		//console.log("stats dateQuizzesCount="+dateQuizzesCount+" guessedDateQuizzesCount="+guessedDateQuizzesCount+" okQuizzesCount="+okQuizzesCount);
 		var result = {"code": "OK", "message": "none", "total": dateQuizzesCount, "tries": guessedDateQuizzesCount, "right": okQuizzesCount};
-		res.writeHead(200, {"Content-Type": "text/plain; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
+		res.writeHead(200, staticJson200Header);
 		res.end(JSON.stringify(result));
 
 	}
@@ -131,7 +132,7 @@ app.get(
 
 		if (!quizz || !quizz.guess){
 			result.message = "database error, quizz "+quizzId+" not found";
-			res.writeHead(200, {"Content-Type": "text/plain; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
+			res.writeHead(200, staticJson200Header);
 			res.end(JSON.stringify(result));
 		}else{
 			console.log("GET quizz: quizz.guess="+quizz.guess);
@@ -146,22 +147,20 @@ app.get(
 							result.predictions[i] = horoscopes[quizz.signs[i]];
 						}
 						result.code = "OK";
-						res.writeHead(200, {"Content-Type": "text/plain; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
+						res.writeHead(200, staticJson200Header);
 						res.end(JSON.stringify(result));
 					}	
 				);
 			}else{
 				result.message = "quizz already tested";
 				result.code = "DONE";
-				res.writeHead(200, {"Content-Type": "text/plain; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
+				res.writeHead(200, staticJson200Header);
 				res.end(JSON.stringify(result));
 				console.log("GET quizz: already guessed!");
 			}
 		}				
 	}		
 );
-
-
 
 /* gestion de la reponse au quizz*/
 app.get(
@@ -188,7 +187,7 @@ app.get(
 			result.code = "DONE";
 			result.message = "flow error: quizz "+quizzId+" already guessed";
 		}
-		res.writeHead(200, {"Content-Type": "text/plain; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
+		res.writeHead(200, staticJson200Header);
 		res.end(JSON.stringify(result));
 
 	}

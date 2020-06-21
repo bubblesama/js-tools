@@ -1,23 +1,17 @@
 //var rootPath="http://localhost:8088/horoscope/";
-
 var rootPath="";
 var apiPath = "api"
-
 
 var calledForSigns = false;
 var currentSign = "none";
 var currentDate = "none";
 var currentQuizz = "none";
-var  currentContext = {
+var currentContext = {
 	"date": null,
 	"sign": null,
 	"quizz": null,
 	"isStats": false
 };
-
-
-
-
 
 var i18n = { 
 	"aquarius": "Verseau",
@@ -38,10 +32,6 @@ var i18n = {
 	}
 	
 };
-var forbiddenDates = {};
-
-
-
 
 function startup(){
 	//_updateFromPath();
@@ -103,10 +93,6 @@ function _updateFromHash(){
 			}
 		}
 	}else{
-		/*
-		$("#infos").html(i18n["messages"]["welcome"]);
-		$("#infos").show();
-		*/
 		$("#welcome").show();
 	}
 	return shouldGetDate;
@@ -165,9 +151,6 @@ function _updateFromPath(){
 	return shouldGetDate;
 };
 
-
-
-
 function _refreshPage(date, isStats, sign, quizz){
 	// nettoyage des infos
 	$("#welcome").hide();
@@ -196,8 +179,7 @@ function _refreshPage(date, isStats, sign, quizz){
 				//gestion des stats
 				$.get(
 					apiPath+"/date/"+date+"/stats/", 
-					function(data) {
-						var result = JSON.parse(data);
+					function(result) {
 						var rightRatio = 0;
 						if (result.total != 0){
 							var rightRatio = (result.right+0.0)/(result.tries+0.0);
@@ -241,7 +223,6 @@ function _setSign(sign){
 	currentSign = sign;
 	currentContext.sign = sign;
 	$("#sign_"+sign).addClass("chosenSign");
-	//$("#currentSign").html(currentSign);
 	$("#currentSignInfo").show();
 };
 
@@ -251,7 +232,7 @@ function _createQuizz(){
 		apiPath+"/date/"+currentDate+"/sign/"+currentSign+"/quizz/",
 		function(data) {
 			//console.log("_createQuizz: quizz created "+data);
-			var quizzId = JSON.parse(data).quizzId;
+			var quizzId = data.quizzId;
 			_setQuizzId(quizzId);
 		}
 	);
@@ -271,9 +252,8 @@ function _getQuizzPredictions(quizzId){
 	var hash = "#/date/"+currentDate+"/sign/"+currentSign+"/quizz/"+quizzId;
 	$.get(
 		fullQuizzPath,
-		function(data) {
-			console.debug("_getQuizzPredictions recuperation du quizz: "+data+" fullQuizzPath="+fullQuizzPath);
-			var quizzData = JSON.parse(data);
+		function(quizzData) {
+			console.debug("_getQuizzPredictions recuperation du quizz: "+quizzData+" fullQuizzPath="+fullQuizzPath);
 			var result = "";
 			if (quizzData.code == "OK"){
 				for (var i=0;i<quizzData.predictions.length;i++){
@@ -282,6 +262,7 @@ function _getQuizzPredictions(quizzId){
 					$("#prediction_0"+i+" a").click({quizzId: quizzId, guess: i},function(event){_sendGuess(event.data.quizzId,event.data.guess);});	
 				}
 				$("#predictions").show();
+				$("#predictionsHelp").show();
 				$("#quizzLink").hide();
 			}else{
 				if (quizzData.code == "DONE"){
@@ -309,9 +290,8 @@ function _sendGuess(quizzId,guess){
 	var fullAnswerPath = apiPath+"/date/"+currentDate+"/sign/"+currentSign+"/quizz/"+quizzId+"/guess/"+guess;
 	$.get(
 		fullAnswerPath,
-		function(data) {
-			console.debug("_sendGuess recuperation du resultat: "+data);
-			var response = JSON.parse(data);
+		function(response) {
+			console.debug("_sendGuess recuperation du resultat: "+response);
 			if (response.code != "OK"){
 				console.debug("_sendGuess KO: "+response.message);
 				if (response.code == "DONE"){
