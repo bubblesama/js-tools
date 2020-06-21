@@ -95,55 +95,27 @@ app.get(
 	function(req,res){
 		console.log("GET stats IN: date="+req.params.date);
 		var date = req.params.date;
-		MongoClient.connect(
-			dbUrl, 
-			function(err, db) {
-				var collection = db.collection('quizz');
-				// recuperation des stats
-				var query = {date: date};
-				var result = {"code": "KO", message: "none"};
-				collection.count(
-					query,
-					function(error, count) {
-						if (!error){
-							result.total = count;
-							query = {date: date, guess :{ $ne: "none" }};
-							collection.count(
-								query,
-								function(error, count) {
-									if (!error){
-										result.tries = count;
-										query = {date: date, $where: "this.guess == this.sign"};
-										collection.count(
-											query,
-											function(error, count) {
-												if (!error){
-													result.right = count;
-													res.writeHead(200, {"Content-Type": "text/plain; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
-													res.end(JSON.stringify(result));
-												}else{
-													result.message = "database error on right: "+error;
-													res.writeHead(200, {"Content-Type": "text/plain; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
-													res.end(JSON.stringify(result));
-												}
-											}
-										);
-									}else{
-										result.message = "database error on generated: "+error;
-										res.writeHead(200, {"Content-Type": "text/plain; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
-										res.end(JSON.stringify(result));
-									}
-								}
-							);
-						}else{
-							result.message = "database error on total: "+error;
-							res.writeHead(200, {"Content-Type": "text/plain; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
-							res.end(JSON.stringify(result));
-						}
-					}
-				);
+		var quizzCollection = database.addCollection("quizz");
+		// quizzes de la journée
+		var dateQuizzes = quizzCollection.find({"date": date });
+		var dateQuizzesCount = dateQuizzes.length;
+		// quizzes répondus
+		var guessedDateQuizzesCount = quizzCollection.find({"$and": [
+			{"date": date },
+			{"guess" : { "$ne": "none" }}
+		]}).length;
+		// quizzes réussis
+		var okQuizzesCount = 0;
+		for (var i=0;i<dateQuizzes.length;i++){
+			if (dateQuizzes[i].guess == dateQuizzes[i].sign){
+				okQuizzesCount++;
 			}
-		);
+		}
+		//console.log("stats dateQuizzesCount="+dateQuizzesCount+" guessedDateQuizzesCount="+guessedDateQuizzesCount+" okQuizzesCount="+okQuizzesCount);
+		var result = {"code": "OK", "message": "none", "total": dateQuizzesCount, "tries": guessedDateQuizzesCount, "right": okQuizzesCount};
+		res.writeHead(200, {"Content-Type": "text/plain; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
+		res.end(JSON.stringify(result));
+
 	}
 );
 
