@@ -180,9 +180,9 @@ function _refreshPage(date, isStats, sign, quizz){
 				$.get(
 					apiPath+"/date/"+date+"/stats/", 
 					function(result) {
-						var rightRatio = 0;
-						if (result.total != 0){
-							var rightRatio = (result.right+0.0)/(result.tries+0.0);
+						var rightRatio = "?";
+						if (result.total != 0 && result.tries != 0){
+							rightRatio = Math.floor(100*(result.right+0.0)/(result.tries+0.0))+"%";
 						}
 						statOutput += "generated="+result.total+" tries="+result.tries+" right="+result.right+" ratio="+rightRatio;
 						console.log("_refreshPage stats: tries="+result.tries+" rightRatio="+rightRatio);
