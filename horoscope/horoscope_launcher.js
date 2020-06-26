@@ -5,13 +5,17 @@ npm install uuid
 
 
 */
-
+//IMPORTS
 var http = require('http');
 var fs = require('fs');
 var express = require('express');
 var ent = require('ent');
 var loki = require('lokijs');
 const { v4: uuidv4 } = require('uuid');
+
+//CONFIGURATION
+var IS_LOCAL = true;
+
 
 //global vars
 // mapping de routes express
@@ -27,9 +31,6 @@ var staticJson200Header = {"Content-Type": "application/json; charset=utf-8","Ca
 var signs = ["aries","taurus","gemini","cancer","leo","virgo","libra","scorpius","sagittarius","capricorn","aquarius","pisces"];
 var horoscopeStatus = {};
 var date = "20160908";
-var serverAddress = "192.168.1.16:27017";
-var dbName = "horoscope";
-var dbUrl = "mongodb://"+serverAddress+"/"+dbName
 //database link
 var database;
 var quizzOrderings = [[0,1,2],[0,2,1],[1,0,2],[1,2,0],[2,0,1],[2,1,0]];
@@ -288,79 +289,82 @@ function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
-// SERVEUR HTTP
-// service de la page principale
-app.get(
-	'/'+rootPath,
-	function(req,res){
-		// console.log("web file in file:"+req.params.file);
-		fs.readFile(
-			'./web/horoscope.html',
-			function(error, data) {
-				if (error){
-					//console.log("web file error");
-					res.writeHead(403, {"Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
-					res.end();
-				}else{
-					//console.log("web file ok");
-					res.writeHead(200, staticHttp200Header);
-					res.end(data);
-				}
-			}
-		);
-	}
-);
 
-// service des pages statiques
-// NOTE: not used on production: nginx manages
-app.get(
-	'/'+rootPath+'/web/:file',
-	function(req,res){
-		// console.log("web file in file:"+req.params.file);
-		fs.readFile(
-			'./web/'+req.params.file,
-			function(error, data) {
-				if (error){
-					//console.log("web file error");
-					res.writeHead(403, {"Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
-					res.end();
-				}else{
-					//console.log("web file ok: "+req.params.file);
-					res.writeHead(200, staticHttp200Header);
-					res.end(data);
-				}
-			}
-		);
-	}
-);
 
-// service des lib
-// NOTE: not used on production: nginx manages
-app.get(
-	'/'+rootPath+'/web/lib/:file',
-	function(req,res){
-		// console.log("web file in file:"+req.params.file);
-		fs.readFile(
-			'./web/lib/'+req.params.file,
-			function(error, data) {
-				if (error){
-					console.log("web lib file error");
-					res.writeHead(403, {"Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
-					res.end();
-				}else{
-					//console.log("web lib file ok: "+req.params.file);
-					res.writeHead(200, staticHttp200Header);
-					res.end(data);
-				}
-			}
-		);
-	}
-);
+if (IS_LOCAL){
 
+	// SERVEUR HTTP
+	// service de la page principale
+	app.get(
+		'/'+rootPath,
+		function(req,res){
+			// console.log("web file in file:"+req.params.file);
+			fs.readFile(
+				'./web/horoscope.html',
+				function(error, data) {
+					if (error){
+						//console.log("web file error");
+						res.writeHead(403, {"Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
+						res.end();
+					}else{
+						//console.log("web file ok");
+						res.writeHead(200, staticHttp200Header);
+						res.end(data);
+					}
+				}
+			);
+		}
+	);
+
+	// service des pages statiques
+	// NOTE: not used on production: nginx manages
+	app.get(
+		'/'+rootPath+'/web/:file',
+		function(req,res){
+			// console.log("web file in file:"+req.params.file);
+			fs.readFile(
+				'./web/'+req.params.file,
+				function(error, data) {
+					if (error){
+						//console.log("web file error");
+						res.writeHead(403, {"Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
+						res.end();
+					}else{
+						//console.log("web file ok: "+req.params.file);
+						res.writeHead(200, staticHttp200Header);
+						res.end(data);
+					}
+				}
+			);
+		}
+	);
+
+	// service des lib
+	// NOTE: not used on production: nginx manages
+	app.get(
+		'/'+rootPath+'/web/lib/:file',
+		function(req,res){
+			// console.log("web file in file:"+req.params.file);
+			fs.readFile(
+				'./web/lib/'+req.params.file,
+				function(error, data) {
+					if (error){
+						console.log("web lib file error");
+						res.writeHead(403, {"Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
+						res.end();
+					}else{
+						//console.log("web lib file ok: "+req.params.file);
+						res.writeHead(200, staticHttp200Header);
+						res.end(data);
+					}
+				}
+			);
+		}
+	);
+}
 
 
 //INIT
-
 //database and server startup
 console.log("starting loki database");
 database = new loki(
