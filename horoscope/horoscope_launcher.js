@@ -1,30 +1,33 @@
 /*
-
-npm install lokijs --save
-npm install uuid
-
+packages needed
+	npm install express --save
+	npm install lokijs --save
+	npm install uuid --save
+	npm install forever -g
 
 */
 //IMPORTS
 var http = require('http');
 var fs = require('fs');
 var express = require('express');
-var ent = require('ent');
 var loki = require('lokijs');
 const { v4: uuidv4 } = require('uuid');
 
 //CONFIGURATION
-var IS_LOCAL = true;
-
+var IS_LOCAL = false;
+var SERVER_PORT = 8088;
 
 //global vars
 // mapping de routes express
 var app = express();
 var rootPath = 'horoscope';
 var apiPath = 'horoscope/api';
-//NOTE 
-//var horoscopeFolderPath = "/projects/horoscope/data/";
-var horoscopeFolderPath = "D:/projects/js-tools/horoscope/data/";
+
+var horoscopeFolderPath = "/projects/horoscope/data/";
+if (IS_LOCAL){
+	horoscopeFolderPath = "D:/projects/js-tools/horoscope/data/";
+}
+
 //var staticHttp200Header = {"Content-Type": "text/html; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"};
 var staticHttp200Header = {"Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"};
 var staticJson200Header = {"Content-Type": "application/json; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"};
@@ -198,9 +201,10 @@ app.get(
 app.get(
 	'/'+apiPath+'/signs/',
 	function(req,res){
-		//NOTE passage à la date du jour
-		//var signsResponse = {"date": (new Date()).toISOString().slice(0,10).replace(/-/g,""), "signs": signs};
-		var signsResponse = {"date": date, "signs": signs};
+		var signsResponse = {"date": (new Date()).toISOString().slice(0,10).replace(/-/g,""), "signs": signs};
+		if (IS_LOCAL){
+			signsResponse = {"date": date, "signs": signs};
+		}
 		res.writeHead(200, {"Content-Type": "text/plain; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
 		res.end(JSON.stringify(signsResponse));
 	}
@@ -317,7 +321,6 @@ if (IS_LOCAL){
 	);
 
 	// service des pages statiques
-	// NOTE: not used on production: nginx manages
 	app.get(
 		'/'+rootPath+'/web/:file',
 		function(req,res){
@@ -340,7 +343,6 @@ if (IS_LOCAL){
 	);
 
 	// service des lib
-	// NOTE: not used on production: nginx manages
 	app.get(
 		'/'+rootPath+'/web/lib/:file',
 		function(req,res){
@@ -384,8 +386,7 @@ database.loadDatabase(
 		database.saveDatabase();
 		console.log("#init launching 'horoquizz' server");
 		var server=http.createServer(app);
-		var serverPort = 8088;
-		server.listen(serverPort,"0.0.0.0");
-		console.log("#init server running on port "+serverPort);
+		server.listen(SERVER_PORT,"0.0.0.0");
+		console.log("#init server running on port "+SERVER_PORT);
     }
 );
