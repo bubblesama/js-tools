@@ -14,14 +14,14 @@ var loki = require('lokijs');
 const { v4: uuidv4 } = require('uuid');
 
 //CONFIGURATION
-var IS_LOCAL = false;
+var IS_LOCAL = true;
 var SERVER_PORT = 8088;
 
 //global vars
 // mapping de routes express
 var app = express();
 var rootPath = 'horoscope';
-var apiPath = 'horoscope/api';
+var API_PATH = 'horoscope/api';
 
 var horoscopeFolderPath = "/projects/horoscope/data/";
 if (IS_LOCAL){
@@ -43,7 +43,7 @@ var quizzOrderings = [[0,1,2],[0,2,1],[1,0,2],[1,2,0],[2,0,1],[2,1,0]];
  Cas de l'horoscope par date
 */
 app.get(
-	'/'+apiPath+'/date/:date',
+	'/'+API_PATH+'/date/:date',
 	function(req,res){
 		fs.readFile(
 			horoscopeFolderPath+"json."+req.params.date+".txt",
@@ -65,7 +65,7 @@ app.get(
  creation d'un quizz
 */
 app.post(
-	'/'+apiPath+'/date/:date/sign/:sign/quizz/',
+	'/'+API_PATH+'/date/:date/sign/:sign/quizz/',
 	function(req,res){
 		console.log("post quizz: IN date="+req.params.date+" sign="+req.params.sign);
 		var quizzSigns = [req.params.sign];
@@ -96,7 +96,7 @@ app.post(
 );
 
 app.get(
-	'/'+apiPath+'/date/:date/stats/',
+	'/'+API_PATH+'/date/:date/stats/',
 	function(req,res){
 		console.log("GET stats IN: date="+req.params.date);
 		var date = req.params.date;
@@ -125,7 +125,7 @@ app.get(
 );
 
 app.get(
-	'/'+apiPath+'/date/:date/sign/:sign/quizz/:quizzId',
+	'/'+API_PATH+'/date/:date/sign/:sign/quizz/:quizzId',
 	function(req,res){
 		console.log("GET quizz IN: quizzId="+req.params.quizzId);
 		var quizzId = req.params.quizzId;
@@ -168,7 +168,7 @@ app.get(
 
 /* gestion de la reponse au quizz*/
 app.get(
-	'/'+apiPath+'/date/:date/sign/:sign/quizz/:quizzId/guess/:guess',
+	'/'+API_PATH+'/date/:date/sign/:sign/quizz/:quizzId/guess/:guess',
 	function(req,res){
 		var quizzId = req.params.quizzId;
 		var guess = parseInt(req.params.guess);
@@ -199,7 +199,7 @@ app.get(
 
 //http://localhost:8088/horoscope/signs
 app.get(
-	'/'+apiPath+'/signs/',
+	'/'+API_PATH+'/signs/',
 	function(req,res){
 		var signsResponse = {"date": (new Date()).toISOString().slice(0,10).replace(/-/g,""), "signs": signs};
 		if (IS_LOCAL){
@@ -212,7 +212,7 @@ app.get(
 
 // http://localhost:8088/horoscope/date/20160908/sign/aries
 app.get(
-	'/'+apiPath+'/date/:date/sign/:sign',
+	'/'+API_PATH+'/date/:date/sign/:sign',
 	function(req,res){
 		fs.readFile(
 			horoscopeFolderPath+"json."+req.params.date+".txt",
