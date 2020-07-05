@@ -1,4 +1,3 @@
-//var rootPath="http://localhost:8088/horoscope/";
 var rootPath="";
 var apiPath = "api"
 
@@ -43,9 +42,9 @@ function startup(){
 			apiPath+"/signs/", 
 			function(data) {
 				var htmlSignsList = "";
-				var signs = JSON.parse(data).signs;
+				var signs = data.signs;
 				if (shouldGetDate){
-					_setDate(JSON.parse(data).date);
+					_setDate(data.date);
 				}
 				//$("#quickLinks").append("signs ")
 				for (var i = 0; i < signs.length; i++) {
@@ -60,10 +59,8 @@ function startup(){
 		);
 		$("#homeLink").click(function(){_refreshPage(currentDate,false);});
 		$("#goPrediction").click(function(){_getPrediction();});
-		$("#testPost").click(function(){_testPost();});
 		$(window).on('hashchange', function() {_updateFromHash();});
 	}
-
 };
 
 function _updateFromHash(){
@@ -327,13 +324,4 @@ function _getPrediction(){
 		console.debug("_getPrediction no sign!");
 	}
 	console.debug("_getPrediction OUT");
-};
-
-function _testPost(){
-	$.post( 
-		apiPath+"/date/"+currentDate+"/test/",
-		function(data) {
-			console.debug("_testPost: "+data);
-		}
-	);
 };

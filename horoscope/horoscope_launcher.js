@@ -201,12 +201,23 @@ app.get(
 app.get(
 	'/'+API_PATH+'/signs/',
 	function(req,res){
-		var signsResponse = {"date": (new Date()).toISOString().slice(0,10).replace(/-/g,""), "signs": signs};
+		var currentDate = (new Date()).toISOString().slice(0,10).replace(/-/g,"");
 		if (IS_LOCAL){
-			signsResponse = {"date": date, "signs": signs};
+			currentDate = date;
 		}
-		res.writeHead(200, {"Content-Type": "text/plain; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
-		res.end(JSON.stringify(signsResponse));
+		fs.readFile(
+			horoscopeFolderPath+"json."+currentDate+".txt",
+			function(error, data) {
+				var horoscope = true;
+				if (error){
+					horoscope = false;
+				}
+				var signsResponse = {"date": date, "horoscope": horoscope, "signs": signs};
+				//res.writeHead(200, {"Content-Type": "text/plain; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
+				res.writeHead(200, staticJson200Header);
+				res.end(JSON.stringify(signsResponse));
+			}
+		);
 	}
 );
 
