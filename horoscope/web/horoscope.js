@@ -11,6 +11,8 @@ var currentContext = {
 	"quizz": null,
 	"isStats": false
 };
+//
+var available = {};
 
 var i18n = { 
 	"aquarius": "Verseau",
@@ -35,7 +37,6 @@ var i18n = {
 function startup(){
 	//_updateFromPath();
 	var shouldGetDate = _updateFromHash();
-	$("#mainContent").html("calling server for signs...");
 	if (!calledForSigns){
 		calledForSigns = true;
 		$.get(
@@ -58,7 +59,6 @@ function startup(){
 			}
 		);
 		$("#homeLink").click(function(){_refreshPage(currentDate,false);});
-		$("#goPrediction").click(function(){_getPrediction();});
 		$(window).on('hashchange', function() {_updateFromHash();});
 	}
 };
@@ -151,6 +151,7 @@ function _updateFromPath(){
 function _refreshPage(date, isStats, sign, quizz){
 	// nettoyage des infos
 	$("#welcome").hide();
+	$("#empty").hide();
 	$("#infos").hide();
 	$("#warning").hide();
 	$("#quickLinks a").removeClass("chosenSign");
@@ -228,9 +229,18 @@ function _createQuizz(){
 	$.post( 
 		apiPath+"/date/"+currentDate+"/sign/"+currentSign+"/quizz/",
 		function(data) {
-			//console.log("_createQuizz: quizz created "+data);
-			var quizzId = data.quizzId;
-			_setQuizzId(quizzId);
+			//TODO
+			if (data.response = "OK"){
+				if (data.horoscope){
+					var quizzId = data.quizzId;
+					_setQuizzId(quizzId);
+				}else{
+					//cas de pas d'horoscope
+					$("#empty").show();
+				}
+			}else{
+				//TODO: cas d'erreur
+			}
 		}
 	);
 };
@@ -261,13 +271,15 @@ function _getQuizzPredictions(quizzId){
 				$("#predictions").show();
 				$("#predictionsHelp").show();
 				$("#quizzLink").hide();
-			}else{
-				if (quizzData.code == "DONE"){
+			}else if (quizzData.code == "DONE"){
 					_clearQuizz();
 					$("#warning").html(quizzData.message);
 					$("#warning").show();
-				}
+			}else{
 				//TODO gestion des erreurs de récupération des quizz
+
+
+
 			}
 		}
 	);
@@ -307,21 +319,4 @@ function _sendGuess(quizzId,guess){
 			}
 		}
 	);
-};
-
-function _getPrediction(){
-	console.debug("_getPrediction IN currentDate = "+currentDate);
-	if(currentSign != "none"){
-		var path = apiPath+"/date/"+currentDate+"/sign/"+currentSign+"/";
-		//console.log(path);
-		$.get(
-			path,
-			function(data){
-				console.debug("_getPrediction: "+data);
-			}
-		);
-	}else{
-		console.debug("_getPrediction no sign!");
-	}
-	console.debug("_getPrediction OUT");
 };

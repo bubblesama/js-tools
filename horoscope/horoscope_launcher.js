@@ -68,30 +68,42 @@ app.post(
 	'/'+API_PATH+'/date/:date/sign/:sign/quizz/',
 	function(req,res){
 		console.log("post quizz: IN date="+req.params.date+" sign="+req.params.sign);
-		var quizzSigns = [req.params.sign];
-		for (var i=0;i<2;i++){
-			var newSign = signs[randomInt(0,signs.length-1)];
-			while (quizzSigns.indexOf(newSign) != -1){
-				newSign = signs[randomInt(0,signs.length-1)];
+		var response = {"result":"KO"};
+		fs.readFile(
+			horoscopeFolderPath+"json."+req.params.date+".txt",
+			function(error, data) {
+				if (error){
+					response.result = "OK";
+					response.horoscope = false;
+				}else{
+					var quizzSigns = [req.params.sign];
+					for (var i=0;i<2;i++){
+						var newSign = signs[randomInt(0,signs.length-1)];
+						while (quizzSigns.indexOf(newSign) != -1){
+							newSign = signs[randomInt(0,signs.length-1)];
+						}
+						quizzSigns.push(newSign);
+					}
+					// gestion de l'ordre
+					var orderedQuizzSigns = [];
+					var randomOrderingIndex = randomInt(0,5);
+					for (var i=0;i<quizzOrderings[randomOrderingIndex].length;i++){
+						orderedQuizzSigns.push(quizzSigns[quizzOrderings[randomOrderingIndex][i]]);
+					}
+					var quizzId = uuidv4();
+					response.quizzId = quizzId;
+					//creation du quizz
+					var quizz = {"date": req.params.date, "sign": req.params.sign, "signs": orderedQuizzSigns, "guess": "none", "quizzId": quizzId};
+					// sauvegarde du quizz
+					var quizzCollection = database.addCollection("quizz");
+					var insertedQuizz = quizzCollection.insert(quizz);
+					response.result = "OK";
+					response.horoscope = true;
+				}
+				res.writeHead(200, staticJson200Header);
+				res.end(JSON.stringify(response));
 			}
-			quizzSigns.push(newSign);
-		}
-		// gestion de l'ordre
-		var orderedQuizzSigns = [];
-		var randomOrderingIndex = randomInt(0,5);
-		for (var i=0;i<quizzOrderings[randomOrderingIndex].length;i++){
-			orderedQuizzSigns.push(quizzSigns[quizzOrderings[randomOrderingIndex][i]]);
-		}
-		var quizzId = uuidv4();
-		var response = {"result":"KO", "quizzId":quizzId};
-		//creation du quizz
-		var quizz = {"date": req.params.date, "sign": req.params.sign, "signs": orderedQuizzSigns, "guess": "none", "quizzId": quizzId};
-		// sauvegarde du quizz
-		var quizzCollection = database.addCollection("quizz");
-		var insertedQuizz = quizzCollection.insert(quizz);
-		response.result = "OK";
-		res.writeHead(200, staticJson200Header);
-		res.end(JSON.stringify(response));
+		);
 	}
 );
 
@@ -133,7 +145,6 @@ app.get(
 		var result = {code: "KO", message: "none", predictions: []};
 		var quizzCollection = database.addCollection("quizz");
 		var quizz = quizzCollection.findOne({quizzId: quizzId});
-
 		if (!quizz || !quizz.guess){
 			result.message = "database error, quizz "+quizzId+" not found";
 			res.writeHead(200, staticJson200Header);

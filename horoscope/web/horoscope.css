@@ -154,3 +154,8 @@ div .prediction.false a{
 	font-size: 18px;
 	text-align: left;
 }
+
+#empty {
+	text-align: center;
+	width: auto;
+}
