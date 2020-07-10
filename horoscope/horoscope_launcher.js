@@ -223,7 +223,7 @@ app.get(
 				if (error){
 					horoscope = false;
 				}
-				var signsResponse = {"date": date, "horoscope": horoscope, "signs": signs};
+				var signsResponse = {"date": currentDate, "horoscope": horoscope, "signs": signs};
 				//res.writeHead(200, {"Content-Type": "text/plain; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
 				res.writeHead(200, staticJson200Header);
 				res.end(JSON.stringify(signsResponse));
