@@ -73,12 +73,12 @@ function writeTasksAndForm(req,res){
 			//recuperation des infos BDD
 			var allTasksResult = {"tasks":[]};
 			db = new sqlite3.Database(dbFile);
-			db.all(	"SELECT name FROM tasks", 
+			db.all(	"SELECT rowid, name FROM tasks", 
 					function(err, rows) {
 						console.log("writeTasksAndForm some rows! rows="+rows);
 						rows.forEach(function(row) {
 							console.log("writeTasksAndForm one row");
-							allTasksResult.tasks.push({"name":row.name});
+							allTasksResult.tasks.push({"name":row.name, "id": row.rowid});
 						});
 						var template = Handlebars.compile(fileContent);
 						var data = {content:"Je suis Contenu le contenu",tasks:allTasksResult.tasks};
