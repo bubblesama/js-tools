@@ -34,6 +34,10 @@ app.get(
 	writeTasksAndForm
 );
 
+app.get(
+	'/task/:taskId',
+	writeSingleTask
+);
 
 //body-parser for POST
 var urlEncodedParser = BodyParser.urlencoded({extended: false});
@@ -63,6 +67,7 @@ app.post(
 );
 
 function writeTasksAndForm(req,res){
+	console.log("#writeTasksAndForm IN");
 	res.writeHead(200, HTTP_HEADER);
 	fs.readFile('main.hbs', 'utf8', function(error, fileContent) {
 		if (error){
@@ -86,10 +91,29 @@ function writeTasksAndForm(req,res){
 	});
 };
 
-function writeSingleTask(taskId,httpResponse){
-
+function writeSingleTask(httpRequest,httpResponse){
+	var taskId = httpRequest.params.taskId;
+	console.log("#writeSingleTask IN taskId="+taskId);
+	httpResponse.writeHead(200, HTTP_HEADER);
+	fs.readFile('single.hbs', 'utf8', function(error, fileContent) {
+		if (error){
+			res.end("fs error");
+		}else{
+			//recuperation des infos BDD
+			var singleTaskResult = {};
+			db = new sqlite3.Database(dbFile);
+			db.get(	
+				"SELECT rowid, name FROM tasks WHERE rowid="+taskId, 
+				function(err, row) {
+					var template = Handlebars.compile(fileContent);
+					var data = {content:"no content", "name":row.name};
+					db.close();
+					httpResponse.end(""+template(data));
+				}
+			);
+		}
+	});
 };
-
 
 //lancement du serveur
 var server=http.createServer(app);
