@@ -1,0 +1,28 @@
+<html>
+<body>
+<h3>Taches</h3>
+<p>
+	<ul>
+		{{#each tasks}}
+		<li><a href="/task/{{this.id}}/">{{this.name}}</a></li>
+		{{/each}}
+	</ul>
+</p>
+
+
+
+<h3>Nouvelle tache</h3>
+<p>
+	<form action="/" method="post" >
+		<input type="text" name="name"/>
+		<input type="submit" value="créer" />
+	</form>
+</p>
+<p>test content: {{content}}</p>
+</body>
+</html>
+
+
+
+
+

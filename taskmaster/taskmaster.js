@@ -6,11 +6,12 @@ var sqlite3 = require('sqlite3').verbose();
 var Handlebars = require('handlebars');
 var BodyParser = require('body-parser');
 
+//STATIC
+var HTTP_HEADER = {"Content-Type": "text/html; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"};
+
 //init BDD
 var dbFile = "tasks.db";
 var dbFileExists = fs.existsSync(dbFile);
-
-console.log("open dbFile="+dbFile);
 
 
 var db = new sqlite3.Database(dbFile);
@@ -23,12 +24,10 @@ db.serialize(function() {
 });
 db.close();
 
-
-console.log("init db OK");
+console.log("#init db OK");
 
 //mapping express
 var app = express();
-
 
 app.get(
 	'/',
@@ -42,8 +41,8 @@ app.post(
 	'/',
 	urlEncodedParser,
 	function (req, res) {
-		console.log("POST IN: req.body.name="+req.body.name);
-		//TODO insert BDD
+		console.log("#post / POST IN: req.body.name="+req.body.name);
+		//insert BDD
 		db = new sqlite3.Database(dbFile);
 		var insertStatement = "INSERT INTO tasks VALUES (\""+req.body.name+"\")";
 		console.log("insertStatement: "+insertStatement);
@@ -52,7 +51,6 @@ app.post(
 			[],
 			function(error){
 				db.close();
-				console.log("POST INSERT done");
 				writeTasksAndForm(req,res);
 				if (error == null){
 				}else{
@@ -65,8 +63,8 @@ app.post(
 );
 
 function writeTasksAndForm(req,res){
-	res.writeHead(200, {"Content-Type": "text/html; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"});
-	fs.readFile('template.hbs', 'utf8', function(error, fileContent) {
+	res.writeHead(200, HTTP_HEADER);
+	fs.readFile('main.hbs', 'utf8', function(error, fileContent) {
 		if (error){
 			res.end("fs error");
 		}else{
@@ -75,13 +73,11 @@ function writeTasksAndForm(req,res){
 			db = new sqlite3.Database(dbFile);
 			db.all(	"SELECT rowid, name FROM tasks", 
 					function(err, rows) {
-						console.log("writeTasksAndForm some rows! rows="+rows);
 						rows.forEach(function(row) {
-							console.log("writeTasksAndForm one row");
 							allTasksResult.tasks.push({"name":row.name, "id": row.rowid});
 						});
 						var template = Handlebars.compile(fileContent);
-						var data = {content:"Je suis Contenu le contenu",tasks:allTasksResult.tasks};
+						var data = {content:"no content",tasks:allTasksResult.tasks};
 						db.close();
 						res.end(""+template(data));
 					}
@@ -90,7 +86,9 @@ function writeTasksAndForm(req,res){
 	});
 };
 
+function writeSingleTask(taskId,httpResponse){
 
+};
 
 
 //lancement du serveur
