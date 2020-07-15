@@ -1,6 +1,9 @@
 <html>
 <body>
 <h3>Task Master</h3>
+{{#if modified}}
+<p style="color: red;"> modification prise en compte</p>
+{{/if}}
 <form method="POST" action="/task/{{id}}/">
 	<p>
 		<ul>

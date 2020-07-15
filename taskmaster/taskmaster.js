@@ -31,12 +31,16 @@ var app = express();
 
 app.get(
 	'/',
-	writeTasksAndForm
+	function(req,res) {
+		writeTasksAndForm(req,res);
+	}
 );
 
 app.get(
 	'/task/:taskId/',
-	writeSingleTask
+	function(req,res) {
+		writeSingleTask(req,res);
+	}
 );
 
 //body-parser for POST
@@ -82,7 +86,7 @@ app.post(
 			[],
 			function(error){
 				db.close();
-				writeSingleTask(req,res);
+				writeSingleTask(req,res, true);
 				if (error == null){
 				}else{
 					console.log("ERREUR d'UPDATE: "+error);
@@ -117,9 +121,9 @@ function writeTasksAndForm(req,res){
 	});
 };
 
-function writeSingleTask(httpRequest,httpResponse){
+function writeSingleTask(httpRequest, httpResponse, isTaskModified){
 	var taskId = httpRequest.params.taskId;
-	console.log("#writeSingleTask IN taskId="+taskId);
+	console.log("#writeSingleTask IN taskId="+taskId+" isTaskModified="+isTaskModified);
 	httpResponse.writeHead(200, HTTP_HEADER);
 	fs.readFile('single.hbs', 'utf8', function(error, fileContent) {
 		if (error){
@@ -132,7 +136,7 @@ function writeSingleTask(httpRequest,httpResponse){
 				"SELECT rowid, name FROM tasks WHERE rowid="+taskId, 
 				function(err, row) {
 					var template = Handlebars.compile(fileContent);
-					var data = {content:"no content", "name":row.name, "id": taskId};
+					var data = {content:"no content", "name":row.name, "id": taskId, "modified":isTaskModified};
 					db.close();
 					httpResponse.end(""+template(data));
 				}
