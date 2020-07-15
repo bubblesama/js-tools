@@ -35,12 +35,13 @@ app.get(
 );
 
 app.get(
-	'/task/:taskId',
+	'/task/:taskId/',
 	writeSingleTask
 );
 
 //body-parser for POST
 var urlEncodedParser = BodyParser.urlencoded({extended: false});
+
 app.post(
 	'/',
 	urlEncodedParser,
@@ -63,6 +64,15 @@ app.post(
 			}
 		);
 
+	}
+);
+
+app.post(
+	'/task/:taskId/',
+	urlEncodedParser,
+	function (req, res) {
+		console.log("#post /task/ POST IN: req.body.taskId="+req.params.taskId);
+		writeSingleTask(req,res);
 	}
 );
 
@@ -106,7 +116,7 @@ function writeSingleTask(httpRequest,httpResponse){
 				"SELECT rowid, name FROM tasks WHERE rowid="+taskId, 
 				function(err, row) {
 					var template = Handlebars.compile(fileContent);
-					var data = {content:"no content", "name":row.name};
+					var data = {content:"no content", "name":row.name, "id": taskId};
 					db.close();
 					httpResponse.end(""+template(data));
 				}

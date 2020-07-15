@@ -1,13 +1,15 @@
 <html>
 <body>
 <h3>Task Master</h3>
-<p>
-	<ul>
-		<li> name: {{name}}</li>
-	</ul>
-</p>
-<p><a href="/">retour</a></p>
-
+<form method="POST" action="/task/{{id}}/">
+	<p>
+		<ul>
+			<li> name: <input type="text" name="task_name" value="{{name}}" /> </li>
+		</ul>
+		<input type="submit" value="OK" />
+	</p>
+</form>
+	<p><a href="/">retour</a></p>
 </body>
 </html>
 
