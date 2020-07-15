@@ -71,8 +71,24 @@ app.post(
 	'/task/:taskId/',
 	urlEncodedParser,
 	function (req, res) {
-		console.log("#post /task/ POST IN: req.body.taskId="+req.params.taskId);
-		writeSingleTask(req,res);
+		var taskId = req.params.taskId;
+		console.log("#post /task/ POST IN: req.body.taskId="+taskId);
+		var newName = req.body.task_name;
+		var updateStatement = "UPDATE tasks SET name=\""+newName+"\" WHERE rowid="+taskId;
+		console.log("updateStatement: "+updateStatement);
+		db = new sqlite3.Database(dbFile);
+		db.run(
+			updateStatement,
+			[],
+			function(error){
+				db.close();
+				writeSingleTask(req,res);
+				if (error == null){
+				}else{
+					console.log("ERREUR d'UPDATE: "+error);
+				}
+			}
+		);	
 	}
 );
 
