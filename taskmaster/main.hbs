@@ -1,6 +1,7 @@
 <html>
+	<head><title>Task master</title></head>
 <body>
-<h3>Task Master</h3>
+<h2>Tâches</h3>
 <p>
 	<ul>
 		{{#each tasks}}
@@ -11,14 +12,16 @@
 
 
 
-<h3>Nouvelle tache</h3>
-<p>
-	<form action="/" method="post" >
-		<input type="text" name="name"/>
-		<input type="submit" value="créer" />
-	</form>
-</p>
-<p>test content: {{content}}</p>
+<h2>Actions</h2>
+<ul>
+	<li>
+		<form action="/" method="post" >
+			<input type="text" name="name"/>
+			<input type="submit" value="créer" />
+		</form>
+	</li>
+	<li><a href="/tasks/dump/">dump</a></li>
+</ul>
 </body>
 </html>
 

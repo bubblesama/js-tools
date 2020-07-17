@@ -112,7 +112,7 @@ function writeTasksAndForm(req,res){
 							allTasksResult.tasks.push({"name":row.name, "id": row.rowid});
 						});
 						var template = Handlebars.compile(fileContent);
-						var data = {content:"no content",tasks:allTasksResult.tasks};
+						var data = {tasks:allTasksResult.tasks};
 						db.close();
 						res.end(""+template(data));
 					}
@@ -147,6 +147,7 @@ function writeSingleTask(httpRequest, httpResponse, isTaskModified){
 
 //lancement du serveur
 var server=http.createServer(app);
-server.listen(8088,"0.0.0.0");
-
+var port = 8088;
+server.listen(port,"0.0.0.0");
+console.log("#init server listening on port "+port);
 //COUCHE BDD
