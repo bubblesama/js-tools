@@ -19,7 +19,8 @@ var db = new sqlite3.Database(dbFile);
 //init eventuel de la base
 db.serialize(function() {
   if(!dbFileExists) {
-    db.run("CREATE TABLE tasks (name TEXT)");
+	db.run("CREATE TABLE tasks (name TEXT)");
+	db.run("CREATE TABLE foods (date TEXT, meal TEXT, cook TEXT, eaters TEXT, food TEXT)");
   }
 });
 db.close();
@@ -145,9 +146,72 @@ function writeSingleTask(httpRequest, httpResponse, isTaskModified){
 	});
 };
 
+
+//FOOD
+
+app.get(
+	'/food',
+	function(req,res) {
+		writeFoodMain(req,res);
+	}
+);
+
+function writeFoodMain(req,res){
+	console.log("#writeFoodMain IN");
+	res.writeHead(200, HTTP_HEADER);
+	fs.readFile('food.hbs', 'utf8', function(error, fileContent) {
+		if (error){
+			res.end("#writeFoodMain fs error");
+		}else{
+			//recuperation des infos BDD
+			var allFoodsResult = {"foods":[]};
+			db = new sqlite3.Database(dbFile);
+			db.all(	"SELECT rowid, date, meal, cook, eaters, food FROM foods", 
+					function(err, rows) {
+						rows.forEach(function(row) {
+							allFoodsResult.foods.push({"id": row.rowid, "date":row.date,  "meal":row.meal,"cook":row.cook,"eaters":row.eaters,"food":row.food});
+						});
+						var template = Handlebars.compile(fileContent);
+						var data = {foods:allFoodsResult.foods};
+						db.close();
+						res.end(""+template(data));
+					}
+			);
+		}
+	});
+};
+
+app.post(
+	'/food',
+	urlEncodedParser,
+	function (req, res) {
+		console.log("#post /food POST IN: req.body.date="+req.body.date);
+		//insert BDD
+		db = new sqlite3.Database(dbFile);
+		var insertStatement = "INSERT INTO foods VALUES (\""+req.body.date+"\",\""+req.body.meal+"\",\""+req.body.cook+"\",\""+req.body.eaters+"\",\""+req.body.food+"\")";
+		console.log("insertStatement: "+insertStatement);
+		db.run(
+			insertStatement,
+			[],
+			function(error){
+				db.close();
+				writeFoodMain(req,res);
+				if (error == null){
+				}else{
+					console.log("ERREUR d'INSERT: "+error);
+				}
+			}
+		);
+
+	}
+);
+
+
 //lancement du serveur
 var server=http.createServer(app);
 var port = 8088;
 server.listen(port,"0.0.0.0");
 console.log("#init server listening on port "+port);
 //COUCHE BDD
+
+

@@ -1,0 +1,35 @@
+<html>
+	<head><title>Task master/food</title></head>
+<body>
+<h2>Foods</h3>
+<p>
+	<ul>
+		{{#each foods}}
+		<li>{{this.id}}</li>
+		{{/each}}
+	</ul>
+</p>
+
+
+<!--date, meal, cook, eaters, food-->
+<h2>Actions</h2>
+<p>
+	<form action="/food" method="post" >
+		<ul>
+			<li>date: <input type="text" name="date" value="2020-01-01"/></li>
+			<li>meal: <input type="text" name="meal" value="midi"/></li>
+			<li>cook: <input type="text" name="cook" value="L"/></li>
+			<li>eaters: <input type="text" name="eaters" value="L,M,P,A"/></li>
+			<li>food: <input type="text" name="food" value="pasta"/></li>
+		</ul>
+		<input type="submit" value="add" />
+	</form>
+</p>
+
+</body>
+</html>
+
+
+
+
+
