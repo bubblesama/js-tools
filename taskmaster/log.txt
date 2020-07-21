@@ -1,3 +1,11 @@
+2020-07-21 soir L,M,A,P X restes salade fromages
+2020-07-21 midi L,M,A A gnocchi viande hachée
+2020-07-20 soir L,M X restes
+2020-07-20 midi L,M,A,P A restes couscous poulet
+2020-07-19 soir L,M,A,P X restes
+2020-07-19 midi L,P,M L couscous mergez maison
+2020-07-18 soir L,P,M X flammekuche
+2020-07-18 midi L,M,P M cotelettes d'agneaux et ratatouille
 2020-07-17 soir L,M,P L salade et tarte au maroille
 2020-07-17 midi L,A L gnocchi sauce tomate
 2020-07-17 midi M X restes saucisses lentilles
