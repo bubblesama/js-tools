@@ -1,4 +1,10 @@
-2020-07-15 soir L,M,A,P A et compagnie
+2020-07-17 soir L,M,P L salade et tarte au maroille
+2020-07-17 midi L,A L gnocchi sauce tomate
+2020-07-17 midi M X restes saucisses lentilles
+2020-07-16 soir L,M,A,P P cabillaud chorizo poireaux
+2020-07-16 midi P P sandwichs
+2020-07-16 midi L,M,A M saucisses lentilles
+2020-07-15 soir L,M,A,P A salade tomates
 2020-07-15 midi P X sandwich
 2020-07-15 midi L,M,A A poulet riz champi
 2020-07-14 soir A X restes pâtes bolo
