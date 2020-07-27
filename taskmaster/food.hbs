@@ -16,7 +16,7 @@
 <p>
 	<form action="/food" method="post" >
 		<ul>
-			<li>date: <input type="text" name="date" value="2020-01-01"/></li>
+			<li>date: <input type="text" id="input-date" name="date" value="2020-01-01"/> <input type="button" id="button-set-date" value="today" /></li>
 			<li>meal: <input type="text" name="meal" value="midi"/></li>
 			<li>cook: <input type="text" name="cook" value="L"/></li>
 			<li>eaters: <input type="text" name="eaters" value="L,M,P,A"/></li>
@@ -25,6 +25,22 @@
 		<input type="submit" value="add" />
 	</form>
 </p>
+
+<script>
+function setTodayAsDate(){
+	//console.log("pouet");
+	// https://stackoverflow.com/questions/1531093/how-do-i-get-the-current-date-in-javascript
+	var today = new Date();
+	var dd = String(today.getDate()).padStart(2, '0');
+	var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+	var yyyy = today.getFullYear();
+	var todayAsString = yyyy+"-"+mm+"-"+dd;
+	document.getElementById("input-date").value=todayAsString;
+	
+
+};
+document.getElementById("button-set-date").onclick = setTodayAsDate;
+</script>
 
 </body>
 </html>
