@@ -5,7 +5,7 @@
 <p>
 	<ul>
 		{{#each foods}}
-		<li>{{this.id}}</li>
+		<li>{{this.id}} - {{this.date}} - {{this.meal}}</li>
 		{{/each}}
 	</ul>
 </p>
@@ -17,8 +17,8 @@
 	<form action="/food" method="post" >
 		<ul>
 			<li>date: <input type="text" id="input-date" name="date" value="2020-01-01"/> <input type="button" id="button-set-date" value="today" /></li>
-			<li>meal: <input type="text" name="meal" value="midi"/></li>
-			<li>cook: <input type="text" name="cook" value="L"/></li>
+			<li>meal: <input type="text" id="input-meal" name="meal" value="XXX"/><input type="button" id="button-set-meal-midi" value="midi" /><input type="button" id="button-set-meal-soir" value="soir" /></li>
+			<li>cook: <input type="text" id="input-cook" name="cook" value="X"/><input type="button" id="button-set-cook-lise" value="L" /></li><input type="button" id="button-set-cook-maman" value="M" /></li>
 			<li>eaters: <input type="text" name="eaters" value="L,M,P,A"/></li>
 			<li>food: <input type="text" name="food" value="pasta"/></li>
 		</ul>
@@ -36,10 +36,24 @@ function setTodayAsDate(){
 	var yyyy = today.getFullYear();
 	var todayAsString = yyyy+"-"+mm+"-"+dd;
 	document.getElementById("input-date").value=todayAsString;
-	
-
 };
 document.getElementById("button-set-date").onclick = setTodayAsDate;
+
+function setMeal(mealName){document.getElementById("input-meal").value=mealName;};
+function setMealAsMidi(){setMeal("midi");};
+function setMealAsSoir(){setMeal("soir");};
+document.getElementById("button-set-meal-midi").onclick = setMealAsMidi;
+document.getElementById("button-set-meal-soir").onclick = setMealAsSoir;
+
+function setCook(cookLetter){document.getElementById("input-cook").value=cookLetter;};
+function setCookAsLise(){setCook("L");};
+function setCookAsMaman(){setCook("M");};
+document.getElementById("button-set-cook-lise").onclick = setCookAsLise;
+document.getElementById("button-set-cook-maman").onclick = setCookAsMaman;
+
+
+
+
 </script>
 
 </body>
