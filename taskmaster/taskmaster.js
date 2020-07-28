@@ -149,16 +149,48 @@ function writeSingleTask(httpRequest, httpResponse, isTaskModified){
 //FOOD
 
 app.get(
-	'/food',
+	'/foods',
 	function(req,res) {
 		writeFoodMain(req,res);
+	}
+);
+
+app.get(
+	'/food/:foodId/',
+	function(req,res) {
+		writeSingleFood(req,res);
+	}
+);
+
+app.post(
+	'/foods',
+	urlEncodedParser,
+	function (req, res) {
+		console.log("#post /foods POST IN: req.body.date="+req.body.date);
+		//insert BDD
+		db = new sqlite3.Database(dbFile);
+		var insertStatement = "INSERT INTO foods VALUES (\""+req.body.date+"\",\""+req.body.meal+"\",\""+req.body.cook+"\",\""+req.body.eaters+"\",\""+req.body.food+"\")";
+		console.log("insertStatement: "+insertStatement);
+		db.run(
+			insertStatement,
+			[],
+			function(error){
+				db.close();
+				writeFoodMain(req,res);
+				if (error == null){
+				}else{
+					console.log("ERREUR d'INSERT: "+error);
+				}
+			}
+		);
+
 	}
 );
 
 function writeFoodMain(req,res){
 	console.log("#writeFoodMain IN");
 	res.writeHead(200, HTTP_HEADER);
-	fs.readFile('food.hbs', 'utf8', function(error, fileContent) {
+	fs.readFile('foods.hbs', 'utf8', function(error, fileContent) {
 		if (error){
 			res.end("#writeFoodMain fs error");
 		}else{
@@ -180,30 +212,39 @@ function writeFoodMain(req,res){
 	});
 };
 
-app.post(
-	'/food',
-	urlEncodedParser,
-	function (req, res) {
-		console.log("#post /food POST IN: req.body.date="+req.body.date);
-		//insert BDD
-		db = new sqlite3.Database(dbFile);
-		var insertStatement = "INSERT INTO foods VALUES (\""+req.body.date+"\",\""+req.body.meal+"\",\""+req.body.cook+"\",\""+req.body.eaters+"\",\""+req.body.food+"\")";
-		console.log("insertStatement: "+insertStatement);
-		db.run(
-			insertStatement,
-			[],
-			function(error){
-				db.close();
-				writeFoodMain(req,res);
-				if (error == null){
-				}else{
-					console.log("ERREUR d'INSERT: "+error);
+function writeSingleFood(httpRequest, httpResponse, isFoodModified){
+	var foodId = httpRequest.params.foodId;
+	console.log("#writeSingleFood IN foodId="+foodId+" isFoodModified="+isFoodModified);
+	httpResponse.writeHead(200, HTTP_HEADER);
+	fs.readFile('food.hbs', 'utf8', function(error, fileContent) {
+		if (error){
+			res.end("fs error");
+		}else{
+			//recuperation des infos BDD
+			var singleFoodResult = {};
+			db = new sqlite3.Database(dbFile);
+			db.get(	
+				"SELECT rowid, date, meal, cook, eaters, food FROM foods WHERE rowid="+foodId, 
+				function(err, row) {
+					var template = Handlebars.compile(fileContent);
+					var data = {
+						content:"no content", 
+						id: row.rowid, 
+						date:row.date,  
+						meal:row.meal,
+						cook:row.cook,
+						eaters:row.eaters,
+						food:row.food, 
+						modified:isFoodModified
+					};
+					db.close();
+					httpResponse.end(""+template(data));
 				}
-			}
-		);
+			);
+		}
+	});
+};
 
-	}
-);
 
 
 //lancement du serveur
