@@ -26,26 +26,25 @@ console.log("#init db OK");
 
 //mapping express
 var app = express();
-
 app.use('/static', express.static(__dirname + '/static'));
+//body-parser for POST
+var urlEncodedParser = BodyParser.urlencoded({extended: false});
 
+
+//TASKMASTER
+// url mapping
 app.get(
 	'/',
 	function(req,res) {
 		writeTasksAndForm(req,res);
 	}
 );
-
 app.get(
 	'/task/:taskId/',
 	function(req,res) {
 		writeSingleTask(req,res);
 	}
 );
-
-//body-parser for POST
-var urlEncodedParser = BodyParser.urlencoded({extended: false});
-
 app.post(
 	'/',
 	urlEncodedParser,
@@ -70,7 +69,6 @@ app.post(
 
 	}
 );
-
 app.post(
 	'/task/:taskId/',
 	urlEncodedParser,
@@ -96,6 +94,7 @@ app.post(
 	}
 );
 
+//business
 function writeTasksAndForm(req,res){
 	console.log("#writeTasksAndForm IN");
 	res.writeHead(200, HTTP_HEADER);
@@ -120,7 +119,6 @@ function writeTasksAndForm(req,res){
 		}
 	});
 };
-
 function writeSingleTask(httpRequest, httpResponse, isTaskModified){
 	var taskId = httpRequest.params.taskId;
 	console.log("#writeSingleTask IN taskId="+taskId+" isTaskModified="+isTaskModified);
@@ -147,21 +145,19 @@ function writeSingleTask(httpRequest, httpResponse, isTaskModified){
 
 
 //FOOD
-
+// url mapping
 app.get(
 	'/foods',
 	function(req,res) {
 		writeFoodMain(req,res);
 	}
 );
-
 app.get(
 	'/food/:foodId/',
 	function(req,res) {
 		writeSingleFood(req,res);
 	}
 );
-
 app.post(
 	'/foods',
 	urlEncodedParser,
@@ -187,6 +183,7 @@ app.post(
 	}
 );
 
+//business
 function writeFoodMain(req,res){
 	console.log("#writeFoodMain IN");
 	res.writeHead(200, HTTP_HEADER);
@@ -211,7 +208,6 @@ function writeFoodMain(req,res){
 		}
 	});
 };
-
 function writeSingleFood(httpRequest, httpResponse, isFoodModified){
 	var foodId = httpRequest.params.foodId;
 	console.log("#writeSingleFood IN foodId="+foodId+" isFoodModified="+isFoodModified);
