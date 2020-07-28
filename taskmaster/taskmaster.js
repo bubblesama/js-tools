@@ -12,10 +12,7 @@ var HTTP_HEADER = {"Content-Type": "text/html; charset=utf-8","Cache-Control": "
 //init BDD
 var dbFile = "tasks.db";
 var dbFileExists = fs.existsSync(dbFile);
-
-
 var db = new sqlite3.Database(dbFile);
-
 //init eventuel de la base
 db.serialize(function() {
   if(!dbFileExists) {
@@ -29,6 +26,8 @@ console.log("#init db OK");
 
 //mapping express
 var app = express();
+
+app.use('/static', express.static(__dirname + '/static'));
 
 app.get(
 	'/',

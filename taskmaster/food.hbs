@@ -1,16 +1,15 @@
 <html>
 	<head><title>Task master/food</title></head>
+	<link rel="stylesheet" type="text/css" href="/static/taskmaster.css" />
 <body>
 <h2>Foods</h3>
-<p>
+<div class="code">
 	<ul>
 		{{#each foods}}
 		<li>{{this.date}} {{this.meal}} {{this.eaters}} {{this.cook}} {{this.food}}</li>
 		{{/each}}
 	</ul>
-</p>
-
-
+</div>
 <!--date, meal, cook, eaters, food-->
 <h2>Actions</h2>
 <p>
