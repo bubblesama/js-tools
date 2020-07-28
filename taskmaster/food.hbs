@@ -16,43 +16,67 @@
 <p>
 	<form action="/food" method="post" >
 		<ul>
-			<li>date: <input type="text" id="input-date" name="date" value="2020-01-01"/> <input type="button" id="button-set-date" value="today" /></li>
-			<li>meal: <input type="text" id="input-meal" name="meal" value="XXX"/><input type="button" id="button-set-meal-midi" value="midi" /><input type="button" id="button-set-meal-soir" value="soir" /></li>
-			<li>cook: <input type="text" id="input-cook" name="cook" value="X"/><input type="button" id="button-set-cook-lise" value="L" /></li><input type="button" id="button-set-cook-maman" value="M" /></li>
+			<li>
+				date: <input type="text" id="input-date" name="date" value="2020-01-01"/>
+				<input type="button" id="button-set-date" value="today" />
+			</li>
+			<li>
+				meal: <input type="text" id="input-meal" name="meal" value="XXX"/>
+				<input type="button" id="button-set-meal-midi" value="midi" />
+				<input type="button" id="button-set-meal-soir" value="soir" />
+			</li>
+			<li>
+				cook: <input type="text" id="input-cook" name="cook" value="X"/>
+				<input type="button" id="button-set-cook-lise" value="L" />
+				<input type="button" id="button-set-cook-maman" value="M" />
+				<input type="button" id="button-set-cook-paul" value="P" />
+				<input type="button" id="button-set-cook-amelie" value="A" />
+				<input type="button" id="button-set-cook-x" value="X" />
+			</li>
 			<li>eaters: <input type="text" name="eaters" value="L,M,P,A"/></li>
-			<li>food: <input type="text" name="food" value="pasta"/></li>
+			<li>food: <input type="text" name="food" value=""/></li>
 		</ul>
 		<input type="submit" value="add" />
 	</form>
 </p>
 
 <script>
-function setTodayAsDate(){
-	//console.log("pouet");
+
+function getTodayString(){
 	// https://stackoverflow.com/questions/1531093/how-do-i-get-the-current-date-in-javascript
 	var today = new Date();
 	var dd = String(today.getDate()).padStart(2, '0');
 	var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
 	var yyyy = today.getFullYear();
 	var todayAsString = yyyy+"-"+mm+"-"+dd;
-	document.getElementById("input-date").value=todayAsString;
+	return todayAsString;
+};
+//date
+function setTodayAsDate(){
+	document.getElementById("input-date").value=getTodayString();
 };
 document.getElementById("button-set-date").onclick = setTodayAsDate;
+document.getElementById("input-date").value = getTodayString();
 
+//meal
 function setMeal(mealName){document.getElementById("input-meal").value=mealName;};
 function setMealAsMidi(){setMeal("midi");};
 function setMealAsSoir(){setMeal("soir");};
 document.getElementById("button-set-meal-midi").onclick = setMealAsMidi;
 document.getElementById("button-set-meal-soir").onclick = setMealAsSoir;
 
+//cook
 function setCook(cookLetter){document.getElementById("input-cook").value=cookLetter;};
 function setCookAsLise(){setCook("L");};
 function setCookAsMaman(){setCook("M");};
+function setCookAsPaul(){setCook("P");};
+function setCookAsAmelie(){setCook("A")};
+function setCookAsX(){setCook("X")};
 document.getElementById("button-set-cook-lise").onclick = setCookAsLise;
 document.getElementById("button-set-cook-maman").onclick = setCookAsMaman;
-
-
-
+document.getElementById("button-set-cook-paul").onclick = setCookAsPaul;
+document.getElementById("button-set-cook-amelie").onclick = setCookAsAmelie;
+document.getElementById("button-set-cook-x").onclick = setCookAsX;
 
 </script>
 
