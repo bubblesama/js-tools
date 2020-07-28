@@ -5,7 +5,7 @@
 <p>
 	<ul>
 		{{#each foods}}
-		<li>{{this.date}} - {{this.meal}} - {{this.eaters}} {{this.cook}} {{this.food}}</li>
+		<li>{{this.date}} {{this.meal}} {{this.eaters}} {{this.cook}} {{this.food}}</li>
 		{{/each}}
 	</ul>
 </p>
@@ -39,6 +39,7 @@
 				<input type="button" id="button-set-eater-lise" value="L" />
 				<input type="button" id="button-set-eater-maman" value="M" />
 				<input type="button" id="button-set-eater-paul" value="P" />
+				<input type="button" id="button-clear-eaters" value="clear" />
 			</li>
 			<li>food: <input type="text" name="food" value=""/></li>
 		</ul>
@@ -96,6 +97,10 @@ function toggleEater(eaterLetter){
 	}
 	document.getElementById("input-eaters").value = eaters.join();
 };
+function clearEaters(){
+	eaters = [];
+	document.getElementById("input-eaters").value = "";
+};
 function toggleEaterAmelie(){toggleEater("A");};
 function toggleEaterLise(){toggleEater("L");};
 function toggleEaterMaman(){toggleEater("M");};
@@ -104,7 +109,7 @@ document.getElementById("button-set-eater-lise").onclick = toggleEaterLise;
 document.getElementById("button-set-eater-maman").onclick = toggleEaterMaman;
 document.getElementById("button-set-eater-paul").onclick = toggleEaterPaul;
 document.getElementById("button-set-eater-amelie").onclick = toggleEaterAmelie;
-
+document.getElementById("button-clear-eaters").onclick = clearEaters;
 
 </script>
 
