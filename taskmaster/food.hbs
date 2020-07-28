@@ -5,7 +5,7 @@
 <p>
 	<ul>
 		{{#each foods}}
-		<li>{{this.id}} - {{this.date}} - {{this.meal}}</li>
+		<li>{{this.date}} - {{this.meal}} - {{this.eaters}} {{this.cook}} {{this.food}}</li>
 		{{/each}}
 	</ul>
 </p>
@@ -27,13 +27,19 @@
 			</li>
 			<li>
 				cook: <input type="text" id="input-cook" name="cook" value="X"/>
+				<input type="button" id="button-set-cook-amelie" value="A" />
 				<input type="button" id="button-set-cook-lise" value="L" />
 				<input type="button" id="button-set-cook-maman" value="M" />
 				<input type="button" id="button-set-cook-paul" value="P" />
-				<input type="button" id="button-set-cook-amelie" value="A" />
 				<input type="button" id="button-set-cook-x" value="X" />
 			</li>
-			<li>eaters: <input type="text" name="eaters" value="L,M,P,A"/></li>
+			<li>
+				eaters: <input type="text" id="input-eaters" name="eaters" value="L,M,P,A"/>
+				<input type="button" id="button-set-eater-amelie" value="A" />
+				<input type="button" id="button-set-eater-lise" value="L" />
+				<input type="button" id="button-set-eater-maman" value="M" />
+				<input type="button" id="button-set-eater-paul" value="P" />
+			</li>
 			<li>food: <input type="text" name="food" value=""/></li>
 		</ul>
 		<input type="submit" value="add" />
@@ -77,6 +83,28 @@ document.getElementById("button-set-cook-maman").onclick = setCookAsMaman;
 document.getElementById("button-set-cook-paul").onclick = setCookAsPaul;
 document.getElementById("button-set-cook-amelie").onclick = setCookAsAmelie;
 document.getElementById("button-set-cook-x").onclick = setCookAsX;
+
+
+//eaters
+const POTENTIAL_EATERS = ["A","L","M","P"];
+var eaters = ["A","L","M","P"];
+function toggleEater(eaterLetter){
+	if (eaters.includes(eaterLetter)){
+		eaters = eaters.filter(function(eater){return eater!=eaterLetter});
+	}else{
+		eaters.push(eaterLetter);
+	}
+	document.getElementById("input-eaters").value = eaters.join();
+};
+function toggleEaterAmelie(){toggleEater("A");};
+function toggleEaterLise(){toggleEater("L");};
+function toggleEaterMaman(){toggleEater("M");};
+function toggleEaterPaul(){toggleEater("P");};
+document.getElementById("button-set-eater-lise").onclick = toggleEaterLise;
+document.getElementById("button-set-eater-maman").onclick = toggleEaterMaman;
+document.getElementById("button-set-eater-paul").onclick = toggleEaterPaul;
+document.getElementById("button-set-eater-amelie").onclick = toggleEaterAmelie;
+
 
 </script>
 
