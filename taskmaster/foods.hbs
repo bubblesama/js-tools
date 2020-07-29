@@ -1,11 +1,12 @@
 <html>
-	<head><title>Task master/food</title></head>
+	<head><title>task master/food</title></head>
 	<link rel="stylesheet" type="text/css" href="/static/taskmaster.css" />
 <body>
-<h2>Foods</h3>
+<h2>Foods</h2>
+<h3> Last 20</h3>
 <div class="code">
 	<ul>
-		{{#each foods}}
+		{{#each lastFoods}}
 		<li>{{this.date}} {{this.meal}} {{this.eaters}} {{this.cook}} {{this.food}} <a href="/food/{{this.id}}">edit</a></li>
 		{{/each}}
 	</ul>

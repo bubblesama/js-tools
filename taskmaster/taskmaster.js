@@ -192,15 +192,15 @@ function writeFoodMain(req,res){
 			res.end("#writeFoodMain fs error");
 		}else{
 			//recuperation des infos BDD
-			var allFoodsResult = {"foods":[]};
+			var lastFoodsResult = {"foods":[]};
 			db = new sqlite3.Database(dbFile);
-			db.all(	"SELECT rowid, date, meal, cook, eaters, food FROM foods", 
+			db.all(	"SELECT rowid, date, meal, cook, eaters, food FROM foods ORDER BY date DESC LIMIT 20", 
 					function(err, rows) {
 						rows.forEach(function(row) {
-							allFoodsResult.foods.push({"id": row.rowid, "date":row.date,  "meal":row.meal,"cook":row.cook,"eaters":row.eaters,"food":row.food});
+							lastFoodsResult.foods.push({"id": row.rowid, "date":row.date,  "meal":row.meal,"cook":row.cook,"eaters":row.eaters,"food":row.food});
 						});
 						var template = Handlebars.compile(fileContent);
-						var data = {foods:allFoodsResult.foods};
+						var data = {lastFoods:lastFoodsResult.foods};
 						db.close();
 						res.end(""+template(data));
 					}
