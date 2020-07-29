@@ -17,7 +17,7 @@ var db = new sqlite3.Database(dbFile);
 db.serialize(function() {
   if(!dbFileExists) {
 	db.run("CREATE TABLE tasks (name TEXT)");
-	db.run("CREATE TABLE foods (date TEXT, meal TEXT, cook TEXT, eaters TEXT, food TEXT)");
+	db.run("CREATE TABLE meals (date TEXT, time TEXT, cook TEXT, eaters TEXT, food TEXT)");
   }
 });
 db.close();
@@ -144,35 +144,35 @@ function writeSingleTask(httpRequest, httpResponse, isTaskModified){
 };
 
 
-//FOOD
+//MEALS
 // url mapping
 app.get(
-	'/foods',
+	'/meals',
 	function(req,res) {
-		writeFoodMain(req,res);
+		writeMealsMain(req,res);
 	}
 );
 app.get(
-	'/food/:foodId/',
+	'/meal/:mealId/',
 	function(req,res) {
-		writeSingleFood(req,res);
+		writeSingleMeal(req,res);
 	}
 );
 app.post(
-	'/foods',
+	'/meals',
 	urlEncodedParser,
 	function (req, res) {
-		console.log("#post /foods POST IN: req.body.date="+req.body.date);
+		console.log("#post /meals POST IN: req.body.date="+req.body.date);
 		//insert BDD
 		db = new sqlite3.Database(dbFile);
-		var insertStatement = "INSERT INTO foods VALUES (\""+req.body.date+"\",\""+req.body.meal+"\",\""+req.body.cook+"\",\""+req.body.eaters+"\",\""+req.body.food+"\")";
+		var insertStatement = "INSERT INTO meals VALUES (\""+req.body.date+"\",\""+req.body.time+"\",\""+req.body.cook+"\",\""+req.body.eaters+"\",\""+req.body.food+"\")";
 		console.log("insertStatement: "+insertStatement);
 		db.run(
 			insertStatement,
 			[],
 			function(error){
 				db.close();
-				writeFoodMain(req,res);
+				writeMealsMain(req,res);
 				if (error == null){
 				}else{
 					console.log("ERREUR d'INSERT: "+error);
@@ -184,23 +184,23 @@ app.post(
 );
 
 //business
-function writeFoodMain(req,res){
-	console.log("#writeFoodMain IN");
+function writeMealsMain(req,res){
+	console.log("#writeMealsMain IN");
 	res.writeHead(200, HTTP_HEADER);
-	fs.readFile('foods.hbs', 'utf8', function(error, fileContent) {
+	fs.readFile('meals.hbs', 'utf8', function(error, fileContent) {
 		if (error){
-			res.end("#writeFoodMain fs error");
+			res.end("#writeMealsMain fs error");
 		}else{
 			//recuperation des infos BDD
-			var lastFoodsResult = {"foods":[]};
+			var lastMealsResult = {"meals":[]};
 			db = new sqlite3.Database(dbFile);
-			db.all(	"SELECT rowid, date, meal, cook, eaters, food FROM foods ORDER BY date DESC LIMIT 20", 
+			db.all(	"SELECT rowid, date, time, cook, eaters, food FROM meals ORDER BY date DESC LIMIT 20", 
 					function(err, rows) {
 						rows.forEach(function(row) {
-							lastFoodsResult.foods.push({"id": row.rowid, "date":row.date,  "meal":row.meal,"cook":row.cook,"eaters":row.eaters,"food":row.food});
+							lastMealsResult.meals.push({"id": row.rowid, "date":row.date,  "time":row.time,"cook":row.cook,"eaters":row.eaters,"food":row.food});
 						});
 						var template = Handlebars.compile(fileContent);
-						var data = {lastFoods:lastFoodsResult.foods};
+						var data = {lastMeals:lastMealsResult.meals};
 						db.close();
 						res.end(""+template(data));
 					}
@@ -208,30 +208,30 @@ function writeFoodMain(req,res){
 		}
 	});
 };
-function writeSingleFood(httpRequest, httpResponse, isFoodModified){
-	var foodId = httpRequest.params.foodId;
-	console.log("#writeSingleFood IN foodId="+foodId+" isFoodModified="+isFoodModified);
+function writeSingleMeal(httpRequest, httpResponse, isMealModified){
+	var mealId = httpRequest.params.mealId;
+	console.log("#writeSingleMeal IN mealId="+mealId+" isMealModified="+isMealModified);
 	httpResponse.writeHead(200, HTTP_HEADER);
-	fs.readFile('food.hbs', 'utf8', function(error, fileContent) {
+	fs.readFile('meal.hbs', 'utf8', function(error, fileContent) {
 		if (error){
 			res.end("fs error");
 		}else{
 			//recuperation des infos BDD
-			var singleFoodResult = {};
+			var singleMealResult = {};
 			db = new sqlite3.Database(dbFile);
 			db.get(	
-				"SELECT rowid, date, meal, cook, eaters, food FROM foods WHERE rowid="+foodId, 
+				"SELECT rowid, date, time, cook, eaters, food FROM meals WHERE rowid="+mealId, 
 				function(err, row) {
 					var template = Handlebars.compile(fileContent);
 					var data = {
 						content:"no content", 
 						id: row.rowid, 
 						date:row.date,  
-						meal:row.meal,
+						time:row.time,
 						cook:row.cook,
 						eaters:row.eaters,
 						food:row.food, 
-						modified:isFoodModified
+						modified:isMealModified
 					};
 					db.close();
 					httpResponse.end(""+template(data));

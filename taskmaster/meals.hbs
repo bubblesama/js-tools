@@ -1,29 +1,29 @@
 <html>
-	<head><title>task master/food</title></head>
+	<head><title>task master/meals</title></head>
 	<link rel="stylesheet" type="text/css" href="/static/taskmaster.css" />
 <body>
-<h2>Foods</h2>
+<h2>Meals</h2>
 <h3> Last 20</h3>
 <div class="code">
 	<ul>
-		{{#each lastFoods}}
-		<li>{{this.date}} {{this.meal}} {{this.eaters}} {{this.cook}} {{this.food}} <a href="/food/{{this.id}}">edit</a></li>
+		{{#each lastMeals}}
+		<li>{{this.date}} {{this.time}} {{this.eaters}} {{this.cook}} {{this.food}} <a href="/meal/{{this.id}}">edit</a></li>
 		{{/each}}
 	</ul>
 </div>
-<!--date, meal, cook, eaters, food-->
+<!--date, time, cook, eaters, food-->
 <h2>Actions</h2>
 <p>
-	<form action="/foods" method="post" >
+	<form action="/meals" method="post" >
 		<ul>
 			<li>
 				date: <input type="text" id="input-date" name="date" value="2020-01-01"/>
 				<input type="button" id="button-set-date" value="today" />
 			</li>
 			<li>
-				meal: <input type="text" id="input-meal" name="meal" value="XXX"/>
-				<input type="button" id="button-set-meal-midi" value="midi" />
-				<input type="button" id="button-set-meal-soir" value="soir" />
+				meal: <input type="text" id="input-time" name="time" value="XXX"/>
+				<input type="button" id="button-set-time-midi" value="midi" />
+				<input type="button" id="button-set-time-soir" value="soir" />
 			</li>
 			<li>
 				cook: <input type="text" id="input-cook" name="cook" value="X"/>
@@ -47,7 +47,7 @@
 	</form>
 </p>
 
-<script type="text/javascript" src="/static/foods.js"></script>
+<script type="text/javascript" src="/static/meals.js"></script>
 
 </body>
 </html>

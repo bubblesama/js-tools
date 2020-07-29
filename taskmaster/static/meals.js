@@ -16,11 +16,11 @@ document.getElementById("button-set-date").onclick = setTodayAsDate;
 document.getElementById("input-date").value = getTodayString();
 
 //meal
-function setMeal(mealName){document.getElementById("input-meal").value=mealName;};
-function setMealAsMidi(){setMeal("midi");};
-function setMealAsSoir(){setMeal("soir");};
-document.getElementById("button-set-meal-midi").onclick = setMealAsMidi;
-document.getElementById("button-set-meal-soir").onclick = setMealAsSoir;
+function setTime(timeName){document.getElementById("input-time").value=timeName;};
+function setTimeAsMidi(){setTime("midi");};
+function setTimeAsSoir(){setTime("soir");};
+document.getElementById("button-set-time-midi").onclick = setTimeAsMidi;
+document.getElementById("button-set-time-soir").onclick = setTimeAsSoir;
 
 //cook
 function setCook(cookLetter){document.getElementById("input-cook").value=cookLetter;};
