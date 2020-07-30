@@ -1,4 +1,5 @@
 2020-07-29 soir L,M,P L salade de tomates
+2020-07-29 midi L,M,P A nocchi hachis
 
 2020-07-28 soir A,L,M,P P magrets ratatouille
 2020-07-28 midi A,L,P L omelette
