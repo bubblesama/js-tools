@@ -253,9 +253,21 @@ function writeMealsDump(req,res){
 		if (error){
 			res.end("#writeMealsDump fs error");
 		}else{
-			var template = Handlebars.compile(fileContent);
-			var data = {};
-			res.end(""+template(data));
+			//recuperation des infos BDD
+			var rawMealsDump = "";
+			db = new sqlite3.Database(dbFile);
+			db.all(	"SELECT rowid, date, time, cook, eaters, food FROM meals ORDER BY date DESC LIMIT 20", 
+				function(err, rows) {
+					rows.forEach(function(row) {
+						var rawSingleMeal = row.date+" "+row.time+" "+row.eaters+" "+row.cook+" "+row.food;
+						rawMealsDump+= rawSingleMeal+"\n";
+					});			
+					var template = Handlebars.compile(fileContent);
+					var data = {rawDump:rawMealsDump};
+					db.close();
+					res.end(""+template(data));
+				}
+			);
 		}
 	});
 };
