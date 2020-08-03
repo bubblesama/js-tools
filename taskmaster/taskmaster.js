@@ -28,7 +28,7 @@ console.log("#init db OK");
 var app = express();
 app.use('/static', express.static(__dirname + '/static'));
 //body-parser for POST
-var urlEncodedParser = BodyParser.urlencoded({extended: false});
+var urlEncodedParser = BodyParser.urlencoded({zextended: false});
 
 
 //TASKMASTER
@@ -153,6 +153,12 @@ app.get(
 	}
 );
 app.get(
+	'/meals/dump',
+	function(req,res) {
+		writeMealsDump(req,res);
+	}
+);
+app.get(
 	'/meal/:mealId/',
 	function(req,res) {
 		writeSingleMeal(req,res);
@@ -240,8 +246,19 @@ function writeSingleMeal(httpRequest, httpResponse, isMealModified){
 		}
 	});
 };
-
-
+function writeMealsDump(req,res){
+	console.log("#writeMealsDump IN");
+	res.writeHead(200, HTTP_HEADER);
+	fs.readFile('meals-dump.hbs', 'utf8', function(error, fileContent) {
+		if (error){
+			res.end("#writeMealsDump fs error");
+		}else{
+			var template = Handlebars.compile(fileContent);
+			var data = {};
+			res.end(""+template(data));
+		}
+	});
+};
 
 //lancement du serveur
 var server=http.createServer(app);

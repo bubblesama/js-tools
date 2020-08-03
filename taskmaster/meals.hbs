@@ -2,8 +2,8 @@
 	<head><title>task master/meals</title></head>
 	<link rel="stylesheet" type="text/css" href="/static/taskmaster.css" />
 <body>
-<h2>Meals</h2>
-<h3> Last 20</h3>
+<h2>meals</h2>
+<h3> last 20</h3>
 <div class="code">
 	<ul>
 		{{#each lastMeals}}
@@ -12,7 +12,7 @@
 	</ul>
 </div>
 <!--date, time, cook, eaters, food-->
-<h2>Actions</h2>
+<h2>actions</h2>
 <p>
 	<form action="/meals" method="post" >
 		<ul>
@@ -45,6 +45,9 @@
 		</ul>
 		<input type="submit" value="add" />
 	</form>
+</p>
+<p>
+	<a href="/meals/dump">dump</a>
 </p>
 
 <script type="text/javascript" src="/static/meals.js"></script>
