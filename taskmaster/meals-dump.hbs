@@ -5,16 +5,13 @@
 <h2>meals/dump</h2>
 <textarea id="dump" rows="10" cols="45">
 {{this.rawDump}}
-
-
-
-
 </textarea>
-<p>
-<a href="/meals">return</a>
-</p>
-<!--<script type="text/javascript" src="/static/meals.js"></script>-->
-
+<div>
+	<p id="dump-check-status">no check</p>
+	<input type="button" id="dump-check-button" value="check" onclick="checkDump"/>
+</div>
+<p><a href="/meals">return</a></p>
+<script type="text/javascript" src="/static/meals-dump.js"></script>
 </body>
 </html>
 
