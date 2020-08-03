@@ -1,7 +1,11 @@
+2020-08-02 midi L,M,P P pâtes bolognaise
+2020-08-01 soir L,M,P P salade grecque
+2020-08-01 midi L,M,P M saucisses ratatouille
+2020-07-31 soir L,M,P L ratatouille oeufs
+2020-07-31 midi L,P,M,A P knackis pommes de terre
 2020-07-30 soir L,M,P L tarte tomate
 2020-07-30 midi L,M,A A gnocchi hachis
 2020-07-29 soir L,M,P L salade de tomates
-
 
 2020-07-28 soir A,L,M,P P magrets ratatouille
 2020-07-28 midi A,L,P L omelette
