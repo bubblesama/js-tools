@@ -28,7 +28,7 @@ console.log("#init db OK");
 var app = express();
 app.use('/static', express.static(__dirname + '/static'));
 //body-parser for POST
-var urlEncodedParser = BodyParser.urlencoded({extended: false});
+var urlEncodedParser = BodyParser.urlencoded({zextended: false});
 
 
 //TASKMASTER
@@ -153,6 +153,12 @@ app.get(
 	}
 );
 app.get(
+	'/meals/dump',
+	function(req,res) {
+		writeMealsDump(req,res);
+	}
+);
+app.get(
 	'/meal/:mealId/',
 	function(req,res) {
 		writeSingleMeal(req,res);
@@ -240,8 +246,31 @@ function writeSingleMeal(httpRequest, httpResponse, isMealModified){
 		}
 	});
 };
-
-
+function writeMealsDump(req,res){
+	console.log("#writeMealsDump IN");
+	res.writeHead(200, HTTP_HEADER);
+	fs.readFile('meals-dump.hbs', 'utf8', function(error, fileContent) {
+		if (error){
+			res.end("#writeMealsDump fs error");
+		}else{
+			//recuperation des infos BDD
+			var rawMealsDump = "";
+			db = new sqlite3.Database(dbFile);
+			db.all(	"SELECT rowid, date, time, cook, eaters, food FROM meals ORDER BY date DESC LIMIT 20", 
+				function(err, rows) {
+					rows.forEach(function(row) {
+						var rawSingleMeal = row.date+" "+row.time+" "+row.eaters+" "+row.cook+" "+row.food;
+						rawMealsDump+= rawSingleMeal+"\n";
+					});			
+					var template = Handlebars.compile(fileContent);
+					var data = {rawDump:rawMealsDump};
+					db.close();
+					res.end(""+template(data));
+				}
+			);
+		}
+	});
+};
 
 //lancement du serveur
 var server=http.createServer(app);
