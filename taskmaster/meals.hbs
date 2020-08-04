@@ -2,7 +2,7 @@
 	<head><title>task master/meals</title></head>
 	<link rel="stylesheet" type="text/css" href="/static/taskmaster.css" />
 <body>
-<h2>meals</h2>
+<h3><a href="/">taskmaster</a>/meals</h3>
 <h3> last 20</h3>
 <div class="code">
 	<ul>
@@ -12,7 +12,7 @@
 	</ul>
 </div>
 <!--date, time, cook, eaters, food-->
-<h2>actions</h2>
+<h3>actions</h3>
 <p>
 	<form action="/meals" method="post" >
 		<ul>
@@ -46,12 +46,11 @@
 		<input type="submit" value="add" />
 	</form>
 </p>
-<p>
-	<a href="/meals/dump">dump</a>
-</p>
-
+<h3>navigate</h3>
+<ul>
+	<li><a href="/meals/dump">/meals/dump</a></li>
+</ul>
 <script type="text/javascript" src="/static/meals.js"></script>
-
 </body>
 </html>
 
