@@ -1,11 +1,7 @@
 
 function getTodayString(){
-	// https://stackoverflow.com/questions/1531093/how-do-i-get-the-current-date-in-javascript
-	var today = new Date();
-	var dd = String(today.getDate()).padStart(2, '0');
-	var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-	var yyyy = today.getFullYear();
-	var todayAsString = yyyy+"-"+mm+"-"+dd;
+	//moment.js
+	var todayAsString = moment().format("YYYY-MM-DD");      
 	return todayAsString;
 };
 //date
