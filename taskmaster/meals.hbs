@@ -14,8 +14,8 @@
 <!--date, time, cook, eaters, food-->
 <h3>actions</h3>
 <p>
-	<form action="/meals" method="post" >
-		<p>Fill correctly all fields before sending</p>
+	<form id="form-meal" action="/meals" method="post" >
+		
 		<ul>
 			<li>
 				<label for"input-date">date: </label><input type="text" id="input-date" name="date" value="2020-01-01"/>
@@ -44,9 +44,10 @@
 				<input type="button" id="button-set-eater-paul" value="P" />
 				<input type="button" id="button-clear-eaters" value="clear" />
 			</li>
-			<li><label for"input-food">food: </label><input type="text" name="food" value=""/></li>
+			<li><label for"input-food">food: </label><input id="input-food" type="text" name="food" value=""/></li>
 		</ul>
-		<input id="input-meal-submit" type="submit" value="add" style="display: none;"/>
+		<p id="input-meal-warning" style="display: none;">Fill correctly all fields before sending!</p>
+		<input id="input-meal-submit" type="submit" value="add" />
 	</form>
 </p>
 <h3>navigate</h3>
