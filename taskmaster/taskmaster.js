@@ -169,6 +169,9 @@ app.post(
 	urlEncodedParser,
 	function (req, res) {
 		console.log("#post /meals POST IN: req.body.date="+req.body.date);
+		//TODO params control
+
+
 		//insert BDD
 		db = new sqlite3.Database(dbFile);
 		var insertStatement = "INSERT INTO meals VALUES (\""+req.body.date+"\",\""+req.body.time+"\",\""+req.body.cook+"\",\""+req.body.eaters+"\",\""+req.body.food+"\")";
