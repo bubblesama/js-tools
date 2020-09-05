@@ -4,9 +4,10 @@
   "description": "task master",
   "main": "taskmaster.js",
   "dependencies": {
+    "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "handlebars": "^4.1.1",
-    "body-parser": "^1.18.3",
+    "moment": "^2.27.0",
     "sqlite3": "^4.0.6"
   },
   "devDependencies": {},

@@ -5,6 +5,7 @@ var express = require('express');
 var sqlite3 = require('sqlite3').verbose();
 var Handlebars = require('handlebars');
 var BodyParser = require('body-parser');
+var moment = require('moment');
 
 //STATIC
 var HTTP_HEADER = {"Content-Type": "text/html; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"};
@@ -30,6 +31,11 @@ app.use('/static', express.static(__dirname + '/static'));
 //body-parser for POST
 var urlEncodedParser = BodyParser.urlencoded({zextended: false});
 
+
+//constants
+var POTENTIAL_COOKS = ["A","L","M","P","X"];
+var POTENTIAL_EATERS = ["A","L","M","P"];
+var FOOD_REGEX = /^([A-zÀ-ú]|\s)+?$/gi;
 
 //TASKMASTER
 // url mapping
@@ -169,26 +175,61 @@ app.post(
 	urlEncodedParser,
 	function (req, res) {
 		console.log("#post /meals POST IN: req.body.date="+req.body.date);
-		//TODO params control
-
-
-		//insert BDD
-		db = new sqlite3.Database(dbFile);
-		var insertStatement = "INSERT INTO meals VALUES (\""+req.body.date+"\",\""+req.body.time+"\",\""+req.body.cook+"\",\""+req.body.eaters+"\",\""+req.body.food+"\")";
-		console.log("insertStatement: "+insertStatement);
-		db.run(
-			insertStatement,
-			[],
-			function(error){
-				db.close();
-				writeMealsMain(req,res);
-				if (error == null){
-				}else{
-					console.log("ERREUR d'INSERT: "+error);
-				}
+		var isMealFormValid = true;
+		//params control
+		//params control: date
+		var parsedDate = moment(req.body.date,"YYYY-MM-DD",true);
+		if (!parsedDate.isValid()){
+			console.log("#post /meals invalid date:"+req.body.date);
+			isMealFormValid = false;
+		}
+		//params control: meal
+		var mealRawValue = req.body.time
+		if (mealRawValue != "midi" && mealRawValue != "soir"){
+			console.log("#formatControl invalid meal:"+mealRawValue);
+			isMealFormValid = false;
+		}
+		//params control: cook
+		var cookRawValue = req.body.cook;
+		if (!POTENTIAL_COOKS.includes(cookRawValue)){
+			console.log("#formatControl invalid cook:"+cookRawValue);
+			isMealFormValid = false;
+		}
+		//params control: eaters
+		var eatersRawValue = req.body.eaters
+		var eaters = eatersRawValue.split(',');
+		for (var i=0;i<eaters.length;i++){
+			if (!POTENTIAL_EATERS.includes(eaters[i])){
+				console.log("#formatControl invalid eater:"+eaters[i]);
+				isMealFormValid = false;
 			}
-		);
-
+		}
+		//params control: food
+		var foodRawValue = req.body.food
+		if (foodRawValue == null || foodRawValue == "" || !foodRawValue.match(FOOD_REGEX)){
+			console.log("#formatControl invalid food:"+foodRawValue);
+			isMealFormValid = false;
+		}
+		if (!isMealFormValid){
+			//TODO manage invalid values
+		}else{
+			console.log("#post /meals values OK for insert");
+			db = new sqlite3.Database(dbFile);
+			var insertStatement = "INSERT INTO meals VALUES (\""+req.body.date+"\",\""+req.body.time+"\",\""+req.body.cook+"\",\""+req.body.eaters+"\",\""+req.body.food+"\")";
+			console.log("insertStatement: "+insertStatement);
+			db.run(
+				insertStatement,
+				[],
+				function(error){
+					db.close();
+					writeMealsMain(req,res);
+					if (error == null){
+					}else{
+						console.log("#post /meals ERREUR d'INSERT: "+error);
+					}
+				}
+			);
+		}
 	}
 );
 
