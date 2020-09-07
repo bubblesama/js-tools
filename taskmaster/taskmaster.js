@@ -244,23 +244,33 @@ app.post(
 		var allOk = true;
 		for (var i=0;i<mealLines.length;i++){
 			var mealLine = mealLines[i];
-			allOk = allOk && /^202[0-9]-[0-1][0-9]-[0-3][0-9] (midi|soir) (A|L|M|P|,)+? (A|L|M|P|X) (.+?)$/.test(mealLine);
-			var mealData = mealLine.split(" ");
-			var rawDate = mealData[0];
+			allOk = allOk && /^202[0-9]-[0-1][0-9]-[0-3][0-9] (midi|soir) (A|L|M|P|,)+? (A|L|M|P|X) (.+?)$/.test(mealLine); 
+			var rawDate = mealLine.split(" ")[0];
 			var parsedDate = moment(rawDate,"YYYY-MM-DD",true);
 			allOk = allOk && parsedDate.isValid();
-			if (allOK){
-				
-
-
-			}
 		}
 		console.log("#post /meals/dump allOk: "+allOk);
-		if (allOK){
+		if (allOk){
 			//TODO clean BDD et insert des données splitées
-
+			db = new sqlite3.Database(dbFile);
+			db.serialize(function() {
+				db.run("BEGIN TRANSACTION");
+				db.run("DELETE FROM meals");
+				var insertMealStatement = db.prepare("INSERT INTO meals VALUES (?,?,?,?,?)");
+				for (var i=0;i<mealLines.length;i++){
+					var mealData = mealLine.split(" ");
+					insertMealStatement.run(mealData);
+				}
+				insertMealStatement.finalize();
+				db.run("COMMIT");
+				db.run("VACUUM");
+			});
 		}
 		res.writeHead(200, HTTP_HEADER);
+		fs.readFile('meals-dump-ok.hbs', 'utf8', function(error, fileContent) {
+			var template = Handlebars.compile(fileContent);
+			res.end(""+template({}));
+		});
 	}
 );
 
