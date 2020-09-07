@@ -3,13 +3,16 @@
 	<link rel="stylesheet" type="text/css" href="/static/taskmaster.css" />
 <body>
 <h3><a href="/">taskmaster</a>/<a href="/meals">meals</a>/dump</h3>
-<textarea id="dump" rows="10" cols="45">
-{{this.rawDump}}
-</textarea>
-<div>
-	<input type="button" id="dump-check-button" value="check" onclick="checkDump"/>
-	<span id="dump-check-status">no check</span>
-</div>
+<form id="form-meals-dump" action="/meals/dump" method="post" >
+	<textarea id="meals-dump" rows="10" cols="45">
+	{{this.rawDump}}
+	</textarea>
+	<div>
+		<input type="button" id="meals-dump-check-button" value="check" onclick="checkDump"/>
+		<span id="meals-dump-check-status">no check</span>
+	</div>
+	<input type="submit" id="meals-dump-submit" value="sync" />
+</form>
 <script type="text/javascript" src="/static/meals-dump.js"></script>
 </body>
 </html>

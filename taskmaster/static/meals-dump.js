@@ -1,8 +1,8 @@
-document.getElementById("dump-check-button").onclick = checkDump;
-document.getElementById("dump").oninput = resetCheck;
+document.getElementById("meals-dump-check-button").onclick = checkDump;
+document.getElementById("meals-dump").oninput = resetCheck;
 
 function checkDump(){
-	var rawDump = document.getElementById("dump").value;
+	var rawDump = document.getElementById("meals-dump").value;
 	var dumpLines = rawDump.replace(/\r\n/g,"\n").split("\n");
 	var ok = true;
 	for (var i=0;i<dumpLines.length;i++){
@@ -20,7 +20,7 @@ function checkDump(){
 };
 
 function setDumpCheck(html){
-	document.getElementById("dump-check-status").innerHTML = html;
+	document.getElementById("meals-dump-check-status").innerHTML = html;
 };
 function setCheckOk(){setDumpCheck("ok!");};
 function setCheckKo(){setDumpCheck("ko!");};

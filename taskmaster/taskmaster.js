@@ -233,6 +233,24 @@ app.post(
 	}
 );
 
+app.post(
+	'/meals/dump',
+	urlEncodedParser,
+	function (req, res) {
+		console.log("#post /meals/dump IN");
+
+
+
+
+
+		
+		res.writeHead(200, HTTP_HEADER);
+	}
+);
+
+
+
+
 //business
 function writeMealsMain(req,res){
 	console.log("#writeMealsMain IN");
