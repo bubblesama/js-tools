@@ -237,13 +237,29 @@ app.post(
 	'/meals/dump',
 	urlEncodedParser,
 	function (req, res) {
-		console.log("#post /meals/dump IN");
+		var rawDump = req.body.dump.trim();
+		console.log("#post /meals/dump IN rawDump="+rawDump);
+		var mealLines = rawDump.replace(/\r\n/g,"\n").split("\n");
+		console.log("#post /meals/dump meal lines: "+mealLines.length);	
+		var allOk = true;
+		for (var i=0;i<mealLines.length;i++){
+			var mealLine = mealLines[i];
+			allOk = allOk && /^202[0-9]-[0-1][0-9]-[0-3][0-9] (midi|soir) (A|L|M|P|,)+? (A|L|M|P|X) (.+?)$/.test(mealLine);
+			var mealData = mealLine.split(" ");
+			var rawDate = mealData[0];
+			var parsedDate = moment(rawDate,"YYYY-MM-DD",true);
+			allOk = allOk && parsedDate.isValid();
+			if (allOK){
+				
 
 
+			}
+		}
+		console.log("#post /meals/dump allOk: "+allOk);
+		if (allOK){
+			//TODO clean BDD et insert des données splitées
 
-
-
-		
+		}
 		res.writeHead(200, HTTP_HEADER);
 	}
 );
