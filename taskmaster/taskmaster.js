@@ -240,7 +240,8 @@ app.post(
 		var rawDump = req.body.dump.trim();
 		console.log("#post /meals/dump IN rawDump="+rawDump);
 		var mealLines = rawDump.replace(/\r\n/g,"\n").split("\n");
-		console.log("#post /meals/dump meal lines: "+mealLines.length);	
+		var mealsCount = mealLines.length;
+		console.log("#post /meals/dump meals count: "+mealsCount);	
 		var allOk = true;
 		for (var i=0;i<mealLines.length;i++){
 			var mealLine = mealLines[i];
@@ -251,7 +252,7 @@ app.post(
 		}
 		console.log("#post /meals/dump allOk: "+allOk);
 		if (allOk){
-			//TODO clean BDD et insert des données splitées
+			//clean BDD et insert des données splitées
 			db = new sqlite3.Database(dbFile);
 			db.serialize(function() {
 				db.run("BEGIN TRANSACTION");
