@@ -1,11 +1,11 @@
 <html>
 		<head><title>Task master</title></head>
 <body>
-<h3><a href="/">taskmaster</a>/task</h3>
+<h3><a href="/taskmaster">taskmaster</a>/task</h3>
 {{#if modified}}
 <p style="color: red;"> modification prise en compte</p>
 {{/if}}
-<form method="POST" action="/task/{{id}}/">
+<form method="POST" action="/taskmaster/task/{{id}}/">
 	<p>
 		<ul>
 			<li> name: <input type="text" name="task_name" value="{{name}}" /> </li>

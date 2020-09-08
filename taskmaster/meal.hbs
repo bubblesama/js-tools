@@ -1,12 +1,12 @@
 <html>
 	<head><title>task master/meals</title></head>
-	<link rel="stylesheet" type="text/css" href="/static/taskmaster.css" />
+	<link rel="stylesheet" type="text/css" href="/taskmaster/static/taskmaster.css" />
 <body>
 <h3>Task Master/ meals</h3>
 {{#if modified}}
 <p style="color: red;"> modification prise en compte</p>
 {{/if}}
-<form method="POST" action="/meal/{{id}}/">
+<form method="POST" action="/taskmaster/meal/{{id}}/">
 	<p>
 		<ul>
 			<li> date: <input type="text" name="meal_date" value="{{date}}" /> </li>
@@ -14,7 +14,7 @@
 		<input type="submit" value="OK" />
 	</p>
 </form>
-	<p><a href="/meals">retour</a></p>
+	<p><a href="/taskmaster/meals">retour</a></p>
 </body>
 </html>
 

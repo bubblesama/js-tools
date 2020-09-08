@@ -27,7 +27,7 @@ console.log("#init db OK");
 
 //mapping express
 var app = express();
-app.use('/static', express.static(__dirname + '/static'));
+app.use('/taskmaster/static', express.static(__dirname + '/static'));
 //body-parser for POST
 var urlEncodedParser = BodyParser.urlencoded({zextended: false});
 
@@ -40,19 +40,19 @@ var FOOD_REGEX = /^([A-zÀ-ú]|\s)+?$/gi;
 //TASKMASTER
 // url mapping
 app.get(
-	'/',
+	'/taskmaster/',
 	function(req,res) {
 		writeTasksAndForm(req,res);
 	}
 );
 app.get(
-	'/task/:taskId/',
+	'/taskmaster/task/:taskId/',
 	function(req,res) {
 		writeSingleTask(req,res);
 	}
 );
 app.post(
-	'/',
+	'/taskmaster/',
 	urlEncodedParser,
 	function (req, res) {
 		console.log("#post / POST IN: req.body.name="+req.body.name);
@@ -76,7 +76,7 @@ app.post(
 	}
 );
 app.post(
-	'/task/:taskId/',
+	'/taskmaster/task/:taskId/',
 	urlEncodedParser,
 	function (req, res) {
 		var taskId = req.params.taskId;
@@ -153,25 +153,25 @@ function writeSingleTask(httpRequest, httpResponse, isTaskModified){
 //MEALS
 // url mapping
 app.get(
-	'/meals',
+	'/taskmaster/meals',
 	function(req,res) {
 		writeMealsMain(req,res);
 	}
 );
 app.get(
-	'/meals/dump',
+	'/taskmaster/meals/dump',
 	function(req,res) {
 		writeMealsDump(req,res);
 	}
 );
 app.get(
-	'/meal/:mealId/',
+	'/taskmaster/meal/:mealId/',
 	function(req,res) {
 		writeSingleMeal(req,res);
 	}
 );
 app.post(
-	'/meals',
+	'/taskmaster/meals',
 	urlEncodedParser,
 	function (req, res) {
 		console.log("#post /meals POST IN: req.body.date="+req.body.date);
@@ -234,7 +234,7 @@ app.post(
 );
 
 app.post(
-	'/meals/dump',
+	'/taskmaster/meals/dump',
 	urlEncodedParser,
 	function (req, res) {
 		var rawDump = req.body.dump.trim();

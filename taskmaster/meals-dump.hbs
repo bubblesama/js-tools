@@ -1,9 +1,9 @@
 <html>
 	<head><title>task master/meals/dump</title></head>
-	<link rel="stylesheet" type="text/css" href="/static/taskmaster.css" />
+	<link rel="stylesheet" type="text/css" href="/taskmaster/static/taskmaster.css" />
 <body>
-<h3><a href="/">taskmaster</a>/<a href="/meals">meals</a>/dump</h3>
-<form id="form-meals-dump" action="/meals/dump" method="post" >
+<h3><a href="/taskmaster">taskmaster</a>/<a href="/taskmaster/meals">meals</a>/dump</h3>
+<form id="form-meals-dump" action="/taskmaster/meals/dump" method="post" >
 	<textarea id="meals-dump" name="dump" rows="10" cols="45">{{this.rawDump}}</textarea>
 	<div>
 		<input type="button" id="meals-dump-check-button" value="check" onclick="checkDump"/>
@@ -11,7 +11,7 @@
 	</div>
 	<input type="submit" id="meals-dump-submit" value="sync" />
 </form>
-<script type="text/javascript" src="/static/meals-dump.js"></script>
+<script type="text/javascript" src="/taskmaster/static/meals-dump.js"></script>
 </body>
 </html>
 
