@@ -289,15 +289,23 @@ function writeMealsMain(req,res){
 			//recuperation des infos BDD
 			var lastMealsResult = {"meals":[]};
 			db = new sqlite3.Database(dbFile);
-			db.all(	"SELECT rowid, date, time, cook, eaters, food FROM meals ORDER BY date DESC LIMIT 20", 
+			db.all("SELECT rowid, date, time, cook, eaters, food FROM meals ORDER BY date DESC LIMIT 20", 
 					function(err, rows) {
 						rows.forEach(function(row) {
 							lastMealsResult.meals.push({"id": row.rowid, "date":row.date,  "time":row.time,"cook":row.cook,"eaters":row.eaters,"food":row.food});
 						});
-						var template = Handlebars.compile(fileContent);
-						var data = {lastMeals:lastMealsResult.meals};
-						db.close();
-						res.end(""+template(data));
+						
+						db.get(
+							"SELECT count(*) FROM meals WHERE cook='A'",
+							function(err, row) {
+								
+
+								var template = Handlebars.compile(fileContent);
+								var data = {lastMeals:lastMealsResult.meals};
+								db.close();
+								res.end(""+template(data));
+							}
+						);
 					}
 			);
 		}
