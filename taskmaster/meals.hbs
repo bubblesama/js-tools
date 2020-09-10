@@ -1,0 +1,65 @@
+<html>
+	<head><title>task master/meals</title></head>
+	<link rel="stylesheet" type="text/css" href="/taskmaster/static/taskmaster.css" />
+<body>
+<h3><a href="/taskmaster/">taskmaster</a>/meals</h3>
+<h3> last 20</h3>
+<div class="code">
+	<ul>
+		{{#each lastMeals}}
+		<li>{{this.date}} {{this.time}} {{this.cook}} {{this.eaters}} {{this.food}} <a href="/meal/{{this.id}}">edit</a></li>
+		{{/each}}
+	</ul>
+</div>
+<!--date, time, cook, eaters, food-->
+<h3>actions</h3>
+<p>
+	<form id="form-meal" action="/taskmaster/meals" method="post" >
+		
+		<ul>
+			<li>
+				<label for"input-date">date: </label><input type="text" id="input-date" name="date" value="2020-01-01"/>
+				<input type="button" id="button-set-date" value="today" />
+			</li>
+			<li>
+				<label for"input-time">meal: </label><input type="text" id="input-time" name="time" value="XXX"/>
+				<input type="button" id="button-set-time-midi" value="midi" />
+				<input type="button" id="button-set-time-soir" value="soir" />
+			</li>
+			<li>
+				<label for"input-cook">cook: </label>
+				<input type="text" id="input-cook" name="cook" value="X"/>
+				<input type="button" id="button-set-cook-amelie" value="A" />
+				<input type="button" id="button-set-cook-lise" value="L" />
+				<input type="button" id="button-set-cook-maman" value="M" />
+				<input type="button" id="button-set-cook-paul" value="P" />
+				<input type="button" id="button-set-cook-x" value="X" />
+			</li>
+			<li>
+				<label for"input-eaters">eaters: </label>
+				<input type="text" id="input-eaters" name="eaters" value="L,M,P,A"/>
+				<input type="button" id="button-set-eater-amelie" value="A" />
+				<input type="button" id="button-set-eater-lise" value="L" />
+				<input type="button" id="button-set-eater-maman" value="M" />
+				<input type="button" id="button-set-eater-paul" value="P" />
+				<input type="button" id="button-clear-eaters" value="clear" />
+			</li>
+			<li><label for"input-food">food: </label><input id="input-food" type="text" name="food" value=""/></li>
+		</ul>
+		<p id="input-meal-warning" style="display: none;">Fill correctly all fields before sending!</p>
+		<input id="input-meal-submit" type="submit" value="add" />
+	</form>
+</p>
+<h3>navigate</h3>
+<ul>
+	<li><a href="/taskmaster/meals/dump">/meals/dump</a></li>
+</ul>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js" integrity="sha512-rmZcZsyhe0/MAjquhTgiUcb4d9knaFc7b5xAfju483gbEXTkeJRUMIPk6s3ySZMYUHEcjKbjLjyddGWMrNEvZg==" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/taskmaster/static/meals.js"></script>
+</body>
+</html>
+
+
+
+
+

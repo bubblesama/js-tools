@@ -1,0 +1,35 @@
+<html>
+	<head><title>task master</title></head>
+<body>
+<h3>tasks</h3>
+<p>
+	<ul>
+		{{#each tasks}}
+		<li><a href="/taskmaster/task/{{this.id}}/">{{this.name}}</a></li>
+		{{/each}}
+	</ul>
+</p>
+
+
+
+<h3>actions</h3>
+<p>
+	<form action="/taskmaster/" method="post" >
+		<input type="text" name="name"/>
+		<input type="submit" value="créer" />
+	</form>
+
+
+</p>
+
+<h3>navigate</h3>
+<ul>
+	<li><a href="/taskmaster/meals">/meals</a></li>
+</ul>
+</body>
+</html>
+
+
+
+
+

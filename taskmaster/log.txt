@@ -1,0 +1,34 @@
+2020-08-02 midi L,M,P P pâtes bolognaise
+2020-08-01 soir L,M,P P salade grecque
+2020-08-01 midi L,M,P M saucisses ratatouille
+2020-07-31 soir L,M,P L ratatouille oeufs
+2020-07-31 midi L,P,M,A P knackis pommes de terre
+2020-07-30 soir L,M,P L tarte tomate
+2020-07-30 midi L,M,A A gnocchi hachis
+2020-07-29 soir L,M,P L salade de tomates
+
+2020-07-28 soir A,L,M,P P magrets ratatouille
+2020-07-28 midi A,L,P L omelette
+
+2020-07-21 soir L,M,A,P X restes salade fromages
+2020-07-21 midi L,M,A A gnocchi viande hachée
+2020-07-20 soir L,M X restes
+2020-07-20 midi L,M,A,P A restes couscous poulet
+2020-07-19 soir L,M,A,P X restes
+2020-07-19 midi L,P,M L couscous mergez maison
+2020-07-18 soir L,P,M X flammekuche
+2020-07-18 midi L,M,P M cotelettes d'agneaux et ratatouille
+2020-07-17 soir L,M,P L salade et tarte au maroille
+2020-07-17 midi L,A L gnocchi sauce tomate
+2020-07-17 midi M X restes saucisses lentilles
+2020-07-16 soir L,M,A,P P cabillaud chorizo poireaux
+2020-07-16 midi P P sandwichs
+2020-07-16 midi L,M,A M saucisses lentilles
+2020-07-15 soir L,M,A,P A salade tomates
+2020-07-15 midi P X sandwich
+2020-07-15 midi L,M,A A poulet riz champi
+2020-07-14 soir A X restes pâtes bolo
+2020-07-14 midi L,P,M M poulet estragon
+2020-07-13 soir M X restes poulet curry
+2020-07-13 soir L,P L focacia saumon fumé
+2020-07-13 midi L,P,M P pâtes bolo
