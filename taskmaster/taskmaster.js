@@ -245,7 +245,7 @@ app.post(
 		var allOk = true;
 		for (var i=0;i<mealLines.length;i++){
 			var mealLine = mealLines[i];
-			allOk = allOk && /^202[0-9]-[0-1][0-9]-[0-3][0-9] (midi|soir) (A|L|M|P|,)+? (A|L|M|P|X) (.+?)$/.test(mealLine); 
+			allOk = allOk && /^202[0-9]-[0-1][0-9]-[0-3][0-9] (midi|soir) (A|L|M|P|X) (A|L|M|P|,)+? (.+?)$/.test(mealLine); 
 			var rawDate = mealLine.split(" ")[0];
 			var parsedDate = moment(rawDate,"YYYY-MM-DD",true);
 			allOk = allOk && parsedDate.isValid();
@@ -259,8 +259,8 @@ app.post(
 				db.run("DELETE FROM meals");
 				var insertMealStatement = db.prepare("INSERT INTO meals VALUES (?,?,?,?,?)");
 				for (var i=0;i<mealLines.length;i++){
-					var mealData = mealLine.split(" ");
-					insertMealStatement.run(mealData);
+					var mealData = mealLines[i].split(" ");
+					insertMealStatement.run([mealData[0],mealData[1],mealData[2],mealData[3],mealData.slice(4).join(' ')]);
 				}
 				insertMealStatement.finalize();
 				db.run("COMMIT");
@@ -345,10 +345,10 @@ function writeMealsDump(req,res){
 			//recuperation des infos BDD
 			var rawMealsDump = "";
 			db = new sqlite3.Database(dbFile);
-			db.all(	"SELECT rowid, date, time, cook, eaters, food FROM meals ORDER BY date DESC LIMIT 20", 
+			db.all(	"SELECT rowid, date, time, cook, eaters, food FROM meals ORDER BY date DESC", 
 				function(err, rows) {
 					rows.forEach(function(row) {
-						var rawSingleMeal = row.date+" "+row.time+" "+row.eaters+" "+row.cook+" "+row.food;
+						var rawSingleMeal = row.date+" "+row.time+" "+row.cook+" "+row.eaters+" "+row.food;
 						rawMealsDump+= rawSingleMeal+"\n";
 					});			
 					var template = Handlebars.compile(fileContent);
@@ -363,7 +363,7 @@ function writeMealsDump(req,res){
 
 //lancement du serveur
 var server=http.createServer(app);
-var port = 8088;
+var port = 8100;
 server.listen(port,"0.0.0.0");
 console.log("#init server listening on port "+port);
 //COUCHE BDD

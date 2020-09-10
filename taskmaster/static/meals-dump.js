@@ -7,7 +7,7 @@ function checkDump(){
 	var ok = true;
 	for (var i=0;i<dumpLines.length;i++){
 		if (dumpLines[i]){
-			ok = ok && /^202[0-9]-[0-1][0-9]-[0-3][0-9] (midi|soir) (A|L|M|P|,)+? (A|L|M|P|X) (.+?)$/.test(dumpLines[i]);
+			ok = ok && /^202[0-9]-[0-1][0-9]-[0-3][0-9] (midi|soir) (A|L|M|P|X) (A|L|M|P|,)+? (.+?)$/.test(dumpLines[i]);
 			//ok = ok && /^202/.test(dumpLines[i]);
 			console.log(dumpLines[i]+" so still ok? "+ok);
 		}
