@@ -4,74 +4,75 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <body>
 <div id="main">
-<h3><a href="/taskmaster/">taskmaster</a>/meals</h3>
-<h3> comptes</h3>
-<div>
-	<table>
-		<tr><td>Amélie</td><td> {{this.counts.A}}</td></tr>
-		<tr><td>Lise</td><td> {{this.counts.L}}</td></tr>
-		<tr><td>Maman</td><td> {{this.counts.M}}</td></tr>
-		<tr><td>Paul</td><td> {{this.counts.P}}</td></tr>
-		<tr><td>Commun</td><td> {{this.counts.X}}</li>
-	</table>
-</div>
-<!--date, time, cook, eaters, food-->
-<h3> actions</h3>
-<p>
-	<form id="form-meal" action="/taskmaster/meals" method="post" >
-		<fieldset>
-			<legend>ajouter un repas</legend>
+	<h3><a href="/taskmaster/">taskmaster</a>/meals</h3>
+	<h3> comptes</h3>
+	<div>
+		<table>
+			<tr><td>Amélie</td><td> {{this.counts.A}}</td></tr>
+			<tr><td>Lise</td><td> {{this.counts.L}}</td></tr>
+			<tr><td>Maman</td><td> {{this.counts.M}}</td></tr>
+			<tr><td>Paul</td><td> {{this.counts.P}}</td></tr>
+			<tr><td>Commun</td><td> {{this.counts.X}}</li>
+		</table>
+	</div>
+	<!--date, time, cook, eaters, food-->
+	<h3> actions</h3>
+	<p>
+		<form id="form-meal" action="/taskmaster/meals" method="post" >
 			<fieldset>
-				<legend>date</legend>
-				<input type="date" id="input-date" name="date" value=""/><br/>
-				<input type="button" id="button-set-date" value="aujourd'hui" />
+				<legend>ajouter un repas</legend>
+				<fieldset>
+					<legend>date</legend>
+					<input type="date" id="input-date" name="date" value=""/><br/>
+					<input type="button" id="button-set-date" value="aujourd'hui" />
+					</fieldset>
+				<fieldset>
+					<legend>repas</legend>
+					<input type="text" id="input-time" name="time" value="XXX"/><br/>
+					<input type="button" id="button-set-time-midi" value="midi" />
+					<input type="button" id="button-set-time-soir" value="soir" />
+				</fieldset>
+				<fieldset>
+					<legend>cuisinier</legend>
+					<input type="text" id="input-cook" name="cook" value="X"/><br/>
+					<input type="button" id="button-set-cook-amelie" value="A" />
+					<input type="button" id="button-set-cook-lise" value="L" />
+					<input type="button" id="button-set-cook-maman" value="M" />
+					<input type="button" id="button-set-cook-paul" value="P" />
+					<input type="button" id="button-set-cook-x" value="X" />
+				</fieldset>
+				<fieldset>
+					<legend>convives</legend>
+					<input type="text" id="input-eaters" name="eaters" value="L,M,P,A"/><br/>
+					<input type="button" id="button-set-eater-amelie" value="A" />
+					<input type="button" id="button-set-eater-lise" value="L" />
+					<input type="button" id="button-set-eater-maman" value="M" />
+					<input type="button" id="button-set-eater-paul" value="P" />
+					<input type="button" id="button-clear-eaters" value="effacer" />
+				</fieldset>
+				<fieldset>
+					<legend>menu</legend>
+					<input id="input-food" type="text" name="food" value="" autocapitalize="off"/>
+				</fieldset>
+			<p id="input-meal-warning" style="display: none"><span style="color: red;">Il faut remplir tous les champs correctement!</span></p>
+			<input id="input-meal-submit" type="submit" value="ajouter" />
 			</fieldset>
-			<fieldset>
-				<legend>repas</legend>
-				<input type="text" id="input-time" name="time" value="XXX"/><br/>
-				<input type="button" id="button-set-time-midi" value="midi" />
-				<input type="button" id="button-set-time-soir" value="soir" />
-			</fieldset>
-			<fieldset>
-				<legend>cuisinier</legend>
-				<input type="text" id="input-cook" name="cook" value="X"/><br/>
-				<input type="button" id="button-set-cook-amelie" value="A" />
-				<input type="button" id="button-set-cook-lise" value="L" />
-				<input type="button" id="button-set-cook-maman" value="M" />
-				<input type="button" id="button-set-cook-paul" value="P" />
-				<input type="button" id="button-set-cook-x" value="X" />
-			</fieldset>
-			<fieldset>
-				<legend>convives</legend>
-				<input type="text" id="input-eaters" name="eaters" value="L,M,P,A"/><br/>
-				<input type="button" id="button-set-eater-amelie" value="A" />
-				<input type="button" id="button-set-eater-lise" value="L" />
-				<input type="button" id="button-set-eater-maman" value="M" />
-				<input type="button" id="button-set-eater-paul" value="P" />
-				<input type="button" id="button-clear-eaters" value="effacer" />
-			</fieldset>
-			<fieldset>
-				<legend>menu</legend>
-				<input id="input-food" type="text" name="food" value="" autocapitalize="off"/>
-			</fieldset>
-		<p id="input-meal-warning" style="display: none"><span style="color: red;">Il faut remplir tous les champs correctement!</span></p>
-		<input id="input-meal-submit" type="submit" value="ajouter" />
-		</fieldset>
-	</form>
-</p>
-<h3> liens</h3>
-<ul>
-	<li><a href="/taskmaster/meals/dump">/meals/dump</a></li>
-</ul>
-<h3> 20 derniers</h3>
-<div class="code">
+		</form>
+	</p>
+	<h3> liens</h3>
 	<ul>
-		{{#each lastMeals}}
-		<li>{{this.date}} {{this.time}} {{this.cook}} {{this.eaters}} {{this.food}} <a href="/meal/{{this.id}}">edit</a></li>
-		{{/each}}
+		<li><a href="/taskmaster/meals/dump">/meals/dump</a></li>
 	</ul>
+	<h3> 20 derniers</h3>
+	<div class="code">
+		<ul>
+			{{#each lastMeals}}
+			<li>{{this.date}} {{this.time}} {{this.cook}} {{this.eaters}} {{this.food}} <a href="/meal/{{this.id}}">edit</a></li>
+			{{/each}}
+		</ul>
+	</div>
 </div>
-</div>
+<div id="legal">&copy; bubble 2020 - meals V1.1.0 20200911</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js" integrity="sha512-rmZcZsyhe0/MAjquhTgiUcb4d9knaFc7b5xAfju483gbEXTkeJRUMIPk6s3ySZMYUHEcjKbjLjyddGWMrNEvZg==" crossorigin="anonymous"></script>
 <script type="text/javascript" src="/taskmaster/static/meals.js"></script>
 </body>
