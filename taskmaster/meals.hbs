@@ -3,7 +3,17 @@
 	<link rel="stylesheet" type="text/css" href="/taskmaster/static/taskmaster.css" />
 <body>
 <h3><a href="/taskmaster/">taskmaster</a>/meals</h3>
-<h3> last 20</h3>
+<h3> counts</h3>
+<div>
+	<ul>
+		<li>A: {{this.counts.A}}</li>
+		<li>L: {{this.counts.L}}</li>
+		<li>M: {{this.counts.M}}</li>
+		<li>P: {{this.counts.P}}</li>
+		<li>X: {{this.counts.X}}</li>
+	</ul>
+</div>
+<h3>last 20</h3>
 <div class="code">
 	<ul>
 		{{#each lastMeals}}
