@@ -1,3 +1,13 @@
 .code{
 	font-family: "Lucida Console", Courier, monospace;
 }
+
+#main{
+	background-color: white; 
+}
+
+h3{
+	background-color: rgb(255, 192, 0);
+	padding: 10px;
+}
+

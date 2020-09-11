@@ -289,16 +289,48 @@ function writeMealsMain(req,res){
 			//recuperation des infos BDD
 			var lastMealsResult = {"meals":[]};
 			db = new sqlite3.Database(dbFile);
-			db.all(	"SELECT rowid, date, time, cook, eaters, food FROM meals ORDER BY date DESC LIMIT 20", 
-					function(err, rows) {
-						rows.forEach(function(row) {
-							lastMealsResult.meals.push({"id": row.rowid, "date":row.date,  "time":row.time,"cook":row.cook,"eaters":row.eaters,"food":row.food});
-						});
-						var template = Handlebars.compile(fileContent);
-						var data = {lastMeals:lastMealsResult.meals};
-						db.close();
-						res.end(""+template(data));
-					}
+			db.all(
+				"SELECT rowid, date, time, cook, eaters, food FROM meals ORDER BY date DESC LIMIT 20", 
+				function(err, rows) {
+					rows.forEach(function(row) {
+						lastMealsResult.meals.push({"id": row.rowid, "date":row.date,  "time":row.time,"cook":row.cook,"eaters":row.eaters,"food":row.food});
+					});
+					var counts = {};
+					db.get(
+						"SELECT count(*) as count FROM meals WHERE cook='A'",
+						function(err, row) {
+							counts.A = row.count;
+							db.get(
+								"SELECT count(*) as count FROM meals WHERE cook='L'",
+								function(err, row) {
+									counts.L = row.count;
+									db.get(
+										"SELECT count(*) as count FROM meals WHERE cook='M'",
+										function(err, row) {
+											counts.M = row.count;
+											db.get(
+												"SELECT count(*) as count FROM meals WHERE cook='P'",
+												function(err, row) {
+													counts.P = row.count;
+													db.get(
+														"SELECT count(*) as count FROM meals WHERE cook='X'",
+														function(err, row) {
+															counts.X = row.count;
+															var template = Handlebars.compile(fileContent);
+															var data = {lastMeals:lastMealsResult.meals,counts:counts};
+															db.close();
+															res.end(""+template(data));
+														}
+													);
+												}
+											);
+										}
+									);
+								}
+							);
+						}
+					);
+				}
 			);
 		}
 	});
