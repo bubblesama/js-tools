@@ -13,14 +13,6 @@
 		<li>X: {{this.counts.X}}</li>
 	</ul>
 </div>
-<h3>last 20</h3>
-<div class="code">
-	<ul>
-		{{#each lastMeals}}
-		<li>{{this.date}} {{this.time}} {{this.cook}} {{this.eaters}} {{this.food}} <a href="/meal/{{this.id}}">edit</a></li>
-		{{/each}}
-	</ul>
-</div>
 <!--date, time, cook, eaters, food-->
 <h3>actions</h3>
 <p>
@@ -64,6 +56,14 @@
 <ul>
 	<li><a href="/taskmaster/meals/dump">/meals/dump</a></li>
 </ul>
+<h3>last 20</h3>
+<div class="code">
+	<ul>
+		{{#each lastMeals}}
+		<li>{{this.date}} {{this.time}} {{this.cook}} {{this.eaters}} {{this.food}} <a href="/meal/{{this.id}}">edit</a></li>
+		{{/each}}
+	</ul>
+</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js" integrity="sha512-rmZcZsyhe0/MAjquhTgiUcb4d9knaFc7b5xAfju483gbEXTkeJRUMIPk6s3ySZMYUHEcjKbjLjyddGWMrNEvZg==" crossorigin="anonymous"></script>
 <script type="text/javascript" src="/taskmaster/static/meals.js"></script>
 </body>
