@@ -1,10 +1,11 @@
 <html>
 	<head><title>task master/meals</title></head>
 	<link rel="stylesheet" type="text/css" href="/taskmaster/static/taskmaster.css" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <body>
 <div id="main">
 <h3><a href="/taskmaster/">taskmaster</a>/meals</h3>
-<h3> Comptes</h3>
+<h3> comptes</h3>
 <div>
 	<table>
 		<tr><td>Amélie</td><td> {{this.counts.A}}</td></tr>
@@ -15,45 +16,50 @@
 	</table>
 </div>
 <!--date, time, cook, eaters, food-->
-<h3> Actions</h3>
+<h3> actions</h3>
 <p>
 	<form id="form-meal" action="/taskmaster/meals" method="post" >
-		
-		<ul>
-			<li>
-				<label for"input-date">date: </label><input type="text" id="input-date" name="date" value=""/>
+		<fieldset>
+			<legend>ajouter un repas</legend>
+			<fieldset>
+				<legend>date</legend>
+				<input type="date" id="input-date" name="date" value=""/><br/>
 				<input type="button" id="button-set-date" value="aujourd'hui" />
-			</li>
-			<li>
-				<label for"input-time">repas: </label><input type="text" id="input-time" name="time" value="XXX"/>
+			</fieldset>
+			<fieldset>
+				<legend>repas</legend>
+				<input type="text" id="input-time" name="time" value="XXX"/><br/>
 				<input type="button" id="button-set-time-midi" value="midi" />
 				<input type="button" id="button-set-time-soir" value="soir" />
-			</li>
-			<li>
-				<label for"input-cook">cuisinier: </label>
-				<input type="text" id="input-cook" name="cook" value="X"/>
+			</fieldset>
+			<fieldset>
+				<legend>cuisinier</legend>
+				<input type="text" id="input-cook" name="cook" value="X"/><br/>
 				<input type="button" id="button-set-cook-amelie" value="A" />
 				<input type="button" id="button-set-cook-lise" value="L" />
 				<input type="button" id="button-set-cook-maman" value="M" />
 				<input type="button" id="button-set-cook-paul" value="P" />
 				<input type="button" id="button-set-cook-x" value="X" />
-			</li>
-			<li>
-				<label for"input-eaters">convives: </label>
-				<input type="text" id="input-eaters" name="eaters" value="L,M,P,A"/>
+			</fieldset>
+			<fieldset>
+				<legend>convives</legend>
+				<input type="text" id="input-eaters" name="eaters" value="L,M,P,A"/><br/>
 				<input type="button" id="button-set-eater-amelie" value="A" />
 				<input type="button" id="button-set-eater-lise" value="L" />
 				<input type="button" id="button-set-eater-maman" value="M" />
 				<input type="button" id="button-set-eater-paul" value="P" />
 				<input type="button" id="button-clear-eaters" value="effacer" />
-			</li>
-			<li><label for"input-food">menu: </label><input id="input-food" type="text" name="food" value=""/></li>
-		</ul>
-		<p id="input-meal-warning" style="display: none;">Fill correctly all fields before sending!</p>
-		<input id="input-meal-submit" type="submit" value="add" />
+			</fieldset>
+			<fieldset>
+				<legend>menu</legend>
+				<input id="input-food" type="text" name="food" value="" autocapitalize="off"/>
+			</fieldset>
+		<p id="input-meal-warning" style="display: none"><span style="color: red;">Il faut remplir tous les champs correctement!</span></p>
+		<input id="input-meal-submit" type="submit" value="ajouter" />
+		</fieldset>
 	</form>
 </p>
-<h3> Liens</h3>
+<h3> liens</h3>
 <ul>
 	<li><a href="/taskmaster/meals/dump">/meals/dump</a></li>
 </ul>
