@@ -257,7 +257,7 @@ app.post(
 			db.serialize(function() {
 				db.run("BEGIN TRANSACTION");
 				db.run("DELETE FROM meals");
-				var insertMealStatement = db.prepare("INSERT INTO meals VALUES (?,?,?,?,?)");
+				var insertMealStatement = db.prepare("INSERT INTO meals (date,time,cook,eaters,food) VALUES (?,?,?,?,?)");
 				for (var i=0;i<mealLines.length;i++){
 					var mealData = mealLines[i].split(" ");
 					insertMealStatement.run([mealData[0],mealData[1],mealData[2],mealData[3],mealData.slice(4).join(' ')]);
@@ -290,10 +290,26 @@ function writeMealsMain(req,res){
 			var lastMealsResult = {"meals":[]};
 			db = new sqlite3.Database(dbFile);
 			db.all(
-				"SELECT rowid, date, time, cook, eaters, food FROM meals ORDER BY date DESC LIMIT 20", 
+				"SELECT rowid, date, time, cook, eaters, food FROM meals ORDER BY date DESC", 
 				function(err, rows) {
+					var countTo20 = 0;
+					var tickets = {
+						A: {created: 0, consumed: 0},
+						L: {created: 0, consumed: 0},
+						M: {created: 0, consumed: 0},
+						P: {created: 0, consumed: 0},
+						X: {created: 0, consumed: 0}
+					};
 					rows.forEach(function(row) {
-						lastMealsResult.meals.push({"id": row.rowid, "date":row.date,  "time":row.time,"cook":row.cook,"eaters":row.eaters,"food":row.food});
+						if (countTo20 < 20){
+							countTo20++;
+							lastMealsResult.meals.push({"id": row.rowid, "date":row.date,  "time":row.time,"cook":row.cook,"eaters":row.eaters,"food":row.food});
+						}
+						var eatersCount = row.eaters.split(",").length+1;
+						console.log("row.cook: "+row.cook);
+						if (tickets[row.cook]){
+							tickets[row.cook].created += eatersCount-1;
+						}
 					});
 					var counts = {};
 					db.get(
@@ -317,7 +333,7 @@ function writeMealsMain(req,res){
 														function(err, row) {
 															counts.X = row.count;
 															var template = Handlebars.compile(fileContent);
-															var data = {lastMeals:lastMealsResult.meals,counts:counts};
+															var data = {lastMeals:lastMealsResult.meals,counts:counts, tickets:tickets};
 															db.close();
 															res.end(""+template(data));
 														}
