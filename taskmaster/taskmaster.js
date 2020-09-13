@@ -290,7 +290,7 @@ function writeMealsMain(req,res){
 			var lastMealsResult = {"meals":[]};
 			db = new sqlite3.Database(dbFile);
 			db.all(
-				"SELECT rowid, date, time, cook, eaters, food FROM meals ORDER BY date DESC", 
+				"SELECT rowid, date, time, cook, eaters, food FROM meals ORDER BY date DESC, time DESC", 
 				function(err, rows) {
 					var countTo20 = 0;
 					var tickets = {
@@ -300,52 +300,32 @@ function writeMealsMain(req,res){
 						P: {created: 0, consumed: 0},
 						X: {created: 0, consumed: 0}
 					};
+					var counts = {A: 0, L: 0, M: 0, P: 0, X: 0};
 					rows.forEach(function(row) {
 						if (countTo20 < 20){
 							countTo20++;
 							lastMealsResult.meals.push({"id": row.rowid, "date":row.date,  "time":row.time,"cook":row.cook,"eaters":row.eaters,"food":row.food});
 						}
-						var eatersCount = row.eaters.split(",").length+1;
-						console.log("row.cook: "+row.cook);
+						var splitEaters = row.eaters.split(",");
+						var eatersCount = splitEaters.length;
+						counts[row.cook]++;
 						if (tickets[row.cook]){
-							tickets[row.cook].created += eatersCount-1;
+							tickets[row.cook].created += eatersCount;
+						}
+						if (row.cook != "X"){
+							for (var i=0;i<splitEaters.length;i++){
+								tickets[splitEaters[i]].consumed++;
+							}
 						}
 					});
-					var counts = {};
-					db.get(
-						"SELECT count(*) as count FROM meals WHERE cook='A'",
-						function(err, row) {
-							counts.A = row.count;
-							db.get(
-								"SELECT count(*) as count FROM meals WHERE cook='L'",
-								function(err, row) {
-									counts.L = row.count;
-									db.get(
-										"SELECT count(*) as count FROM meals WHERE cook='M'",
-										function(err, row) {
-											counts.M = row.count;
-											db.get(
-												"SELECT count(*) as count FROM meals WHERE cook='P'",
-												function(err, row) {
-													counts.P = row.count;
-													db.get(
-														"SELECT count(*) as count FROM meals WHERE cook='X'",
-														function(err, row) {
-															counts.X = row.count;
-															var template = Handlebars.compile(fileContent);
-															var data = {lastMeals:lastMealsResult.meals,counts:counts, tickets:tickets};
-															db.close();
-															res.end(""+template(data));
-														}
-													);
-												}
-											);
-										}
-									);
-								}
-							);
-						}
-					);
+					tickets.A.balance = tickets.A.created - tickets.A.consumed;
+					tickets.L.balance = tickets.L.created - tickets.L.consumed;
+					tickets.M.balance = tickets.M.created - tickets.M.consumed;
+					tickets.P.balance = tickets.P.created - tickets.P.consumed;
+					var template = Handlebars.compile(fileContent);
+					var data = {lastMeals:lastMealsResult.meals,counts:counts, tickets:tickets};
+					db.close();
+					res.end(""+template(data));
 				}
 			);
 		}
@@ -393,7 +373,7 @@ function writeMealsDump(req,res){
 			//recuperation des infos BDD
 			var rawMealsDump = "";
 			db = new sqlite3.Database(dbFile);
-			db.all(	"SELECT rowid, date, time, cook, eaters, food FROM meals ORDER BY date DESC", 
+			db.all(	"SELECT rowid, date, time, cook, eaters, food FROM meals ORDER BY date DESC, time DESC", 
 				function(err, rows) {
 					rows.forEach(function(row) {
 						var rawSingleMeal = row.date+" "+row.time+" "+row.cook+" "+row.eaters+" "+row.food;
