@@ -59,7 +59,6 @@ app.post(
 		//insert BDD
 		db = new sqlite3.Database(dbFile);
 		var insertStatement = "INSERT INTO tasks VALUES (\""+req.body.name+"\")";
-		console.log("insertStatement: "+insertStatement);
 		db.run(
 			insertStatement,
 			[],
@@ -300,7 +299,13 @@ function writeMealsMain(req,res){
 						P: {created: 0, consumed: 0},
 						X: {created: 0, consumed: 0}
 					};
-					var counts = {A: 0, L: 0, M: 0, P: 0, X: 0};
+					var counts = {
+						A: {created: 0, present: 0},
+						L: {created: 0, present: 0},
+						M: {created: 0, present: 0},
+						P: {created: 0, present: 0},
+						X: {created: 0, present: 0}
+					};
 					rows.forEach(function(row) {
 						if (countTo20 < 20){
 							countTo20++;
@@ -308,14 +313,15 @@ function writeMealsMain(req,res){
 						}
 						var splitEaters = row.eaters.split(",");
 						var eatersCount = splitEaters.length;
-						counts[row.cook]++;
+						counts[row.cook].created++;
 						if (tickets[row.cook]){
 							tickets[row.cook].created += eatersCount;
 						}
-						if (row.cook != "X"){
-							for (var i=0;i<splitEaters.length;i++){
+						for (var i=0;i<splitEaters.length;i++){
+							if (row.cook != "X"){
 								tickets[splitEaters[i]].consumed++;
 							}
+							counts[splitEaters[i]].present++;
 						}
 					});
 					tickets.A.balance = tickets.A.created - tickets.A.consumed;
