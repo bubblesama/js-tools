@@ -174,41 +174,7 @@ app.post(
 	urlEncodedParser,
 	function (req, res) {
 		console.log("#post /meals POST IN: req.body.date="+req.body.date);
-		var isMealFormValid = true;
-		//params control
-		//params control: date
-		var parsedDate = moment(req.body.date,"YYYY-MM-DD",true);
-		if (!parsedDate.isValid()){
-			console.log("#post /meals invalid date:"+req.body.date);
-			isMealFormValid = false;
-		}
-		//params control: meal
-		var mealRawValue = req.body.time
-		if (mealRawValue != "midi" && mealRawValue != "soir"){
-			console.log("#formatControl invalid meal:"+mealRawValue);
-			isMealFormValid = false;
-		}
-		//params control: cook
-		var cookRawValue = req.body.cook;
-		if (!POTENTIAL_COOKS.includes(cookRawValue)){
-			console.log("#formatControl invalid cook:"+cookRawValue);
-			isMealFormValid = false;
-		}
-		//params control: eaters
-		var eatersRawValue = req.body.eaters
-		var eaters = eatersRawValue.split(',');
-		for (var i=0;i<eaters.length;i++){
-			if (!POTENTIAL_EATERS.includes(eaters[i])){
-				console.log("#formatControl invalid eater:"+eaters[i]);
-				isMealFormValid = false;
-			}
-		}
-		//params control: food
-		var foodRawValue = req.body.food
-		if (foodRawValue == null || foodRawValue == "" || !foodRawValue.match(FOOD_REGEX)){
-			console.log("#formatControl invalid food:"+foodRawValue);
-			isMealFormValid = false;
-		}
+		var isMealFormValid = isMealValid(req.body.date,req.body.time,req.body.cook,req.body.eaters,req.body.food);
 		if (!isMealFormValid){
 			//TODO manage invalid values
 		}else{
@@ -274,10 +240,74 @@ app.post(
 	}
 );
 
+app.post(
+	'/taskmaster/meal/:mealId/',
+	urlEncodedParser,
+	function (req, res) {
+		var mealId = req.params.mealId;
+		console.log("#post /meal/ POST IN: req.params.mealId="+mealId);
+		var isMealFormValid = isMealValid(req.body.date,req.body.time,req.body.cook,req.body.eaters,req.body.food);
+		if (!isMealFormValid){
+			//TODO manage incorrect form
+		}else{
+			var updateStatement = "UPDATE meals SET date=\""+req.body.date+"\", time=\""+req.body.time+"\", cook=\""+req.body.cook+"\", eaters=\""+req.body.eaters+"\", food=\""+req.body.food+"\" WHERE rowid="+mealId;
+			console.log("updateStatement: "+updateStatement);
+			db = new sqlite3.Database(dbFile);
+			db.run(
+				updateStatement,
+				[],
+				function(error){
+					db.close();
+					writeSingleMeal(req,res, true);
+					if (error == null){
+					}else{
+						console.log("ERREUR d'UPDATE: "+error);
+					}
+				}
+			);	
+		}
+	}
+);
 
 
 
 //business
+
+function isMealValid(date, time, cook, eaters, food){
+	var result = true;
+	//params control
+	//params control: date
+	var parsedDate = moment(date,"YYYY-MM-DD",true);
+	if (!parsedDate.isValid()){
+		console.log("#isMealValid invalid date:"+date);
+		result = false;
+	}
+	//params control: time
+	if (time != "midi" && time != "soir"){
+		console.log("#isMealValid invalid time:"+time);
+		result = false;
+	}
+	//params control: cook
+	if (!POTENTIAL_COOKS.includes(cook)){
+		console.log("#isMealValid invalid cook:"+cook);
+		result = false;
+	}
+	//params control: eaters
+	var eatersArray = eaters.split(',');
+	for (var i=0;i<eatersArray.length;i++){
+		if (!POTENTIAL_EATERS.includes(eatersArray[i])){
+			console.log("#isMealValid invalid eater:"+eatersArray[i]);
+			result = false;
+		}
+	}
+	//params control: food
+	if (food == null || food == "" || !food.match(FOOD_REGEX)){
+		console.log("#isMealValid invalid food:"+foodRawValue);
+		result = false;
+	}
+	return result;
+};
+
 function writeMealsMain(req,res){
 	console.log("#writeMealsMain IN");
 	res.writeHead(200, HTTP_HEADER);
