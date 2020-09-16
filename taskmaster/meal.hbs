@@ -3,19 +3,55 @@
 	<link rel="stylesheet" type="text/css" href="/taskmaster/static/taskmaster.css" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <body>
-<h3>Task Master/ meals</h3>
-{{#if modified}}
-<p style="color: red;"> modification prise en compte</p>
-{{/if}}
-<form method="POST" action="/taskmaster/meal/{{id}}/">
-	<p>
-		<ul>
-			<li> date: <input type="text" name="meal_date" value="{{date}}" /> </li>
-		</ul>
-		<input type="submit" value="OK" />
-	</p>
-</form>
+<div id="main">
+	<h3><a href="/taskmaster/">taskmaster</a>/meal</h3>
+	{{#if modified}}
+	<p style="color: red;"> modification prise en compte</p>
+	{{/if}}
+	<form id="form-meal" action="/taskmaster/meal/{{id}}" method="post" >
+			<fieldset>
+				<legend>modifier un repas</legend>
+				<fieldset>
+					<legend>date</legend>
+					<input type="date" id="input-date" name="date" value="{{date}}"/><br/>
+					<input type="button" id="button-set-date" value="aujourd'hui" />
+					</fieldset>
+				<fieldset>
+					<legend>repas</legend>
+					<input type="text" id="input-time" name="time" value="{{time}}"/><br/>
+					<input type="button" id="button-set-time-midi" value="midi" />
+					<input type="button" id="button-set-time-soir" value="soir" />
+				</fieldset>
+				<fieldset>
+					<legend>cuisinier</legend>
+					<input type="text" id="input-cook" name="cook" value="{{cook}}"/><br/>
+					<input type="button" id="button-set-cook-amelie" value="A" />
+					<input type="button" id="button-set-cook-lise" value="L" />
+					<input type="button" id="button-set-cook-maman" value="M" />
+					<input type="button" id="button-set-cook-paul" value="P" />
+					<input type="button" id="button-set-cook-x" value="X" />
+				</fieldset>
+				<fieldset>
+					<legend>convives</legend>
+					<input type="text" id="input-eaters" name="eaters" value="{{eaters}}"/><br/>
+					<input type="button" id="button-set-eater-amelie" value="A" />
+					<input type="button" id="button-set-eater-lise" value="L" />
+					<input type="button" id="button-set-eater-maman" value="M" />
+					<input type="button" id="button-set-eater-paul" value="P" />
+					<input type="button" id="button-clear-eaters" value="effacer" />
+				</fieldset>
+				<fieldset>
+					<legend>menu</legend>
+					<input id="input-food" type="text" name="food" value="{{food}}" autocapitalize="off"/>
+				</fieldset>
+			<p id="input-meal-warning" style="display: none"><span style="color: red;">Il faut remplir tous les champs correctement!</span></p>
+			<input id="input-meal-submit" type="submit" value="modifier" />
+			</fieldset>
+		</form>
 	<p><a href="/taskmaster/meals">retour</a></p>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js" integrity="sha512-rmZcZsyhe0/MAjquhTgiUcb4d9knaFc7b5xAfju483gbEXTkeJRUMIPk6s3ySZMYUHEcjKbjLjyddGWMrNEvZg==" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/taskmaster/static/meals.js"></script>
 </body>
 </html>
 

@@ -9,7 +9,9 @@ function setTodayAsDate(){
 	document.getElementById("input-date").value=getTodayString();
 };
 document.getElementById("button-set-date").onclick = setTodayAsDate;
-document.getElementById("input-date").value = getTodayString();
+if (!document.getElementById("input-date").value){
+	document.getElementById("input-date").value = getTodayString();
+}
 
 //meal
 function setTime(timeName){document.getElementById("input-time").value=timeName;};
