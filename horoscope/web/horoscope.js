@@ -182,7 +182,8 @@ function _refreshPage(date, isStats, sign, quizz){
 						if (result.total != 0 && result.tries != 0){
 							rightRatio = Math.floor(100*(result.right+0.0)/(result.tries+0.0))+"%";
 						}
-						statOutput += "generated="+result.total+" tries="+result.tries+" right="+result.right+" ratio="+rightRatio;
+						statOutput += "générés="+result.total+" tentatives="+result.tries+" OK="+result.right+" ratio="+rightRatio;
+						statOuput += "<br><span>build 20200710142800</span>"
 						console.log("_refreshPage stats: tries="+result.tries+" rightRatio="+rightRatio);
 						$("#warning").html(statOutput);
 						$("#warning").show();	
