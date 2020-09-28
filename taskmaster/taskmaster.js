@@ -59,7 +59,6 @@ app.post(
 		//insert BDD
 		db = new sqlite3.Database(dbFile);
 		var insertStatement = "INSERT INTO tasks VALUES (\""+req.body.name+"\")";
-		console.log("insertStatement: "+insertStatement);
 		db.run(
 			insertStatement,
 			[],
@@ -175,41 +174,7 @@ app.post(
 	urlEncodedParser,
 	function (req, res) {
 		console.log("#post /meals POST IN: req.body.date="+req.body.date);
-		var isMealFormValid = true;
-		//params control
-		//params control: date
-		var parsedDate = moment(req.body.date,"YYYY-MM-DD",true);
-		if (!parsedDate.isValid()){
-			console.log("#post /meals invalid date:"+req.body.date);
-			isMealFormValid = false;
-		}
-		//params control: meal
-		var mealRawValue = req.body.time
-		if (mealRawValue != "midi" && mealRawValue != "soir"){
-			console.log("#formatControl invalid meal:"+mealRawValue);
-			isMealFormValid = false;
-		}
-		//params control: cook
-		var cookRawValue = req.body.cook;
-		if (!POTENTIAL_COOKS.includes(cookRawValue)){
-			console.log("#formatControl invalid cook:"+cookRawValue);
-			isMealFormValid = false;
-		}
-		//params control: eaters
-		var eatersRawValue = req.body.eaters
-		var eaters = eatersRawValue.split(',');
-		for (var i=0;i<eaters.length;i++){
-			if (!POTENTIAL_EATERS.includes(eaters[i])){
-				console.log("#formatControl invalid eater:"+eaters[i]);
-				isMealFormValid = false;
-			}
-		}
-		//params control: food
-		var foodRawValue = req.body.food
-		if (foodRawValue == null || foodRawValue == "" || !foodRawValue.match(FOOD_REGEX)){
-			console.log("#formatControl invalid food:"+foodRawValue);
-			isMealFormValid = false;
-		}
+		var isMealFormValid = isMealValid(req.body.date,req.body.time,req.body.cook,req.body.eaters,req.body.food);
 		if (!isMealFormValid){
 			//TODO manage invalid values
 		}else{
@@ -275,10 +240,74 @@ app.post(
 	}
 );
 
+app.post(
+	'/taskmaster/meal/:mealId/',
+	urlEncodedParser,
+	function (req, res) {
+		var mealId = req.params.mealId;
+		console.log("#post /meal/ POST IN: req.params.mealId="+mealId);
+		var isMealFormValid = isMealValid(req.body.date,req.body.time,req.body.cook,req.body.eaters,req.body.food);
+		if (!isMealFormValid){
+			//TODO manage incorrect form
+		}else{
+			var updateStatement = "UPDATE meals SET date=\""+req.body.date+"\", time=\""+req.body.time+"\", cook=\""+req.body.cook+"\", eaters=\""+req.body.eaters+"\", food=\""+req.body.food+"\" WHERE rowid="+mealId;
+			console.log("updateStatement: "+updateStatement);
+			db = new sqlite3.Database(dbFile);
+			db.run(
+				updateStatement,
+				[],
+				function(error){
+					db.close();
+					writeSingleMeal(req,res, true);
+					if (error == null){
+					}else{
+						console.log("ERREUR d'UPDATE: "+error);
+					}
+				}
+			);	
+		}
+	}
+);
 
 
 
 //business
+
+function isMealValid(date, time, cook, eaters, food){
+	var result = true;
+	//params control
+	//params control: date
+	var parsedDate = moment(date,"YYYY-MM-DD",true);
+	if (!parsedDate.isValid()){
+		console.log("#isMealValid invalid date:"+date);
+		result = false;
+	}
+	//params control: time
+	if (time != "midi" && time != "soir"){
+		console.log("#isMealValid invalid time:"+time);
+		result = false;
+	}
+	//params control: cook
+	if (!POTENTIAL_COOKS.includes(cook)){
+		console.log("#isMealValid invalid cook:"+cook);
+		result = false;
+	}
+	//params control: eaters
+	var eatersArray = eaters.split(',');
+	for (var i=0;i<eatersArray.length;i++){
+		if (!POTENTIAL_EATERS.includes(eatersArray[i])){
+			console.log("#isMealValid invalid eater:"+eatersArray[i]);
+			result = false;
+		}
+	}
+	//params control: food
+	if (food == null || food == "" || !food.match(FOOD_REGEX)){
+		console.log("#isMealValid invalid food:"+foodRawValue);
+		result = false;
+	}
+	return result;
+};
+
 function writeMealsMain(req,res){
 	console.log("#writeMealsMain IN");
 	res.writeHead(200, HTTP_HEADER);
@@ -300,7 +329,13 @@ function writeMealsMain(req,res){
 						P: {created: 0, consumed: 0},
 						X: {created: 0, consumed: 0}
 					};
-					var counts = {A: 0, L: 0, M: 0, P: 0, X: 0};
+					var counts = {
+						A: {created: 0, present: 0},
+						L: {created: 0, present: 0},
+						M: {created: 0, present: 0},
+						P: {created: 0, present: 0},
+						X: {created: 0, present: 0}
+					};
 					rows.forEach(function(row) {
 						if (countTo20 < 20){
 							countTo20++;
@@ -308,14 +343,15 @@ function writeMealsMain(req,res){
 						}
 						var splitEaters = row.eaters.split(",");
 						var eatersCount = splitEaters.length;
-						counts[row.cook]++;
+						counts[row.cook].created++;
 						if (tickets[row.cook]){
 							tickets[row.cook].created += eatersCount;
 						}
-						if (row.cook != "X"){
-							for (var i=0;i<splitEaters.length;i++){
+						for (var i=0;i<splitEaters.length;i++){
+							if (row.cook != "X"){
 								tickets[splitEaters[i]].consumed++;
 							}
+							counts[splitEaters[i]].present++;
 						}
 					});
 					tickets.A.balance = tickets.A.created - tickets.A.consumed;

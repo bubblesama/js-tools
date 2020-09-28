@@ -11,3 +11,7 @@ h3{
 	padding: 10px;
 }
 
+.meal-table, .meal-table th, .meal-table td{
+	border-collapse: collapse;
+	border: solid 1px;
+}
