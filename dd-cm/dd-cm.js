@@ -194,7 +194,7 @@ class Mob {
 			var shouldStopRunning = true;
 			//time to think
 			if (model.dungeon.currentMaze.getManatthan(model.player.dungeon.i, model.player.dungeon.j, this.i, this.j)<this.brain.maxChaseDistance){
-				//console.log("Mob#tryThinking: player not far!");			
+				//console.log("Mob#tryThinking: player not far!");
 				this.brain.currentPath = model.dungeon.currentMaze.getPath(this.i, this.j, model.player.dungeon.i, model.player.dungeon.j,1000);
 				if (this.brain.currentPath != null){
 					this.brain.currentPath.shift();
