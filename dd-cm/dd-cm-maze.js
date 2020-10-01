@@ -1,20 +1,16 @@
-delta = function (a,b,mod){
-	var positiveDistance = ((b-a)+mod)%mod;
-	var negativeDistance = ((a-b)+mod)%mod;
-	return positiveDistance<negativeDistance?positiveDistance:-negativeDistance;
-};
+
 
 var mazeGeneratorConfiguration = {
 	
-	size: 6,
+	size: 6, // number of vertical and horizontal bits in a dungeon
 	bits: {
 		tiles :{
 			width: 9, //number of tiles in a bit
 			height: 9
 		},
 		/* maze bits patterns:
-		/	type: side closed
-		/	map: string representing tile types
+			type: side closed
+			map: string representing tile types
 		*/
 		patterns: [
 			{
@@ -248,7 +244,7 @@ function generateMaze(mountainType){
 		}
 	}
 	itemSpots = shuffle(itemSpots);
-	// TODO add all items before placing them
+	// add all items before placing them
 	items.push({type: ITEM.ladder});
 	items.push({type: ITEM.quiver});
 	if (mountainType != null){
@@ -519,25 +515,6 @@ function generateMaze(mountainType){
 	return result;
 };
 
-//got it from the net, do the job
-function shuffle(array) {
-	//console.log("shuffle DEBUG in: array.length="+array.length);
-	var currentIndex = array.length, temporaryValue, randomIndex;
-	// While there remain elements to shuffle...
-	while (0 !== currentIndex) {
-		// pick a remaining element...
-		randomIndex = Math.floor(Math.random() * currentIndex);
-		currentIndex -= 1;
-		// and swap it with the current element.
-		temporaryValue = array[currentIndex];
-		array[currentIndex] = array[randomIndex];
-		array[randomIndex] = temporaryValue;
-	}
-	return array;
-};
-
-// BEGIN - maze manipulations, bits flipping and rotation
-
 // pattern list for bits, generated from generateRotatedPatternsIfNeeded
 var availablePatternsMap = {
 	left: [],
@@ -572,8 +549,13 @@ function generateRotatedPatternsIfNeeded(){
 	}
 };
 
-var rotationMapping = [0,1,5,2,3,4];
 
+
+//********************************** MAZE GENERATOR ***   END    *******************************************
+
+//UTILS
+
+var rotationMapping = [0,1,5,2,3,4];
 function rotateMinus90(squareMatrixString, matrixSize){
 	var result = "";
 	for (var j=0;j<matrixSize;j++){
@@ -588,4 +570,25 @@ function rotateMinus90(squareMatrixString, matrixSize){
 	return result;
 };
 
-//********************************** MAZE GENERATOR ***   END    *******************************************
+//got it from the net, do the job
+function shuffle(array) {
+	//console.log("shuffle DEBUG in: array.length="+array.length);
+	var currentIndex = array.length, temporaryValue, randomIndex;
+	// While there remain elements to shuffle...
+	while (0 !== currentIndex) {
+		// pick a remaining element...
+		randomIndex = Math.floor(Math.random() * currentIndex);
+		currentIndex -= 1;
+		// and swap it with the current element.
+		temporaryValue = array[currentIndex];
+		array[currentIndex] = array[randomIndex];
+		array[randomIndex] = temporaryValue;
+	}
+	return array;
+};
+
+delta = function (a,b,mod){
+	var positiveDistance = ((b-a)+mod)%mod;
+	var negativeDistance = ((a-b)+mod)%mod;
+	return positiveDistance<negativeDistance?positiveDistance:-negativeDistance;
+};

@@ -194,7 +194,7 @@ class Mob {
 			var shouldStopRunning = true;
 			//time to think
 			if (model.dungeon.currentMaze.getManatthan(model.player.dungeon.i, model.player.dungeon.j, this.i, this.j)<this.brain.maxChaseDistance){
-				//console.log("Mob#tryThinking: player not far!");			
+				//console.log("Mob#tryThinking: player not far!");
 				this.brain.currentPath = model.dungeon.currentMaze.getPath(this.i, this.j, model.player.dungeon.i, model.player.dungeon.j,1000);
 				if (this.brain.currentPath != null){
 					this.brain.currentPath.shift();
@@ -337,7 +337,8 @@ var model = {
 		lives: 3,
 		world: {
 			i: worldMapData.start.i,
-			j: worldMapData.start.j
+			j: worldMapData.start.j,
+			hasMoved: false
 		},
 		dungeon: {
 			i: -1,
@@ -377,7 +378,8 @@ var model = {
 				(newI< worldMapData.width) &&
 				(newJ < worldMapData.height) 
 			){
-				if (worldMap[newI][newJ].isPassable(this)){
+				if (worldMap[newI][newJ].isPassable(this) && !this.world.hasMoved){
+					this.world.hasMoved = true;
 					this.world.i = this.world.i+deltaI;
 					this.world.j = this.world.j+deltaJ;
 					graphical.world.resetBlink();
@@ -713,6 +715,9 @@ var model = {
 				}else if (keyMap.c){
 					this.player.moveOnWorldIfPossible(1,1);
 					shouldStopStepAnimation = false;
+				}else{
+					//no key: reset hasMoved
+					this.player.world.hasMoved = false;
 				}
 			}
 		}else if (game.state == STATES.dungeon){
