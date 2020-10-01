@@ -927,6 +927,7 @@ game.draw = function(){
 				);
 			}
 		}
+		//rideau
 		if (model.entry.active){
 			var entryStep = (model.entry.currentTick*14)/model.entry.maxTicks;
 			context.fillRect(0,0,618,entryStep*graphical.world.tile.height*graphical.world.zoom);
@@ -983,6 +984,9 @@ game.draw = function(){
 			playerPicI += Math.floor((model.player.dungeon.walkPart)/2);
 			var playerPicJ = 1;
 			if (!model.player.dungeon.faceRight){playerPicJ++;}
+			if (model.player.dungeon.hitpoints == 1){
+				playerPicI+=4;
+			}
 			context.drawImage(
 				dungeonSprites,
 				playerPicI*graphical.dungeon.tiles.width,
