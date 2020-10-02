@@ -592,3 +592,7 @@ delta = function (a,b,mod){
 	var negativeDistance = ((a-b)+mod)%mod;
 	return positiveDistance<negativeDistance?positiveDistance:-negativeDistance;
 };
+
+function manhattan(Ai, Aj, Bi, Bj,width, height){
+	return Math.abs(delta(Ai,Bi,width))+Math.abs(delta(Aj,Bj,height));
+};
