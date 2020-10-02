@@ -303,7 +303,15 @@ var graphical = {
 			ooze: {i:8, j:1},
 			dragon: {i:8, j:3},
 			spider: {i:8, j:2}
-		}
+		},
+		prints:{
+			rat: {available: true, i:12, j:0},
+			snake: {available: true, i:12, j:2},
+			troll: {available: true, i:12, j:1},
+			ooze: {available: false},
+			dragon: {available: true, i:12, j:2},
+			spider: {available: false}
+		},
 	}
 };
 
