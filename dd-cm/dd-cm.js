@@ -296,22 +296,50 @@ var graphical = {
 			key: {i:4,j:5}
 		},
 		mobs:{
-			//first sprite place by type
-			rat: {i:8, j:1},
-			snake: {i:0, j:3},
-			troll: {i:4, j:3},
-			ooze: {i:8, j:1},
-			dragon: {i:8, j:3},
-			spider: {i:8, j:2}
-		},
-		prints:{
-			rat: {available: true, i:12, j:0},
-			snake: {available: true, i:12, j:2},
-			troll: {available: true, i:12, j:1},
-			ooze: {available: false},
-			dragon: {available: true, i:12, j:2},
-			spider: {available: false}
-		},
+			//first sprite place by type, and prints
+			rat: { 
+				sprite0: {i:8, j:1},
+				print: {
+					available: true,
+					i:12,
+					j:0
+				}
+			},
+			snake:  {
+				sprite0: {i:0, j:3},
+				print: {
+					available: true, 
+					i:12, 
+					j:2
+				}
+			},
+			troll: {
+				sprite0: {i:4, j:3},
+				print: {
+					available: true, 
+					i:12, 
+					j:1
+				}
+			},
+			ooze: {
+				sprite0: {i:8, j:1},
+				print: {
+					available: false
+				}
+			},
+			dragon: {
+				sprite0: {i:8, j:3},
+				print: {
+					available: true, 
+					i:12, 
+					j:2
+				}
+			},
+			spider: {
+				sprite0: {i:8, j:2},
+				print: {available: false}
+			}
+		}
 	}
 };
 
@@ -1034,10 +1062,10 @@ game.draw = function(){
 		for (var i=0; i<model.dungeon.mobsManager.mobs.length; i++){
 			var mob = model.dungeon.mobsManager.mobs[i];
 			if (model.dungeon.currentMaze.isShown(mob.i, mob.j)){
-				var spriteI = graphical.dungeon.mobs[""+mob.type].i;
+				var spriteI = graphical.dungeon.mobs[""+mob.type].sprite0.i;
 				if (!mob.faceRight){spriteI += 2;}
 				if (mob.legs.wiggle){spriteI += 1;}
-				var spriteJ = graphical.dungeon.mobs[""+mob.type].j;
+				var spriteJ = graphical.dungeon.mobs[""+mob.type].sprite0.j;
 				context.drawImage(
 					dungeonSprites,
 					spriteI*graphical.dungeon.tiles.width,
