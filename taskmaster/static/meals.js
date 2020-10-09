@@ -1,11 +1,9 @@
 //date
 function getTodayString(){
-	//moment.js
 	var todayAsString = moment().format("YYYY-MM-DD");
 	return todayAsString;
 };
 function getYesterdayString(){
-	//moment.js
 	var yesterdayAsString = moment().add(-1,"days").format("YYYY-MM-DD");
 	return yesterdayAsString;
 };

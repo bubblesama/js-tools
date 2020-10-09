@@ -7,8 +7,9 @@ npm install body-parser
 npm install moment
 
 # release notes
-
-V1.4.0 EN COURS 
+V1.5.0 EN COURS
+    bouton "hier" pour les dates de repas
+V1.4.0
     suivi des comptages de repas affichés
     revue style
     édition des repas
