@@ -275,7 +275,35 @@ app.post(
 	}
 );
 
-
+app.post(
+	'/taskmaster/meals/tips',
+	urlEncodedParser,
+	function (req, res) {
+		console.log("#post /meals/tips POST IN: tip's name: "+req.body.name);
+		//var isTipFormValid = isMealValid(req.body.date,req.body.time,req.body.cook,req.body.eaters,req.body.food);
+		var isTipFormValid = true;
+		if (!isTipFormValid){
+			//TODO manage invalid values
+		}else{
+			console.log("#post /tips values OK for insert");
+			db = new sqlite3.Database(dbFile);
+			var insertStatement = "INSERT INTO tips ('name', 'times', 'recipe') VALUES (\""+req.body.name+"\",\""+req.body.times+"\",\""+req.body.recipe+"\")";
+			console.log("insertStatement: "+insertStatement);
+			db.run(
+				insertStatement,
+				[],
+				function(error){
+					db.close();
+					writeMealsTips(req,res);
+					if (error == null){
+					}else{
+						console.log("#post /tips ERREUR d'INSERT: "+error);
+					}
+				}
+			);
+		}
+	}
+);
 
 //business
 
@@ -445,7 +473,7 @@ function writeMealsTips(req,res){
 				function(err, rows) {
 					var tips = [];
 					rows.forEach(function(row) {
-						tips.push({name: rows.name})
+						tips.push({name: row.name, times: row.times, recipe: row.recipe});
 					});
 					var template = Handlebars.compile(fileContent);
 					var data = {tips: tips};

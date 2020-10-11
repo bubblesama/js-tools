@@ -4,30 +4,60 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <body>
 <div id="main">
-	<h3><a href="/taskmaster/">taskmaster</a>/<a href="/taskmaster/meals/">meals</a>/tips</h3>
-	<h3> idées</h3>
+	<h3><a href="/taskmaster/">taskmaster</a>/<a href="/taskmaster/meals/">meals</a>/<a href="/taskmaster/meals/tips">tips</a></h3>
+	<h3> menus</h3>
 	<div class="code">
 		<table class="simple-table">
 			<thead>
 				<tr>
 					<th>nom</th>
+					<th>repas</th>
+					<th>recette</th>
 				</tr>
 			</thead>
 			<tbody>
 			{{#each tips}}
 			<tr>
 				<td>{{this.name}}</td>
+				<td>{{this.times}}</td>
+				<td>{{this.recipe}}</td>
 			</tr>
 			{{/each}}
 			</tbody>
 		</table>
 	</div>
+	<h3> actions</h3>
+	<p>
+		<form id="tip-meal" action="/taskmaster/meals/tips" method="post" >
+			<fieldset>
+				<legend>ajouter un menu</legend>
+				<fieldset>
+					<legend>nom</legend>
+					<input id="input-name" type="text" name="name" value="" autocapitalize="off"/>
+				</fieldset>
+				<fieldset>
+					<legend>repas</legend>
+					<input type="text" id="input-times" name="times" value="midi,soir"/><br/>
+					<input type="button" id="button-toggle-time-midi" value="midi" />
+					<input type="button" id="button-toggle-time-soir" value="soir" />
+					<input type="button" id="button-clear-times" value="effacer" />
+				</fieldset>
+				<fieldset>
+					<legend>recette</legend>
+					<input id="input-recipe" type="text" name="recipe" value="" autocapitalize="off"/>
+				</fieldset>
+			<p id="input-tip-warning" style="display: none"><span style="color: red;">Il faut remplir tous les champs correctement!</span></p>
+			<input id="input-tip-submit" type="submit" value="ajouter" />
+			</fieldset>
+		</form>
+	</p>
 	<h3> liens</h3>
 	<ul>
 		<li><a href="/taskmaster/meals">/meals</a></li>
 	</ul>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js" integrity="sha512-rmZcZsyhe0/MAjquhTgiUcb4d9knaFc7b5xAfju483gbEXTkeJRUMIPk6s3ySZMYUHEcjKbjLjyddGWMrNEvZg==" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/taskmaster/static/tips.js"></script>
 </body>
 </html>
 
