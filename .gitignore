@@ -26,3 +26,5 @@ horoscope/horoscope-lokidb.json
 JS.code-workspace
 
 installor/node_modules/
+
+installor/keys/
