@@ -8,10 +8,12 @@ var confPath = process.argv[2]; //installator-horoscope.json
 var passphrase = process.argv[3];
 //TODO contrôle des paramètres
 
+console.log("running installator with conf "+confPath);
 var conf = JSON.parse(fs.readFileSync(confPath, 'utf8'));
+console.log("conf name: "+conf.name);
 // preparation du dossier source
 // creation
-var tmpSourceDirPath = conf.source.tmp+"/"+conf.name;
+var tmpSourceDirPath = conf.source.tmp+"/"+conf.name+"/";
 if (fs.existsSync(tmpSourceDirPath)){
   console.log(tmpSourceDirPath+" exists: rm then mk");
   fs.rmdirSync(tmpSourceDirPath,{recursive: true});
@@ -22,8 +24,13 @@ if (fs.existsSync(tmpSourceDirPath)){
 }
 // copie
 for (var i=0;i<conf.source.files.length;i++){
-  var sourceFile = conf.source.files[i];
-  var destFile = tmpSourceDirPath+"/"+path.basename(conf.source.files[i]);
+  var sourceFile = conf.source.root+conf.source.files[i];
+  var destFile = tmpSourceDirPath+conf.source.files[i];
+  var relativeDestFolder = tmpSourceDirPath+path.dirname(conf.source.files[i]);
+  if (!fs.existsSync(relativeDestFolder)){
+    console.log(relativeDestFolder+" does not exist: mk");
+    fs.mkdirSync(relativeDestFolder,{recursive: true});
+  }
   console.log("copy "+sourceFile+" to "+destFile);
   fs.copyFileSync(sourceFile, destFile);
 }

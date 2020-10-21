@@ -1,9 +1,11 @@
 {
     "name": "horoquizz",
     "source":{
+        "root": "D:/projects/js-tools/horoscope/",
         "files":[
-            "D:/projects/js-tools/horoscope/web/horoscope.css",
-            "D:/projects/js-tools/horoscope/web/horoscope.html"
+            "horoscope_launcher.js",
+            "web/horoscope.css",
+            "web/horoscope.html"
         ],
         "tmp": "D:/tmp/installator"
     },
