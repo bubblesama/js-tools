@@ -183,7 +183,7 @@ function _refreshPage(date, isStats, sign, quizz){
 							rightRatio = Math.floor(100*(result.right+0.0)/(result.tries+0.0))+"%";
 						}
 						statOutput += "générés="+result.total+" tentatives="+result.tries+" OK="+result.right+" ratio="+rightRatio;
-						statOutput += "<br><span>horoquizz - build #20201013230800</span>"
+						statOutput += "<br><span>horoquizz - build #2020XXXXXXXXXX</span>"
 						console.log("_refreshPage stats: tries="+result.tries+" rightRatio="+rightRatio);
 						$("#warning").html(statOutput);
 						$("#warning").show();	
