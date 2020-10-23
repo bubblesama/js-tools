@@ -2,6 +2,7 @@
 var fs = require("fs");
 const scp = require("node-scp");
 var path = require("path");
+var moment = require("moment");
 
 //récupération des arguments
 var confPath = process.argv[2]; //installator-horoscope.json
@@ -13,7 +14,7 @@ var conf = JSON.parse(fs.readFileSync(confPath, 'utf8'));
 console.log("conf name: "+conf.name);
 // preparation du dossier source
 // creation
-var tmpSourceDirPath = conf.source.tmp+"/"+conf.name+"/";
+var tmpSourceDirPath = conf.source.tmp+"/"+conf.name+"_"+moment().format("YYYYMMDD_HHmmSS")+"/";
 if (fs.existsSync(tmpSourceDirPath)){
   console.log(tmpSourceDirPath+" exists: rm then mk");
   fs.rmdirSync(tmpSourceDirPath,{recursive: true});
