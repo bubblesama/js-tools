@@ -11,8 +11,10 @@ cyberscribe/cyberscribe-lokidb\.json
 bebe/node_modules/
 
 bebe/package-lock\.json
-bebe/bebe-lokidb\.json
-dumbar/
+bebe/bebe-lokidb\.json
+
+dumbar/
+
 
 bebe/bebe-lokidb\.json
 dumbar/node_modules/
@@ -22,3 +24,7 @@ dumbar/dumbar-lokidb.json
 horoscope/horoscope-lokidb.json
 
 JS.code-workspace
+
+installor/node_modules/
+
+installor/keys/
