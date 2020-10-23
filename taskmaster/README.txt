@@ -9,6 +9,7 @@ npm install moment
 # release notes
 V1.5.0 EN COURS
     bouton "hier" pour les dates de repas
+    version simple de suggestion de repas
 V1.4.0
     suivi des comptages de repas affichés
     revue style
