@@ -1,12 +1,18 @@
-suivi de DD Cloudy Moutain en HTML
+DD Cloudy Moutain en HTML
 
-liste des taches
+
+=== version
+version 0.1 - en cours
+
+
+
+=== liste des tâches
 - POCs
  - x intégrer une feuille de sprites
  - x intégrer des appels de touches
  - x intégrer des fichiers de données
  - x boucle de jeu (update,draw,repeat)
-- mecaniques
+- mécaniques
  -  map
   - x generation d'une carte à partir des donnees
   - x déplacement sur la map
@@ -15,12 +21,13 @@ liste des taches
   - x entree dans un donjon
   - entree dans le donjon final
   - game over
+  - plusieurs cartes
  - donjon
   - x génération de donjons aléatoires
   - remplissage des donjons
-  - decouverte du donjon au fur et a mesure
-  - heros
-   - x sprite des heros
+  - découverte du donjon au fur et a mesure
+  - héros
+   - x sprite des héros
    - x déplacement des heros
    - x lancement de fleches
   - monstres
@@ -30,11 +37,10 @@ liste des taches
    - x AI des monstres
    - x tuage de monstres
   
-bugs
+=== bugs
  - no kill if not moving
 
-
-notes
+=== notes
 map tile: 8x8
 
 
