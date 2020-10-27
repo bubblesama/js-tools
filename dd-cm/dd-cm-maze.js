@@ -281,6 +281,10 @@ function generateMaze(mountainType){
 				break;
 		}
 		monsters.push({"type": popMobType, "i": items[i].i, "j": items[i].j});
+		// TODO: prints du mob
+		if (HAS_PRINT[popMobType]){
+			console.log("#generateMaze mob "+popMobType+" has prints! TODO");
+		}
 		//console.log("#generateMaze item placed: "+items[i].type+" "+items[i].i+" "+items[i].j);
 	}
 	//TODO: mob generation and prints

@@ -299,45 +299,25 @@ var graphical = {
 			//first sprite place by type, and prints
 			rat: { 
 				sprite0: {i:8, j:1},
-				print: {
-					available: true,
-					i:12,
-					j:0
-				}
+				print: {i:12,j:0}
 			},
 			snake:  {
 				sprite0: {i:0, j:3},
-				print: {
-					available: true, 
-					i:12, 
-					j:2
-				}
+				print: {i:12,j:2}
 			},
 			troll: {
 				sprite0: {i:4, j:3},
-				print: {
-					available: true, 
-					i:12, 
-					j:1
-				}
+				print: {i:12,j:1}
 			},
 			ooze: {
-				sprite0: {i:8, j:1},
-				print: {
-					available: false
-				}
+				sprite0: {i:8, j:1}
 			},
 			dragon: {
 				sprite0: {i:8, j:3},
-				print: {
-					available: true, 
-					i:12, 
-					j:2
-				}
+				print: {i:12,j:2}
 			},
 			spider: {
-				sprite0: {i:8, j:2},
-				print: {available: false}
+				sprite0: {i:8, j:2}
 			}
 		}
 	}
