@@ -209,6 +209,8 @@ function generateMaze(mountainType){
 	var fullMaze = new Array(fullWidth);
 	var lights = new Array(fullWidth);
 	var monsters = new Array();
+	var prints = new Array();
+	var items = [];
 	for (var i=0;i<fullWidth;i++){
 		fullMaze[i]=new Array(fullHeight);
 		lights[i]=new Array(fullHeight);
@@ -233,9 +235,8 @@ function generateMaze(mountainType){
 		}
 	}
 	//items
-	var items = [];
-	var itemSpots = [];
 	//fill itemSpots
+	var itemSpots = [];
 	for (var i=0; i< mazeGeneratorConfiguration.size; i++){
 		for (var j=0; j< mazeGeneratorConfiguration.size; j++){
 			if (i != 1 && j != 1){
