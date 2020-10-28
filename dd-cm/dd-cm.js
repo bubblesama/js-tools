@@ -803,7 +803,7 @@ var model = {
 			}
 			//arrows
 			this.dungeon.arrowsManager.update();
-			//TODO: update for mobs...
+			//update for mobs...
 			this.dungeon.mobsManager.update();
 			//...moving
 			//...searching
@@ -918,7 +918,7 @@ game.draw = function(){
 			if (shouldDrawItem){
 				context.drawImage(
 					worldSprites,
-					graphical.world.items[""+item].i*graphical.world.tile.width,
+					graphical.dungeon.items[""+item].i*graphical.world.tile.width,
 					graphical.world.items[""+item].j*graphical.world.tile.height,
 					graphical.world.tile.width,
 					graphical.world.tile.height,
@@ -970,6 +970,25 @@ game.draw = function(){
 					graphical.dungeon.tiles.height,
 					3+i*graphical.dungeon.tiles.width*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDx*model.player.dungeon.stepDi*graphical.dungeon.zoom,
 					10+j*graphical.dungeon.tiles.height*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDy*model.player.dungeon.stepDj*graphical.dungeon.zoom,
+					graphical.dungeon.tiles.width*graphical.dungeon.zoom,
+					graphical.dungeon.tiles.height*graphical.dungeon.zoom
+				);
+			}
+		}
+		//display prints
+		for (var i=0;i<model.dungeon.currentMaze.prints.length;i++){
+			var print = model.dungeon.currentMaze.prints[i];
+			if (model.dungeon.currentMaze.isShown(print.i, print.j)){
+				context.drawImage(
+					dungeonSprites,
+					graphical.dungeon.mobs[""+print.type].print.i*graphical.dungeon.tiles.width,
+					graphical.dungeon.mobs[""+print.type].print.j*graphical.dungeon.tiles.height,
+					graphical.dungeon.tiles.width,
+					graphical.dungeon.tiles.height,
+					//3+(8+item.i-model.player.dungeon.i)*graphical.dungeon.tiles.width*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDx*model.player.dungeon.stepDi*graphical.dungeon.zoom,
+					getXViewFromI(print.i),
+					//10+(4+item.j-model.player.dungeon.j)*graphical.dungeon.tiles.height*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDy*model.player.dungeon.stepDj*graphical.dungeon.zoom,
+					getYViewFromJ(print.j),
 					graphical.dungeon.tiles.width*graphical.dungeon.zoom,
 					graphical.dungeon.tiles.height*graphical.dungeon.zoom
 				);

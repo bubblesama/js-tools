@@ -282,9 +282,13 @@ function generateMaze(mountainType){
 				break;
 		}
 		monsters.push({"type": popMobType, "i": items[i].i, "j": items[i].j});
-		// TODO: prints du mob
+		// prints du mob
 		if (HAS_PRINT[popMobType]){
-			console.log("#generateMaze mob "+popMobType+" has prints! TODO");
+			//pour l'instant, à gauche
+			var printSpotI = ((itemSpots[i].i-1+width)%width)*mazeGeneratorConfiguration.bits.tiles.width+Math.floor(mazeGeneratorConfiguration.bits.tiles.width/2);
+			var printSpotJ = items[i].j+1;
+			prints.push({"type": popMobType, "i": printSpotI, "j": printSpotJ});
+			console.log("#generateMaze mob "+popMobType+" has prints! i="+printSpotI+" j="+printSpotJ);
 		}
 		//console.log("#generateMaze item placed: "+items[i].type+" "+items[i].i+" "+items[i].j);
 	}
@@ -309,6 +313,7 @@ function generateMaze(mountainType){
 		start: {i: 4, j: 4},
 		items: items,
 		monsters: monsters,
+		prints: prints,
 		getManatthan: function(Ai, Aj, Bi, Bj){
 			return Math.abs(delta(Ai,Bi,fullWidth))+Math.abs(delta(Aj,Bj,fullHeight));
 		},
