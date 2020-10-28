@@ -1,0 +1,15 @@
+{
+  "name": "installor",
+  "version": "1.0.0-SNAPSHOT",
+  "description": "custom installer over ssh",
+  "main": "installor.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "bubble",
+  "license": "ISC",
+  "dependencies": {
+    "moment": "^2.29.1",
+    "node-scp": "0.0.7"
+  }
+}

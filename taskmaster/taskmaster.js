@@ -12,14 +12,12 @@ var HTTP_HEADER = {"Content-Type": "text/html; charset=utf-8","Cache-Control": "
 
 //init BDD
 var dbFile = "tasks.db";
-var dbFileExists = fs.existsSync(dbFile);
 var db = new sqlite3.Database(dbFile);
 //init eventuel de la base
 db.serialize(function() {
-  if(!dbFileExists) {
-	db.run("CREATE TABLE tasks (name TEXT)");
-	db.run("CREATE TABLE meals (date TEXT, time TEXT, cook TEXT, eaters TEXT, food TEXT)");
-  }
+	db.run("CREATE TABLE IF NOT EXISTS tasks (name TEXT)");
+	db.run("CREATE TABLE IF NOT EXISTS meals (date TEXT, time TEXT, cook TEXT, eaters TEXT, food TEXT)");
+	db.run("CREATE TABLE IF NOT EXISTS tips (name TEXT, recipe TEXT, times TEXT)");
 });
 db.close();
 
@@ -169,6 +167,14 @@ app.get(
 		writeSingleMeal(req,res);
 	}
 );
+app.get(
+	'/taskmaster/meals/tips',
+	function(req,res) {
+		writeMealsTips(req,res);
+	}
+);
+
+
 app.post(
 	'/taskmaster/meals',
 	urlEncodedParser,
@@ -269,7 +275,35 @@ app.post(
 	}
 );
 
-
+app.post(
+	'/taskmaster/meals/tips',
+	urlEncodedParser,
+	function (req, res) {
+		console.log("#post /meals/tips POST IN: tip's name: "+req.body.name);
+		//var isTipFormValid = isMealValid(req.body.date,req.body.time,req.body.cook,req.body.eaters,req.body.food);
+		var isTipFormValid = true;
+		if (!isTipFormValid){
+			//TODO manage invalid values
+		}else{
+			console.log("#post /tips values OK for insert");
+			db = new sqlite3.Database(dbFile);
+			var insertStatement = "INSERT INTO tips ('name', 'times', 'recipe') VALUES (\""+req.body.name+"\",\""+req.body.times+"\",\""+req.body.recipe+"\")";
+			console.log("insertStatement: "+insertStatement);
+			db.run(
+				insertStatement,
+				[],
+				function(error){
+					db.close();
+					writeMealsTips(req,res);
+					if (error == null){
+					}else{
+						console.log("#post /tips ERREUR d'INSERT: "+error);
+					}
+				}
+			);
+		}
+	}
+);
 
 //business
 
@@ -424,7 +458,32 @@ function writeMealsDump(req,res){
 		}
 	});
 };
-
+function writeMealsTips(req,res){
+	console.log("#writeMealsTips IN");
+	res.writeHead(200, HTTP_HEADER);
+	fs.readFile('meals-tips.hbs', 'utf8', function(error, fileContent) {
+		if (error){
+			res.end("#writeMealsTips fs error");
+		}else{
+			//recuperation des infos BDD
+			var allTipsResult = {"tips":[]};
+			db = new sqlite3.Database(dbFile);
+			db.all(
+				"SELECT rowid, name, recipe, times FROM tips", 
+				function(err, rows) {
+					var tips = [];
+					rows.forEach(function(row) {
+						tips.push({name: row.name, times: row.times, recipe: row.recipe});
+					});
+					var template = Handlebars.compile(fileContent);
+					var data = {tips: tips};
+					db.close();
+					res.end(""+template(data));
+				}
+			);
+		}
+	});
+};
 //lancement du serveur
 var server=http.createServer(app);
 var port = 8100;

@@ -7,7 +7,7 @@
 	<h3><a href="/taskmaster/">taskmaster</a>/meals</h3>
 	<h3> comptes</h3>
 	<div>
-		<table class="meal-table">
+		<table class="simple-table">
 			<tr><td>cuisinier</td><td>repas</td><td>solde</td><td>tickets</td></tr>
 			<tr><td>Amélie</td><td> {{this.counts.A.created}}/{{this.counts.A.present}}</td><td>{{this.tickets.A.balance}}</td><td>({{this.tickets.A.created}}/{{this.tickets.A.consumed}})</td></tr>
 			<tr><td>Lise</td><td> {{this.counts.L.created}}/{{this.counts.L.present}}</td><td>{{this.tickets.L.balance}}</td><td>({{this.tickets.L.created}}/{{this.tickets.L.consumed}})</td></tr>
@@ -26,6 +26,7 @@
 					<legend>date</legend>
 					<input type="date" id="input-date" name="date" value=""/><br/>
 					<input type="button" id="button-set-date" value="aujourd'hui" />
+					<input type="button" id="button-set-date-yesterday" value="hier" />
 					</fieldset>
 				<fieldset>
 					<legend>repas</legend>
@@ -63,10 +64,11 @@
 	<h3> liens</h3>
 	<ul>
 		<li><a href="/taskmaster/meals/dump">/meals/dump</a></li>
+		<li><a href="/taskmaster/meals/tips">/meals/tips</a></li>
 	</ul>
 	<h3> 20 derniers</h3>
 	<div class="code">
-		<table class="meal-table">
+		<table class="simple-table">
 			<thead>
 				<tr>
 					<th>date</th>
@@ -92,7 +94,7 @@
 		</table>
 	</div>
 </div>
-<div id="legal">&copy; bubble 2020 - meals V1.4.0 20200928210000</div>
+<div id="legal">&copy; bubble 2020 - meals V1.5.0 202010XXXXXXXX</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js" integrity="sha512-rmZcZsyhe0/MAjquhTgiUcb4d9knaFc7b5xAfju483gbEXTkeJRUMIPk6s3ySZMYUHEcjKbjLjyddGWMrNEvZg==" crossorigin="anonymous"></script>
 <script type="text/javascript" src="/taskmaster/static/meals.js"></script>
 </body>

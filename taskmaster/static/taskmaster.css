@@ -15,3 +15,9 @@ h3{
 	border-collapse: collapse;
 	border: solid 1px;
 }
+
+.simple-table, .simple-table th, .simple-table td{
+	border-collapse: collapse;
+	border: solid 1px;
+}
+

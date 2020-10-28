@@ -1,17 +1,23 @@
-
+//date
 function getTodayString(){
-	//moment.js
-	var todayAsString = moment().format("YYYY-MM-DD");      
+	var todayAsString = moment().format("YYYY-MM-DD");
 	return todayAsString;
 };
-//date
+function getYesterdayString(){
+	var yesterdayAsString = moment().add(-1,"days").format("YYYY-MM-DD");
+	return yesterdayAsString;
+};
 function setTodayAsDate(){
 	document.getElementById("input-date").value=getTodayString();
+};
+function setYesterdayAsDate(){
+	document.getElementById("input-date").value=getYesterdayString();
 };
 document.getElementById("button-set-date").onclick = setTodayAsDate;
 if (!document.getElementById("input-date").value){
 	document.getElementById("input-date").value = getTodayString();
 }
+document.getElementById("button-set-date-yesterday").onclick = setYesterdayAsDate;
 
 //meal
 function setTime(timeName){document.getElementById("input-time").value=timeName;};

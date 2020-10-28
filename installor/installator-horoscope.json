@@ -1,0 +1,23 @@
+{
+    "name": "horoquizz",
+    "source":{
+        "root": "D:/projects/js-tools/horoscope/",
+        "files":[
+            "horoscope_launcher.js",
+            "web/horoscope.css",
+            "web/horoscope.html"
+        ],
+        "tmp": "D:/tmp/installator"
+    },
+    "target":{
+        "account": {
+            "user": "bubble",
+            "key":"./keys/bubble_key_priv.pem"
+        },
+        "host":{
+            "ip": "217.182.206.249",
+            "port": 22
+        },
+        "root": "/tmp/test/"
+    }
+}
