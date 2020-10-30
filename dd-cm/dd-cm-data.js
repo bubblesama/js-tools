@@ -74,6 +74,15 @@ const MOB = {
 	spider: "spider"
 };
 
+const HAS_PRINT = {
+	rat: true,
+	snake: true,
+	troll: true,
+	ooze: false,
+	dragon: true,
+	spider: false
+};
+
 const ITEM = {
 	ladder: "ladder",
 	quiver: "quiver",
