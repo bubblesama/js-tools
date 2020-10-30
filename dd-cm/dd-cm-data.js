@@ -4,17 +4,17 @@ var worldMapData= {
 	start: {i:0, j:5},
 	bossTopLeft: {i:16,j:4},
 	tiles :
-" pllltv  y       ff"+
-" loltvlo w  nq  fff"+
-"  lnrlfl y llfffff "+
-"  ltv pllqpll  fff "+
-"  lrnlronffoll     "+
-"h lr lsulf lnnl    "+
-"   l llrff  llln   "+
-"    lnqsuff  lnlxzz"+
-"  nlll tvfff  ll   "+
-"  lo ltvffff   lll "+
-" llpl rfff      l  "
+		" pllltv  y       ff"+
+		" loltvlo w  nq  fff"+
+		"  lnrlfl y llfffff "+
+		"  ltv pllqpll  fff "+
+		"  lrnlronffoll     "+
+		"h lr lsulf lnnl    "+
+		"   l llrff  llln   "+
+		"    lnqsuff  lnlxzz"+
+		"  nlll tvfff  ll   "+
+		"  lo ltvffff   lll "+
+		" llpl rfff      l  "
 };
 
 const dungeonTilesCornerMoves = {
