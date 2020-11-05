@@ -18,11 +18,11 @@
 			</thead>
 			<tbody>
 			{{#each tips}}
-			<tr>
+			<tr id="tip_row_{{this.id}}">
 				<td>{{this.name}}</td>
 				<td>{{this.times}}</td>
 				<td>{{this.recipe}}</td>
-				<td><span id="delete_tip_{{this.id}}" onclick="deleteTip({{this.id}});" >suppr</a></td>
+				<td><span onclick="deleteTip({{this.id}});" >suppr</a></td>
 			</tr>
 			{{/each}}
 			</tbody>
