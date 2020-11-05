@@ -142,6 +142,15 @@ var mazeGeneratorConfiguration = {
 	]
 };
 
+// possible places for prints
+const printsDeltaBits = [
+	{di: 0, 	dj: 1},
+	{di: 0, 	dj: -1},
+	{di: 1, 	dj: 0},
+	{di: -1, 	dj: 0}
+];
+
+
 //********************************** MAZE GENERATOR **********************************************
 function generateMaze(mountainType){
 	generateRotatedPatternsIfNeeded();
@@ -235,16 +244,6 @@ function generateMaze(mountainType){
 		}
 	}
 	//items
-	//fill itemSpots
-	var itemSpots = [];
-	for (var i=0; i< mazeGeneratorConfiguration.size; i++){
-		for (var j=0; j< mazeGeneratorConfiguration.size; j++){
-			if (i != 1 && j != 1){
-				itemSpots.push({i:i,j:j});
-			}
-		}
-	}
-	itemSpots = shuffle(itemSpots);
 	// add all items before placing them
 	items.push({type: ITEM.ladder});
 	items.push({type: ITEM.quiver});
@@ -261,6 +260,16 @@ function generateMaze(mountainType){
 		}
 	}
 	//console.log("#generateMaze items to place: "+items.length);
+	//list item spots
+	var itemSpots = [];
+	for (var i=0; i< mazeGeneratorConfiguration.size; i++){
+		for (var j=0; j< mazeGeneratorConfiguration.size; j++){
+			if (i != 1 && j != 1){
+				itemSpots.push({i:i,j:j});
+			}
+		}
+	}
+	itemSpots = shuffle(itemSpots);
 	//placing
 	for (var i=0; i<items.length; i++){
 		items[i].i = itemSpots[i].i*mazeGeneratorConfiguration.bits.tiles.width+Math.floor(mazeGeneratorConfiguration.bits.tiles.width/2);
@@ -282,28 +291,25 @@ function generateMaze(mountainType){
 				break;
 		}
 		monsters.push({"type": popMobType, "i": items[i].i, "j": items[i].j});
-		// prints du mob
+		// mob print
 		if (HAS_PRINT[popMobType]){
+			var deltaPrint = shuffle(printsDeltaBits)[0];
 			//pour l'instant, à gauche
-			var printSpotI = ((itemSpots[i].i-1+width)%width)*mazeGeneratorConfiguration.bits.tiles.width+Math.floor(mazeGeneratorConfiguration.bits.tiles.width/2);
-			var printSpotJ = items[i].j+1;
+			var printSpotI = ((itemSpots[i].i+deltaPrint.di+width)%width)*mazeGeneratorConfiguration.bits.tiles.width+Math.floor(mazeGeneratorConfiguration.bits.tiles.width/2);
+			var printSpotJ = ((itemSpots[i].j+deltaPrint.dj+height)%height)*mazeGeneratorConfiguration.bits.tiles.height+Math.floor(mazeGeneratorConfiguration.bits.tiles.height/2);
 			prints.push({"type": popMobType, "i": printSpotI, "j": printSpotJ});
 			console.log("#generateMaze mob "+popMobType+" has prints! i="+printSpotI+" j="+printSpotJ);
 		}
 		//console.log("#generateMaze item placed: "+items[i].type+" "+items[i].i+" "+items[i].j);
 	}
-	//TODO: mob generation and prints
-
-
 	//TODO: scanning for nice places (empty tile with empty tile on borders)
-
 	/**
 	 * Big maze result object, full of data and methods regarding:
 	 *  - the layout of the maze
 	 *  - how to navigate it
 	 *  - the items
 	 *  - the lights
-	 *  - TODO: the mobs to pop
+	 *  - the mobs to pop and their print
 	 */
 	var result = {
 		fullWidth: fullWidth,
