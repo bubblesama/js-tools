@@ -2,6 +2,7 @@
 const POTENTIAL_TIMES = ["midi","soir"];
 var times = ["midi","soir"];
 
+
 function toggleTime(time){
 	if (times.includes(time)){
 		times = times.filter(function(timeToFilter){return timeToFilter!=time});
@@ -19,6 +20,18 @@ function toggleTimeSoir(){toggleTime("soir");};
 document.getElementById("button-toggle-time-midi").onclick = toggleTimeMidi;
 document.getElementById("button-toggle-time-soir").onclick = toggleTimeSoir;
 document.getElementById("button-clear-times").onclick = clearTimes;
+
+function deleteTip(tipId){
+	console.log("deleteTip IN: tipId="+tipId);
+	var deleteAjaxRequest = new XMLHttpRequest();
+	deleteAjaxRequest.open('DELETE', "/taskmaster/api/tip/"+tipId, true);
+	deleteAjaxRequest.onreadystatechange = function() {
+		if (deleteAjaxRequest.status == 200 && deleteAjaxRequest.readyState == 4) {
+			console.log("deleteTip callback: tipId "+tipId+" supprimé en back, message reçu: "+deleteAjaxRequest.responseText);
+		};
+	};
+	deleteAjaxRequest.send();
+};
 
 //format control
 var RECIPE_REGEX = /^([A-zÀ-ú]|\s)+?$/gi;

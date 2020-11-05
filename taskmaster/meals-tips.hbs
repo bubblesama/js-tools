@@ -13,6 +13,7 @@
 					<th>nom</th>
 					<th>repas</th>
 					<th>recette</th>
+					<th>action</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -21,6 +22,7 @@
 				<td>{{this.name}}</td>
 				<td>{{this.times}}</td>
 				<td>{{this.recipe}}</td>
+				<td><span id="delete_tip_{{this.id}}" onclick="deleteTip({{this.id}});" >suppr</a></td>
 			</tr>
 			{{/each}}
 			</tbody>
