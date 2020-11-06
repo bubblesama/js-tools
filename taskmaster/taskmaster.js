@@ -314,6 +314,8 @@ app.delete(
 		var tipId = req.params.tipId;
 		console.log("#delete /tip/ DELETE IN: req.body.tipId="+tipId);
 		res.writeHead(200, HTTP_HEADER_PLAIN);
+		db = new sqlite3.Database(dbFile);
+		db.run("DELETE FROM tips WHERE rowid="+tipId);
 		res.end("OK!");
 	}
 );

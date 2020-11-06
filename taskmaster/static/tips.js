@@ -28,6 +28,7 @@ function deleteTip(tipId){
 	deleteAjaxRequest.onreadystatechange = function() {
 		if (deleteAjaxRequest.status == 200 && deleteAjaxRequest.readyState == 4) {
 			console.log("deleteTip callback: tipId "+tipId+" supprimé en back, message reçu: "+deleteAjaxRequest.responseText);
+			document.getElementById("tip_row_"+tipId).remove();
 		};
 	};
 	deleteAjaxRequest.send();
