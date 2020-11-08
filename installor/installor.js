@@ -38,6 +38,9 @@ for (var i=0;i<conf.source.files.length;i++){
 
 //envoi
 
+
+var targetDistantDir = "/tmp/test/installator";
+console.log("starting scp from "+tmpSourceDirPath+" to "+targetDistantDir);
 //document de test
 scp({
   host: conf.target.host.ip,
@@ -46,9 +49,10 @@ scp({
   privateKey: fs.readFileSync(conf.target.account.key),
   passphrase: passphrase
 }).then(client => {
-  client.uploadFile("./test.txt", "/tmp/test/test.txt")
+  client.uploadDir(tmpSourceDirPath, targetDistantDir)
         .then(response => {
-          client.close() // remember to close connection after you finish
+          console.log("finished scp from "+tmpSourceDirPath+" to "+targetDistantDir);
+          client.close();
         })
         .catch(error => {})
 }).catch(e => console.log(e))

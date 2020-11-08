@@ -1,0 +1,32 @@
+{
+    "name": "taskmaster",
+    "source":{
+        "root": "D:/projects/js-tools/taskmaster/",
+        "files":[
+            "main.hbs",
+            "meal.hbs",
+            "meals-dump-ok.hbs",
+            "meals-dump.hbs",
+            "meals-tips.hbs",
+            "meals.hbs",
+            "single.hbs",
+            "taskmaster.js",
+            "static/meals-dump.js",
+            "static/meals.js",
+            "static/taskmaster.css",
+            "static/tips.js"
+        ],
+        "tmp": "D:/tmp/installator"
+    },
+    "target":{
+        "account": {
+            "user": "bubble",
+            "key":"./keys/bubble_key_priv.pem"
+        },
+        "host":{
+            "ip": "217.182.206.249",
+            "port": 22
+        },
+        "root": "/tmp/test/taskmaster"
+    }
+}
