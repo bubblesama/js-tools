@@ -163,13 +163,13 @@ app.get(
 	}
 );
 app.get(
-	'/taskmaster/meal/:mealId/',
+	'/taskmaster/meals/:mealId/',
 	function(req,res) {
 		writeSingleMeal(req,res);
 	}
 );
 app.get(
-	'/taskmaster/meals/tips',
+	'/taskmaster/meals-tips',
 	function(req,res) {
 		writeMealsTips(req,res);
 	}
@@ -248,11 +248,11 @@ app.post(
 );
 
 app.post(
-	'/taskmaster/meal/:mealId/',
+	'/taskmaster/meals/:mealId/',
 	urlEncodedParser,
 	function (req, res) {
 		var mealId = req.params.mealId;
-		console.log("#post /meal/ POST IN: req.params.mealId="+mealId);
+		console.log("#post /meals/<id> POST IN: req.params.mealId="+mealId);
 		var isMealFormValid = isMealValid(req.body.date,req.body.time,req.body.cook,req.body.eaters,req.body.food);
 		if (!isMealFormValid){
 			//TODO manage incorrect form
@@ -277,10 +277,10 @@ app.post(
 );
 
 app.post(
-	'/taskmaster/meals/tips',
+	'/taskmaster/meals-tips/',
 	urlEncodedParser,
 	function (req, res) {
-		console.log("#post /meals/tips POST IN: tip's name: "+req.body.name);
+		console.log("#post /meals-tips/ POST IN: tip's name: "+req.body.name);
 		//var isTipFormValid = isMealValid(req.body.date,req.body.time,req.body.cook,req.body.eaters,req.body.food);
 		var isTipFormValid = true;
 		if (!isTipFormValid){
