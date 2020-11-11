@@ -296,13 +296,29 @@ var graphical = {
 			key: {i:4,j:5}
 		},
 		mobs:{
-			//first sprite place by type
-			rat: {i:8, j:1},
-			snake: {i:0, j:3},
-			troll: {i:4, j:3},
-			ooze: {i:8, j:1},
-			dragon: {i:8, j:3},
-			spider: {i:8, j:2}
+			//first sprite place by type, and prints
+			rat: { 
+				sprite0: {i:8, j:1},
+				print: {i:12,j:0}
+			},
+			snake:  {
+				sprite0: {i:0, j:3},
+				print: {i:12,j:2}
+			},
+			troll: {
+				sprite0: {i:4, j:3},
+				print: {i:12,j:1}
+			},
+			ooze: {
+				sprite0: {i:8, j:1}
+			},
+			dragon: {
+				sprite0: {i:8, j:3},
+				print: {i:12,j:2}
+			},
+			spider: {
+				sprite0: {i:8, j:2}
+			}
 		}
 	}
 };
@@ -787,7 +803,7 @@ var model = {
 			}
 			//arrows
 			this.dungeon.arrowsManager.update();
-			//TODO: update for mobs...
+			//update for mobs...
 			this.dungeon.mobsManager.update();
 			//...moving
 			//...searching
@@ -902,7 +918,7 @@ game.draw = function(){
 			if (shouldDrawItem){
 				context.drawImage(
 					worldSprites,
-					graphical.world.items[""+item].i*graphical.world.tile.width,
+					graphical.dungeon.items[""+item].i*graphical.world.tile.width,
 					graphical.world.items[""+item].j*graphical.world.tile.height,
 					graphical.world.tile.width,
 					graphical.world.tile.height,
@@ -954,6 +970,25 @@ game.draw = function(){
 					graphical.dungeon.tiles.height,
 					3+i*graphical.dungeon.tiles.width*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDx*model.player.dungeon.stepDi*graphical.dungeon.zoom,
 					10+j*graphical.dungeon.tiles.height*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDy*model.player.dungeon.stepDj*graphical.dungeon.zoom,
+					graphical.dungeon.tiles.width*graphical.dungeon.zoom,
+					graphical.dungeon.tiles.height*graphical.dungeon.zoom
+				);
+			}
+		}
+		//display prints
+		for (var i=0;i<model.dungeon.currentMaze.prints.length;i++){
+			var print = model.dungeon.currentMaze.prints[i];
+			if (model.dungeon.currentMaze.isShown(print.i, print.j)){
+				context.drawImage(
+					dungeonSprites,
+					graphical.dungeon.mobs[""+print.type].print.i*graphical.dungeon.tiles.width,
+					graphical.dungeon.mobs[""+print.type].print.j*graphical.dungeon.tiles.height,
+					graphical.dungeon.tiles.width,
+					graphical.dungeon.tiles.height,
+					//3+(8+item.i-model.player.dungeon.i)*graphical.dungeon.tiles.width*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDx*model.player.dungeon.stepDi*graphical.dungeon.zoom,
+					getXViewFromI(print.i),
+					//10+(4+item.j-model.player.dungeon.j)*graphical.dungeon.tiles.height*graphical.dungeon.zoom-model.player.dungeon.currentStep*model.player.dungeon.stepDy*model.player.dungeon.stepDj*graphical.dungeon.zoom,
+					getYViewFromJ(print.j),
 					graphical.dungeon.tiles.width*graphical.dungeon.zoom,
 					graphical.dungeon.tiles.height*graphical.dungeon.zoom
 				);
@@ -1026,10 +1061,10 @@ game.draw = function(){
 		for (var i=0; i<model.dungeon.mobsManager.mobs.length; i++){
 			var mob = model.dungeon.mobsManager.mobs[i];
 			if (model.dungeon.currentMaze.isShown(mob.i, mob.j)){
-				var spriteI = graphical.dungeon.mobs[""+mob.type].i;
+				var spriteI = graphical.dungeon.mobs[""+mob.type].sprite0.i;
 				if (!mob.faceRight){spriteI += 2;}
 				if (mob.legs.wiggle){spriteI += 1;}
-				var spriteJ = graphical.dungeon.mobs[""+mob.type].j;
+				var spriteJ = graphical.dungeon.mobs[""+mob.type].sprite0.j;
 				context.drawImage(
 					dungeonSprites,
 					spriteI*graphical.dungeon.tiles.width,

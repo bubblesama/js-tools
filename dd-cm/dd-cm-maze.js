@@ -209,6 +209,8 @@ function generateMaze(mountainType){
 	var fullMaze = new Array(fullWidth);
 	var lights = new Array(fullWidth);
 	var monsters = new Array();
+	var prints = new Array();
+	var items = [];
 	for (var i=0;i<fullWidth;i++){
 		fullMaze[i]=new Array(fullHeight);
 		lights[i]=new Array(fullHeight);
@@ -233,9 +235,8 @@ function generateMaze(mountainType){
 		}
 	}
 	//items
-	var items = [];
-	var itemSpots = [];
 	//fill itemSpots
+	var itemSpots = [];
 	for (var i=0; i< mazeGeneratorConfiguration.size; i++){
 		for (var j=0; j< mazeGeneratorConfiguration.size; j++){
 			if (i != 1 && j != 1){
@@ -281,6 +282,14 @@ function generateMaze(mountainType){
 				break;
 		}
 		monsters.push({"type": popMobType, "i": items[i].i, "j": items[i].j});
+		// prints du mob
+		if (HAS_PRINT[popMobType]){
+			//pour l'instant, à gauche
+			var printSpotI = ((itemSpots[i].i-1+width)%width)*mazeGeneratorConfiguration.bits.tiles.width+Math.floor(mazeGeneratorConfiguration.bits.tiles.width/2);
+			var printSpotJ = items[i].j+1;
+			prints.push({"type": popMobType, "i": printSpotI, "j": printSpotJ});
+			console.log("#generateMaze mob "+popMobType+" has prints! i="+printSpotI+" j="+printSpotJ);
+		}
 		//console.log("#generateMaze item placed: "+items[i].type+" "+items[i].i+" "+items[i].j);
 	}
 	//TODO: mob generation and prints
@@ -304,6 +313,7 @@ function generateMaze(mountainType){
 		start: {i: 4, j: 4},
 		items: items,
 		monsters: monsters,
+		prints: prints,
 		getManatthan: function(Ai, Aj, Bi, Bj){
 			return Math.abs(delta(Ai,Bi,fullWidth))+Math.abs(delta(Aj,Bj,fullHeight));
 		},
@@ -591,4 +601,8 @@ delta = function (a,b,mod){
 	var positiveDistance = ((b-a)+mod)%mod;
 	var negativeDistance = ((a-b)+mod)%mod;
 	return positiveDistance<negativeDistance?positiveDistance:-negativeDistance;
+};
+
+function manhattan(Ai, Aj, Bi, Bj,width, height){
+	return Math.abs(delta(Ai,Bi,width))+Math.abs(delta(Aj,Bj,height));
 };
