@@ -4,7 +4,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <body>
 <div id="main">
-	<h3><a href="/taskmaster/">taskmaster</a>/<a href="/taskmaster/meals/">meals</a>/<a href="/taskmaster/meals/tips">tips</a></h3>
+	<h3><a href="/taskmaster/">taskmaster</a>/<a href="/taskmaster/meals-tips/">meals-tips</a></h3>
 	<h3> menus</h3>
 	<div class="code">
 		<table class="simple-table">
@@ -13,14 +13,16 @@
 					<th>nom</th>
 					<th>repas</th>
 					<th>recette</th>
+					<th>action</th>
 				</tr>
 			</thead>
 			<tbody>
 			{{#each tips}}
-			<tr>
+			<tr id="tip_row_{{this.id}}">
 				<td>{{this.name}}</td>
 				<td>{{this.times}}</td>
 				<td>{{this.recipe}}</td>
+				<td><span class="action-link" onclick="deleteTip({{this.id}});" >suppr</a></td>
 			</tr>
 			{{/each}}
 			</tbody>

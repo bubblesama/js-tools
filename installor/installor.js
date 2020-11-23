@@ -39,6 +39,9 @@ for (var i=0;i<conf.source.files.length;i++){
 
 //envoi
 
+
+var targetDistantDir = "/tmp/test/installator";
+console.log("starting scp from "+tmpSourceDirPath+" to "+targetDistantDir);
 //document de test
 scpClient.scp(
   "test.txt",

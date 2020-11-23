@@ -8,7 +8,8 @@ var BodyParser = require('body-parser');
 var moment = require('moment');
 
 //STATIC
-var HTTP_HEADER = {"Content-Type": "text/html; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"};
+const HTTP_HEADER = {"Content-Type": "text/html; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"};
+const HTTP_HEADER_PLAIN = {"Content-Type": "text/plain; charset=utf-8","Cache-Control": "no-cache, no-store, must-revalidate","Pragma": "no-cache","Expires": "0"};
 
 //init BDD
 var dbFile = "tasks.db";
@@ -162,13 +163,13 @@ app.get(
 	}
 );
 app.get(
-	'/taskmaster/meal/:mealId/',
+	'/taskmaster/meals/:mealId/',
 	function(req,res) {
 		writeSingleMeal(req,res);
 	}
 );
 app.get(
-	'/taskmaster/meals/tips',
+	'/taskmaster/meals-tips',
 	function(req,res) {
 		writeMealsTips(req,res);
 	}
@@ -247,11 +248,11 @@ app.post(
 );
 
 app.post(
-	'/taskmaster/meal/:mealId/',
+	'/taskmaster/meals/:mealId/',
 	urlEncodedParser,
 	function (req, res) {
 		var mealId = req.params.mealId;
-		console.log("#post /meal/ POST IN: req.params.mealId="+mealId);
+		console.log("#post /meals/<id> POST IN: req.params.mealId="+mealId);
 		var isMealFormValid = isMealValid(req.body.date,req.body.time,req.body.cook,req.body.eaters,req.body.food);
 		if (!isMealFormValid){
 			//TODO manage incorrect form
@@ -276,10 +277,10 @@ app.post(
 );
 
 app.post(
-	'/taskmaster/meals/tips',
+	'/taskmaster/meals-tips/',
 	urlEncodedParser,
 	function (req, res) {
-		console.log("#post /meals/tips POST IN: tip's name: "+req.body.name);
+		console.log("#post /meals-tips/ POST IN: tip's name: "+req.body.name);
 		//var isTipFormValid = isMealValid(req.body.date,req.body.time,req.body.cook,req.body.eaters,req.body.food);
 		var isTipFormValid = true;
 		if (!isTipFormValid){
@@ -305,8 +306,21 @@ app.post(
 	}
 );
 
-//business
+//API
+app.delete(
+	'/taskmaster/api/tip/:tipId',
+	urlEncodedParser,
+	function (req, res) {
+		var tipId = req.params.tipId;
+		console.log("#delete /tip/ DELETE IN: req.body.tipId="+tipId);
+		res.writeHead(200, HTTP_HEADER_PLAIN);
+		db = new sqlite3.Database(dbFile);
+		db.run("DELETE FROM tips WHERE rowid="+tipId);
+		res.end("OK!");
+	}
+);
 
+//business
 function isMealValid(date, time, cook, eaters, food){
 	var result = true;
 	//params control
@@ -473,7 +487,7 @@ function writeMealsTips(req,res){
 				function(err, rows) {
 					var tips = [];
 					rows.forEach(function(row) {
-						tips.push({name: row.name, times: row.times, recipe: row.recipe});
+						tips.push({name: row.name, times: row.times, recipe: row.recipe, id: row.rowid});
 					});
 					var template = Handlebars.compile(fileContent);
 					var data = {tips: tips};

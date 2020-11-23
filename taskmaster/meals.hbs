@@ -4,7 +4,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <body>
 <div id="main">
-	<h3><a href="/taskmaster/">taskmaster</a>/meals</h3>
+	<h3><a href="/taskmaster/">taskmaster</a>/<a href="/taskmaster/meals">meals</a></h3>
 	<h3> comptes</h3>
 	<div>
 		<table class="simple-table">
@@ -64,7 +64,7 @@
 	<h3> liens</h3>
 	<ul>
 		<li><a href="/taskmaster/meals/dump">/meals/dump</a></li>
-		<li><a href="/taskmaster/meals/tips">/meals/tips</a></li>
+		<li><a href="/taskmaster/meals-tips">/meals-tips</a></li>
 	</ul>
 	<h3> 20 derniers</h3>
 	<div class="code">
@@ -87,14 +87,14 @@
 				<td>{{this.cook}}</td>
 				<td>{{this.eaters}}</td>
 				<td>{{this.food}}</td>
-				<td><a href="/taskmaster/meal/{{this.id}}">edit</a></td>
+				<td><a href="/taskmaster/meals/{{this.id}}">edit</a></td>
 			</tr>
 			{{/each}}
 			</tbody>
 		</table>
 	</div>
 </div>
-<div id="legal">&copy; bubble 2020 - meals V1.5.0 202010XXXXXXXX</div>
+<div id="legal">&copy; bubble 2020 - meals V1.5.1 202010XXXXXXXX</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js" integrity="sha512-rmZcZsyhe0/MAjquhTgiUcb4d9knaFc7b5xAfju483gbEXTkeJRUMIPk6s3ySZMYUHEcjKbjLjyddGWMrNEvZg==" crossorigin="anonymous"></script>
 <script type="text/javascript" src="/taskmaster/static/meals.js"></script>
 </body>

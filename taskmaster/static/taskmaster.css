@@ -21,3 +21,7 @@ h3{
 	border: solid 1px;
 }
 
+.action-link{
+	text-decoration: underline blue;
+	cursor: pointer;
+}
