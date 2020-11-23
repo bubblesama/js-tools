@@ -3,6 +3,7 @@
     "source":{
         "root": "D:/projects/js-tools/taskmaster/",
         "files":[
+            "package.json",
             "main.hbs",
             "meal.hbs",
             "meals-dump-ok.hbs",
