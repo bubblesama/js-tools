@@ -7,7 +7,7 @@ npm install body-parser
 npm install moment
 
 # release notes
-V1.5.2 EN COURS
+V1.5.2 EN PROD
     fix & polish
 V1.5.1
     gestion des suggestions de repas
