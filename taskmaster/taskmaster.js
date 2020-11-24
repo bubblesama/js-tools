@@ -363,13 +363,14 @@ function writeMealsMain(req,res){
 		if (error){
 			res.end("#writeMealsMain fs error");
 		}else{
+			var lastMealCount = 30;
 			//recuperation des infos BDD
 			var lastMealsResult = {"meals":[]};
 			db = new sqlite3.Database(dbFile);
 			db.all(
 				"SELECT rowid, date, time, cook, eaters, food FROM meals ORDER BY date DESC, time DESC", 
 				function(err, rows) {
-					var countTo20 = 0;
+					var countToLimit = 0;
 					var tickets = {
 						A: {created: 0, consumed: 0},
 						L: {created: 0, consumed: 0},
@@ -385,8 +386,8 @@ function writeMealsMain(req,res){
 						X: {created: 0, present: 0}
 					};
 					rows.forEach(function(row) {
-						if (countTo20 < 20){
-							countTo20++;
+						if (countToLimit < lastMealCount){
+							countToLimit++;
 							lastMealsResult.meals.push({"id": row.rowid, "date":row.date,  "time":row.time,"cook":row.cook,"eaters":row.eaters,"food":row.food});
 						}
 						var splitEaters = row.eaters.split(",");
