@@ -1,6 +1,6 @@
 {
   "name": "taskmaster",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "task master",
   "main": "taskmaster.js",
   "dependencies": {

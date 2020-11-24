@@ -7,10 +7,12 @@ npm install body-parser
 npm install moment
 
 # release notes
-V1.5.1 EN COURS
-    TODO gestion des suggestions de repas
-    TODO polish divers
-V1.5.0 EN PROD
+V1.5.2 EN PROD
+    fix & polish
+V1.5.1
+    gestion des suggestions de repas
+    polish divers
+V1.5.0
     bouton "hier" pour les dates de repas
     version simple de suggestion de repas
 V1.4.0
