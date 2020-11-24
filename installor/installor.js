@@ -14,7 +14,7 @@ var conf = JSON.parse(fs.readFileSync(confPath, 'utf8'));
 console.log("conf name: "+conf.name);
 // preparation du dossier source
 // creation
-var tmpSourceDirPath = conf.name+"_"+moment().format("YYYYMMDD_HHmmSS")+"/";
+var tmpSourceDirPath = conf.name+"_"+moment().format("YYYYMMDD_HHmmss")+"/";
 var tmpSourceDirFullPath = conf.source.tmp+"/"+tmpSourceDirPath;
 if (fs.existsSync(tmpSourceDirFullPath)){
   console.log(tmpSourceDirFullPath+" exists: rm then mk");
