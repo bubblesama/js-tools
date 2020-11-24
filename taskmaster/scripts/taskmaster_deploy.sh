@@ -33,7 +33,7 @@ if [ ! -f ${packageFolder}/package.json ]; then
 fi
 serviceVersion=`cat ${packageFolder}/package.json | grep version | cut -d'"' -f4`
 echo "#deploy version du service $taskmaster: $serviceVersion"
-# verification que la version n'est pas déjà deployee (pas de snapshot)
+# verification que la version n'est pas déjà déployée (pas de SNAPSHOT)
 if [ $(echo $serviceVersion | grep "SNAPSHOT" | wc -l) -gt 0 ]; then
     echo "#deploy version SNAPSHOT! OUT"
     exit 0
@@ -47,7 +47,12 @@ fi
 
 # creation du dossier
 mkdir -p $targetProjectFolder
-echo "#deploy dossier cible  créé"
+echo "#deploy dossier cible $targetProjectFolder créé"
+# installation
+cd $targetProjectFolder
+cp -r ${packageFolder}/* .
+npm install
+echo "#deploy copie et installation depuis ${packageFolder} vers $targetProjectFolder faites"
 
 #coupure du service
 cd "${projectPath}/${projectName}"
@@ -71,4 +76,4 @@ echo "#deploy lien de ${projectName}-$serviceVersion vers ${projectName} créé"
 cd "${projectPath}/${projectName}"
 sudo forever start $projectLauncher
 
-cd currentPath
+cd $currentPath
