@@ -1,10 +1,10 @@
 Gestionnaire de tâches
-dependances
-npm install sqlite3 --save
-npm install express
-npm install handlebars
-npm install body-parser
-npm install moment
+
+# installation en PROD
+compilation et envoi sur VPS1: 
+from installor: node installor.js installator-taskmaster.json <mdp clé>
+déploiement sur VPS1
+from /projects/deploy: ./taskmaster_deploy.sh
 
 # release notes
 V1.5.3 EN PROD
