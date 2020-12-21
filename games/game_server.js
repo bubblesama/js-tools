@@ -1,7 +1,7 @@
 var http = require('http');
 var fs = require('fs');
 
-// Chargement du fichier index.html affiché au client
+// Chargement du fichier index.html affichÃ© au client
 var server = http.createServer(function(req, res) {
     fs.readFile('./game_client.html', 'utf-8', function(error, content) {
         res.writeHead(200, {"Content-Type": "text/html"});
@@ -14,22 +14,22 @@ var io = require('socket.io').listen(server);
 // connection management by logging
 io.sockets.on('connection', function (socket) {
 	console.log('new client connected');
-	socket.emit('connection-status', { content: 'Vous êtes bien connecté !', importance: '1', status: 'OK' });
+	socket.emit('connection-status', { content: 'Vous ï¿½tes bien connectï¿½ !', importance: '1', status: 'OK' });
 	//socket.emit('game', game);
 	//TODO login infos et protocole
-	// requete de login avec clé et nom de joueur
-	// enregistrement et validation /refus d'accès
-	// association à une partie
+	// requete de login avec clÃ© et nom de joueur
+	// enregistrement et validation /refus d'accÃ¨s
+	// association Ã  une partie
 
 	var currentUserLogin;
 
-	// gestion de la requête de login
+	// gestion de la requÃªte de login
 	socket.on('user-login', function(userLogin,userPass,clientSideCallback){
 		console.log("socket#user-login userLogin="+userLogin+" userPass.length="+userPass.length);
 		if (USERS[userLogin] != null &&  USERS[userLogin].pass == userPass){
 			var sessionCode = USERS[userLogin].code;
 			if (sessionCode == null){
-				sessionCode = ""+Math.floor(Math.random()*1000000);
+				sessionCode = ""+Math.floor(Math.random()*100000000);
 				 USERS[userLogin].code = sessionCode;
 			}
 			currentUserLogin = userLogin;
@@ -181,7 +181,7 @@ var firstHorseGame = {
 		'player2': {login: "tutu"}
 	},
 	'turn': 1,
-	'activePlayer': 'player1',
+	'activePlayer': 'mylogin',
 	'board': {
 		'dice': {
 			'value': 6,
@@ -192,7 +192,7 @@ var firstHorseGame = {
 	actions: ["resetGame", "launchDice", "moveHorse", "endTurn"]
 };
 
-// helpers pour accès aux données du jeu
+// helpers pour accÃ¨s aux donnÃ©es du jeu
 var helpers = {
 	getHorse: function(game){
 		return function(playerName){
@@ -217,7 +217,7 @@ var helpers = {
 //available game actions
 //actions attendues du jeu
 // - lancement du jeu
-// - lancement de dé
+// - lancement de dÃ©
 // - mouvement d'un cheval
 // - fin de tour
 // 
@@ -238,10 +238,10 @@ var actions = {
 		//test
 		console.log("actions#resetGame done");
 	},
-	//lancement de dé
+	//lancement de dÃ©
 	launchDice: function (game){
 		return function (playerName){
-			//TODO random sur le lancer de dé
+			//TODO random sur le lancer de dÃ©
 			var roll = ++game.board.dice.value;
 			if (roll > 6){
 				roll = 1;
@@ -302,7 +302,7 @@ var controls = {
 		}
 		return result;
 	},
-	// contrôle du lancer de dé
+	// contrï¿½le du lancer de dï¿½
 	canLaunchDice: function(game){
 		return function (playerName){
 			var result = {'success': false, 'comment': "none"};
@@ -310,7 +310,7 @@ var controls = {
 				result.comment = playerName+" n'est pas le joueur actif!";
 			}else{
 				if (game.board.dice.rolledThisTurn){
-					result.comment = "le dé a déjà été jeté ce tour-ci";
+					result.comment = "le dÃ© a dÃ©jÃ  Ã©tÃ© jetÃ© ce tour-ci";
 				}else{
 					result.success = true;
 				}
@@ -318,19 +318,19 @@ var controls = {
 			return result;
 		}
 	},
-	// contrôle du mouvement d'un cheval
+	// contrï¿½le du mouvement d'un cheval
 	canMoveHorse: function(game){
 		return function (playerName){
 			return function (horseId){
 				var result = {'success': false, 'comment': "none"};
 				//TODO check existence joueur et cheval
 				//TODO check du bon joueur
-				// contrôle de l'état du tour
+				// contrÃ´le de l'Ã©tat du tour
 				if (!game.dice.rolledThisTurn){
-					result.comment = "le dé n'a pas été jeté";
+					result.comment = "le dÃ© n'a pas Ã©tÃ© jetÃ©";
 				}else{
 					if (game.dice.usedThisTurn){
-						result.comment = "le mouvement a déjà été fait!";
+						result.comment = "le mouvement a dÃ©jÃ  Ã©tÃ© fait!";
 					}else{
 						result.success = true;
 					}
