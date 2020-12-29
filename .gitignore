@@ -21,3 +21,5 @@ installor/node_modules/
 installor/keys/
 
 workspace.code-workspace
+
+games/.env

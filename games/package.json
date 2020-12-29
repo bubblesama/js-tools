@@ -4,6 +4,7 @@
   "description": "simple JS back and front demo for games",
   "main": "game_server.js",
   "dependencies": {
+    "dotenv": "^8.2.0",
     "http": "^0.0.0",
     "npm": "^6.4.1",
     "socket.io": "^2.2.0",
