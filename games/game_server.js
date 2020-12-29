@@ -148,6 +148,10 @@ var USERS = {
 	"polo": {"pass": "secret_polo_horse_banana"}
 };
 
+
+//=============================================================================
+//=============================================================================
+//=============================================================================
 //--------------- PARTIE METIER JEU DES PETITS CHEVAUX
 var firstHorseGame = {
 	//base functions for generic games infos
@@ -302,7 +306,7 @@ var controls = {
 		}
 		return result;
 	},
-	// contr�le du lancer de d�
+	// contrôle du lancer de dé
 	canLaunchDice: function(game){
 		return function (playerName){
 			var result = {'success': false, 'comment': "none"};
@@ -318,7 +322,7 @@ var controls = {
 			return result;
 		}
 	},
-	// contr�le du mouvement d'un cheval
+	// contrôle du mouvement d'un cheval
 	canMoveHorse: function(game){
 		return function (playerName){
 			return function (horseId){
@@ -357,7 +361,9 @@ var controls = {
 
 
 
-
+//=============================================================================
+//=============================================================================
+//=============================================================================
 //--------------- GESTIONNAIRE GLOBAL DES PARTIES
 var SERVER_GAMES = {"horses_18":firstHorseGame};
 
@@ -365,6 +371,6 @@ var SERVER_GAMES = {"horses_18":firstHorseGame};
 //var controlMethod = "can"+method.substring(0,1).toUpperCase()+method.substring(1);
 //console.log("TEST: method="+method+" controlMethod="+controlMethod);
 var serverPort = 4040;
-console.log("lancement serveur");
+console.log("games lancement serveur");
 server.listen(serverPort);
-console.log("serveur en route sur le port "+serverPort);
+console.log("games serveur en route sur le port "+serverPort);
