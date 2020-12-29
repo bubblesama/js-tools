@@ -370,7 +370,7 @@ var SERVER_GAMES = {"horses_18":firstHorseGame};
 //var method = "doSomething";
 //var controlMethod = "can"+method.substring(0,1).toUpperCase()+method.substring(1);
 //console.log("TEST: method="+method+" controlMethod="+controlMethod);
-var serverPort = 4040;
+const serverPort = process.env.PORT || 4000;
 console.log("games lancement serveur");
 server.listen(serverPort);
 console.log("games serveur en route sur le port "+serverPort);
