@@ -18,7 +18,7 @@ var io = require('socket.io').listen(server);
 // connection management by logging
 io.sockets.on('connection', function (socket) {
 	console.log('new client connected');
-	socket.emit('connection-status', { content: 'Vous �tes bien connect� !', importance: '1', status: 'OK' });
+	socket.emit('connection-status', { content: 'Vous êtes bien connecté !', importance: '1', status: 'OK' });
 	//socket.emit('game', game);
 	//TODO login infos et protocole
 	// requete de login avec clé et nom de joueur
@@ -177,6 +177,7 @@ var firstHorseGame = {
 		//TODO controlling duplicate for users
 		this.players["player"+(currentPlayerCount+1)] = {login: playerName};
 		actions.resetGame(this);
+
 		result.success = true;
 		result.message = "addPlayer OK";
 		return result;
@@ -216,7 +217,7 @@ var helpers = {
 	getPlayersCount: function (game){
 		var playersCount = 0;
 		for (var playerName in game.players){
-			playersCount++;
+			playersCount++; 
 		}
 		return playersCount;
 	}
