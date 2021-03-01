@@ -1,5 +1,8 @@
 Serveur JS de jeux avec client
 
+statut: WIP
+
+
 Description fonctionnelle
 
 Un jeu rassemble plusieurs joueurs au cours d'une partie

@@ -1,6 +1,8 @@
 dumbar
 since autumn 2019
 
+status: WIP
+
 concept
 from https://en.wikipedia.org/wiki/Dunbar%27s_number, a tool to check how well-functioning a social human you are, by tracking your interactions with your friends and family
 

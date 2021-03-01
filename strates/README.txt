@@ -2,6 +2,7 @@ strates
 jeu de strategie HTML/JS isometrique full front solo
 depuis rentree 2019
 
+status: WIP
 
 todo list
 * afficher une carte

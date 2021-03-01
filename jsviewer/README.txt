@@ -2,6 +2,8 @@ jsviewer
 201701
 Excel for JSON structure
 
+status: WIP
+
 sample.json
 
 TODO
