@@ -1,5 +1,7 @@
 Gestionnaire de tâches
 
+status: en prod, feature complete?
+
 # installation en PROD
 compilation et envoi sur VPS1: 
 from installor: node installor.js installator-taskmaster.json <mdp clé>

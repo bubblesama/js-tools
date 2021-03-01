@@ -2,6 +2,9 @@ cyberscribe
 chat en ligne node avec socket.io
 depuis S1 2019
 
+statut: WIP
+
+
 gestion des utilisateurs avec mot de passe et péremption de session
 
 

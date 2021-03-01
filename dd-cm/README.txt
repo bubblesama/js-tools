@@ -1,5 +1,7 @@
 DD Cloudy Moutain en HTML
 
+statut: WIP, version partielle déployée
+
 
 === version
 version 0.1 - en cours

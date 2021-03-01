@@ -1,7 +1,11 @@
-var http = require('http');
-var fs = require('fs');
+const http = require('http');
+const fs = require('fs');
+const dotenv = require('dotenv');
 
-// Chargement du fichier index.html affichÈ au client
+//chargement de la conf
+dotenv.config();
+
+// Chargement du fichier index.html affich√© au client
 var server = http.createServer(function(req, res) {
     fs.readFile('./game_client.html', 'utf-8', function(error, content) {
         res.writeHead(200, {"Content-Type": "text/html"});
@@ -14,22 +18,22 @@ var io = require('socket.io').listen(server);
 // connection management by logging
 io.sockets.on('connection', function (socket) {
 	console.log('new client connected');
-	socket.emit('connection-status', { content: 'Vous Ítes bien connectÈ !', importance: '1', status: 'OK' });
+	socket.emit('connection-status', { content: 'Vous √™tes bien connect√© !', importance: '1', status: 'OK' });
 	//socket.emit('game', game);
 	//TODO login infos et protocole
-	// requete de login avec clÈ et nom de joueur
-	// enregistrement et validation /refus d'accËs
-	// association ‡ une partie
+	// requete de login avec cl√© et nom de joueur
+	// enregistrement et validation /refus d'acc√®s
+	// association √† une partie
 
 	var currentUserLogin;
 
-	// gestion de la requÍte de login
+	// gestion de la requ√™te de login
 	socket.on('user-login', function(userLogin,userPass,clientSideCallback){
 		console.log("socket#user-login userLogin="+userLogin+" userPass.length="+userPass.length);
 		if (USERS[userLogin] != null &&  USERS[userLogin].pass == userPass){
 			var sessionCode = USERS[userLogin].code;
 			if (sessionCode == null){
-				sessionCode = ""+Math.floor(Math.random()*1000000);
+				sessionCode = ""+Math.floor(Math.random()*100000000);
 				 USERS[userLogin].code = sessionCode;
 			}
 			currentUserLogin = userLogin;
@@ -148,6 +152,10 @@ var USERS = {
 	"polo": {"pass": "secret_polo_horse_banana"}
 };
 
+
+//=============================================================================
+//=============================================================================
+//=============================================================================
 //--------------- PARTIE METIER JEU DES PETITS CHEVAUX
 var firstHorseGame = {
 	//base functions for generic games infos
@@ -169,6 +177,7 @@ var firstHorseGame = {
 		//TODO controlling duplicate for users
 		this.players["player"+(currentPlayerCount+1)] = {login: playerName};
 		actions.resetGame(this);
+
 		result.success = true;
 		result.message = "addPlayer OK";
 		return result;
@@ -181,7 +190,7 @@ var firstHorseGame = {
 		'player2': {login: "tutu"}
 	},
 	'turn': 1,
-	'activePlayer': 'player1',
+	'activePlayer': 'mylogin',
 	'board': {
 		'dice': {
 			'value': 6,
@@ -192,7 +201,7 @@ var firstHorseGame = {
 	actions: ["resetGame", "launchDice", "moveHorse", "endTurn"]
 };
 
-// helpers pour accËs aux donnÈes du jeu
+// helpers pour acc√®s aux donn√©es du jeu
 var helpers = {
 	getHorse: function(game){
 		return function(playerName){
@@ -208,7 +217,7 @@ var helpers = {
 	getPlayersCount: function (game){
 		var playersCount = 0;
 		for (var playerName in game.players){
-			playersCount++;
+			playersCount++; 
 		}
 		return playersCount;
 	}
@@ -217,7 +226,7 @@ var helpers = {
 //available game actions
 //actions attendues du jeu
 // - lancement du jeu
-// - lancement de dÈ
+// - lancement de d√©
 // - mouvement d'un cheval
 // - fin de tour
 // 
@@ -238,10 +247,10 @@ var actions = {
 		//test
 		console.log("actions#resetGame done");
 	},
-	//lancement de dÈ
+	//lancement de d√©
 	launchDice: function (game){
 		return function (playerName){
-			//TODO random sur le lancer de dÈ
+			//TODO random sur le lancer de d√©
 			var roll = ++game.board.dice.value;
 			if (roll > 6){
 				roll = 1;
@@ -302,7 +311,7 @@ var controls = {
 		}
 		return result;
 	},
-	// contrÙle du lancer de dÈ
+	// contr√¥le du lancer de d√©
 	canLaunchDice: function(game){
 		return function (playerName){
 			var result = {'success': false, 'comment': "none"};
@@ -310,7 +319,7 @@ var controls = {
 				result.comment = playerName+" n'est pas le joueur actif!";
 			}else{
 				if (game.board.dice.rolledThisTurn){
-					result.comment = "le dÈ a dÈj‡ ÈtÈ jetÈ ce tour-ci";
+					result.comment = "le d√© a d√©j√† √©t√© jet√© ce tour-ci";
 				}else{
 					result.success = true;
 				}
@@ -318,19 +327,19 @@ var controls = {
 			return result;
 		}
 	},
-	// contrÙle du mouvement d'un cheval
+	// contr√¥le du mouvement d'un cheval
 	canMoveHorse: function(game){
 		return function (playerName){
 			return function (horseId){
 				var result = {'success': false, 'comment': "none"};
 				//TODO check existence joueur et cheval
 				//TODO check du bon joueur
-				// contrÙle de l'Ètat du tour
+				// contr√¥le de l'√©tat du tour
 				if (!game.dice.rolledThisTurn){
-					result.comment = "le dÈ n'a pas ÈtÈ jetÈ";
+					result.comment = "le d√© n'a pas √©t√© jet√©";
 				}else{
 					if (game.dice.usedThisTurn){
-						result.comment = "le mouvement a dÈj‡ ÈtÈ fait!";
+						result.comment = "le mouvement a d√©j√† √©t√© fait!";
 					}else{
 						result.success = true;
 					}
@@ -357,14 +366,16 @@ var controls = {
 
 
 
-
+//=============================================================================
+//=============================================================================
+//=============================================================================
 //--------------- GESTIONNAIRE GLOBAL DES PARTIES
 var SERVER_GAMES = {"horses_18":firstHorseGame};
 
 //var method = "doSomething";
 //var controlMethod = "can"+method.substring(0,1).toUpperCase()+method.substring(1);
 //console.log("TEST: method="+method+" controlMethod="+controlMethod);
-var serverPort = 4040;
-console.log("lancement serveur");
+const serverPort = process.env.PORT || 4000;
+console.log("games lancement serveur");
 server.listen(serverPort);
-console.log("serveur en route sur le port "+serverPort);
+console.log("games serveur en route sur le port "+serverPort);
